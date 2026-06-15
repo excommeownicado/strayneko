@@ -70,7 +70,7 @@ char	*Foreground = NULL;		/*   foreground	*/
 char	*Background = NULL;		/*   background	*/
 long	IntervalTime = 0L;		/*   time	*/
 double	NekoSpeed = (double)0;		/*   speed	*/
-int Wander = 0;
+int Wander = 0;       /*  wander */
 int	IdleSpace = 0;			/*   idle	*/
 int	NekoMoyou = NOTDEFINED;		/*   tora	*/
 int	NoShape = NOTDEFINED;		/*   noshape	*/
@@ -92,14 +92,17 @@ int	NekoState;		/* 猫の状態 */
 int	MouseX;			/* マウスＸ座標 */
 int	MouseY;			/* マウスＹ座標 */
 
-int TargetX = 500;
-int TargetY = 500;
+int TargetX = 2240;
+int TargetY = 540;
 
 int Waiting = 0;
 time_t NextMoveTime = 0;
 
-int MinWait = 10;
-int MaxWait = 200;
+int Zoomies = 0;
+time_t ZoomiesEndTime = 0;
+
+int MinWait = 20;
+int MaxWait = 100;
 
 int	PrevMouseX = 0;		/* 直前のマウスＸ座標 */
 int	PrevMouseY = 0;		/* 直前のマウスＹ座標 */
@@ -996,6 +999,12 @@ CalcDxDy()
     double		LargeX, LargeY;
     double		DoubleLength, Length;
 
+    if (Zoomies && time(NULL) > ZoomiesEndTime)
+    {
+      Zoomies = 0;
+      printf("zoomies ended\n");
+    }
+
     if (Wander && Waiting)
 {
     if (time(NULL) < NextMoveTime)
@@ -1007,8 +1016,48 @@ CalcDxDy()
 
     Waiting = 0;
 
-    TargetX = rand() % WindowWidth;
-    TargetY = rand() % WindowHeight;
+    if (Zoomies)
+    {
+      TargetX = rand() % WindowWidth;
+      TargetY = rand() % WindowHeight;
+    }
+    else
+    {
+      if (rand() % 100 < 70)
+      {
+        TargetX = NekoX + (rand() % 601 - 300);
+        TargetY = NekoY + (rand() % 601 - 300);
+      }
+      else
+      {
+        TargetX = rand() % WindowWidth;
+        TargetY = rand() % WindowHeight;
+      }
+      if (rand() % 100 < 15)
+      {
+        TargetX = NekoX;
+        TargetY = NekoY;
+      }
+    }
+
+    if (!Zoomies && rand() % 100 < 5)
+    {
+      Zoomies = 1;
+      ZoomiesEndTime = time(NULL) + 20;
+
+      printf("ZOOMIES!\n");
+    }
+
+
+    if (TargetX < 0)
+      TargetX = 0;
+    if (TargetX > WindowWidth)
+      TargetX = WindowWidth;
+
+    if (TargetY < 0)
+      TargetY = 0;
+    if (TargetY > WindowHeight)
+      TargetY = WindowHeight;
 }
 
     XQueryPointer(theDisplay, theWindow,
@@ -1107,9 +1156,6 @@ CalcDxDy()
       LargeX = (double)(MouseX - NekoX - BITMAP_WIDTH / 2);
       LargeY = (double)(MouseY - NekoY - BITMAP_HEIGHT);
     }
-
-    if (abs(NekoX - TargetX) < 40 &&
-    abs(NekoY - TargetY) < 40)
     
     if (Wander &&
       !Waiting &&
@@ -1117,8 +1163,30 @@ CalcDxDy()
       abs(NekoY - TargetY) < 40)
     {
       Waiting = 1;
+      
+      int distance =
+          abs(TargetX - NekoX) +
+          abs(TargetY - NekoY);
 
-      int delay = MinWait + rand() % (MaxWait - MinWait + 1);
+      double factor;
+
+      if (distance < 300)
+        factor = 0.5;
+      else if (distance < 1000)
+        factor = 1.0;
+      else
+        factor = 2.0;
+
+      int delay =
+        (int)((MinWait +
+            rand() % (MaxWait - MinWait + 1))
+            * factor);
+      
+      if (Zoomies)
+      {
+        delay = 1 + rand() % 3;
+      }
+
       NextMoveTime = time(NULL) + delay;
 
       NekoMoveDx = 0;
