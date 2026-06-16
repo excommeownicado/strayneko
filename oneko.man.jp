@@ -3,13 +3,7 @@
 かわいい猫がマウスカーソルを追いかけるプログラム
 .SH 書式
 .B oneko
-[\fB-help\fP] [\fB-tora\fP]
-[\fB-dog\fP] [\fB-bsd_daemon\fP] [\fB-bsd\fP]
-[\fB-sakura\fP] [\fB-tomoyo\fP]
-[\fB-time\fP \fIn\fP] [\fB-speed\fP \fIn\fP] [\fB-idle\fP \fIn\fP]
-[\fB-name\fP \fIname\fP] [\fB-towindow\fP] [\fB-toname\fP \fIname\fP]
-[\fB-tofocus\fP]
-[\fB-position\fP \fIgeometry\fP]
+[\fB-help\fP] [\fB-time\fP \fIn\fP] [\fB-speed\fP \fIn\fP]
 [\fB-rv\fP] [\fB-noshape\fP] [\fB-fg\fP] [\fB-bg\fP]
 .SH 解説
 .I oneko
@@ -21,24 +15,8 @@
 .B -help
 使い方の簡単な説明を出力します。
 .TP
-.B -tora
-猫をトラ猫にします。
-.TP
 .B -dog
 猫に代わり犬が走ります。
-.TP
-.B -bsd_daemon
-猫に代わり 4.3BSD デーモンが走ります。
-.TP
-.B -bsd
-.B -bsd_daemon
-に同じ。
-.TP
-.B -sakura
-猫に代わり木之本桜が走ります。
-.TP
-.B -tomoyo
-猫に代わり大道寺知世が走ります。
 .TP
 .BI \-time " interval"
 猫アニメーションの間隔を指定します。
@@ -49,25 +27,8 @@
 猫が一つの動作で移動する距離をドットで指定します。
 デフォルト値は 16 です。
 .TP
-.BI \-idle " speed"
-逃げるねずみが猫の目を覚まさせるに至るスピードを指定します。
-.TP
 .BI \-name " name"
 猫のウィンドウ名を指定します。
-.TP
-.B -towindow
-.I oneko
-がこのオプションとともに起動された時は、あなたはカーソルでウィンドウを
-選択しなければなりません。
-すると猫があらわれて、ねずみの代わりにそのウィンドウを追いかけはじめま
-す。
-すでに起動している他の
-.I oneko
-を目標にすることもできます。
-ルートウィンドウが選択された場合は、通常のようにマウスを追いかけます。
-目標ウィンドウが閉じられてはいないものの見えない時には、通常のようにマ
-ウスを追いかけます。
-目標ウィンドウが閉じられるとプログラムは終了します。
 .TP
 .BI \-toname " name"
 猫は指定された名前のウィンドウをねずみの代わりに追いかけます。
@@ -77,13 +38,6 @@
 目標ウィンドウが閉じられてはいないものの見えない時には、通常のようにマ
 ウスを追いかけます。
 目標ウィンドウが閉じられるとプログラムは終了します。
-.TP
-.B -tofocus
-猫はフォーカスウィンドウに向かって走り、そしてその上部を走ります。
-フォーカスウィンドウが見えない時には、通常のようにマウスを追いかけます。
-.TP
-.BI \-position " geometry"
-X と Y のオフセットを指定して猫のねずみへの相対位置を調整します。
 .TP
 .B -rv
 背景色と前景色を反転します。
@@ -97,10 +51,6 @@ SHAPE extension を使いません。
 .BI \-bg " color"
 背景色。
 .SS リソース
-アプリケーション名は neko もしくは tora で、クラス名は Oneko です。
-.TP
-.B tora
-トラ猫を走らせたい場合には True とします。
 .TP
 .B time
 アニメーションの間隔をマイクロ秒で設定します。
@@ -125,8 +75,6 @@ SHAPE extension を使いたくない場合 True とします。
 .SH 注釈
 このプログラムが XGetDefault を利用している以上、 neko.resouce の形式
 を使うことに留意してください。
-ハードリンクあるいはソフトリンクによって、このプログラムを tora として
-起動した場合には、デフォルトで \fB-tora\fP オプションが有効となります。
 .PP
 BSD デーモンは  Marshall Kirk McKusick 氏の著作物です。すべての権利は
 保持されています。

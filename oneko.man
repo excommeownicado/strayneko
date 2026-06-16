@@ -3,13 +3,7 @@
 The program oneko creates a cute cat chasing around your mouse cursor.
 .SH SYNOPSIS
 .B oneko
-[\fB-help\fP] [\fB-tora\fP]
-[\fB-dog\fP] [\fB-bsd_daemon\fP] [\fB-bsd\fP]
-[\fB-sakura\fP] [\fB-tomoyo\fP]
-[\fB-time\fP \fIn\fP] [\fB-speed\fP \fIn\fP] [\fB-idle\fP \fIn\fP]
-[\fB-name\fP \fIname\fP] [\fB-towindow\fP] [\fB-toname\fP \fIname\fP]
-[\fB-tofocus\fP]
-[\fB-position\fP \fIgeometry\fP]
+[\fB-help\fP] [\fB-time\fP \fIn\fP] [\fB-speed\fP \fIn\fP]
 [\fB-rv\fP] [\fB-noshape\fP] [\fB-fg\fP] [\fB-bg\fP]
 .SH DESCRIPTION
 .I oneko
@@ -21,25 +15,8 @@ start sleeping.
 .B -help
 Prints help message on usage.
 .TP
-.B -tora
-Make cat into "tora-neko".  "Tora-neko" means cat wite tiger-like stripe.
-I don't know how to say it in English.
-.TP
 .B -dog
 Runs a dog instead of a cat.
-.TP
-.B -bsd_daemon
-Runs a 4.3BSD daemon instead of a cat.
-.TP
-.B -bsd
-Same as
-.B -bsd_daemon.
-.TP
-.B -sakura
-Runs Sakura Kinomoto instead of a cat.
-.TP
-.B -tomoyo
-Runs Tomoyo Daidouji instead of a cat.
 .TP
 .BI \-time " interval"
 Sets interval timer which determine intervals for cat animation.
@@ -50,25 +27,8 @@ run faster.
 Specify the distance where cat jumps at one move in dot resolution.
 Default is 16.
 .TP
-.BI \-idle " speed"
-Specify the threshold of the speed which ``mouse'' running away
-to wake cat up.
-.TP
 .BI \-name " name"
 Specify the window name of cat.
-.TP
-.B -towindow
-When
-.I oneko
-starts with this option, you must select a window by cursor.
-Then cat appears and starts chasing the window instead of mouse.
-You can select another running
-.I oneko
-as the target window.
-If root window is selected, cat chases mouse as usually.
-When the target window is not in sight and not closed, cat chases
-mouse as usually.
-If the target window is closed, this program exit.
 .TP
 .BI \-toname " name"
 Specify the window name of target to make cat chase it instead of
@@ -79,14 +39,6 @@ as the target window.
 When the target window is not in sight and not closed, cat chases
 mouse as usually.
 If the target window is closed, this program exit.
-.TP
-.B -tofocus
-Makes cat run to and on top of focus window.
-When focus window is not in sight, cat chases mouse as usually.
-.TP
-.BI \-position " geometry"
-Specify X and Y offsets in pixels to adjust position of cat relative
-to mouse pointer.
 .TP
 .B -rv
 Reverse background color and foreground color.
@@ -100,10 +52,7 @@ Foreground color.
 .BI \-bg " color"
 Background color.
 .SS Resources
-Application name is "neko"(or "tora") and class name is "Oneko".
-.TP
-.B tora
-Set ``True'' if you want "tora-neko".
+Application name is "neko" and class name is "Oneko".
 .TP
 .B time
 Sets interval timer in micro-second.
@@ -127,7 +76,6 @@ Foreground color.
 Background color.
 .SH Notes
 While this program uses XGetDefault, be sure to use "neko.resouce" form.
-If you run this program as "tora", by hard of soft link, the \fB-tora\fP
 option is enabled by default.
 .PP
 BSD Daemon Copyright 1988 by Marshall Kirk McKusick. All Rights Reserved.

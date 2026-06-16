@@ -25,7 +25,6 @@ Window	theWindow;			/* $@G-%&%#%s%I%&$N#I#D(J */
 char    *WindowName = NULL;		/* $@G-%&%#%s%I%&$NL>A0(J */
 Window	theTarget = None;		/* $@L\I8%&%#%s%I%&$N#I#D(J */
 char    *TargetName = NULL;		/* $@L\I8%&%#%s%I%&$NL>A0(J */
-Cursor	theCursor;			/* $@$M$:$_%+!<%=%k(J */
 
 unsigned int	WindowWidth;		/* $@%k!<%H%&%#%s%I%&$NI}(J */
 unsigned int	WindowHeight;		/* $@%k!<%H%&%#%s%I%&$N9b$5(J */
@@ -35,30 +34,17 @@ XColor	theBackgroundColor;		/* $@?'(J ($@%P%C%/%0%i%&%s%I(J) */
 
 int Synchronous = False;
 /* Types of animals */
-#define BITMAPTYPES 6
+#define BITMAPTYPES 2
 typedef struct _AnimalDefaults {
   char *name;
-  int speed, idle, bitmap_width, bitmap_height;
+  int speed, bitmap_width, bitmap_height;
   long time;
-  int off_x, off_y;
-  char *cursor,*mask;
-  int cursor_width,cursor_height,cursor_x_hot,cursor_y_hot;
 } AnimalDefaultsData;
 
 AnimalDefaultsData AnimalDefaultsDataTable[] = 
 {
-  { "neko", 13, 6, 32, 32, 125000L, 0, 0, mouse_cursor_bits,mouse_cursor_mask_bits,
-      mouse_cursor_width,mouse_cursor_height, mouse_cursor_x_hot,mouse_cursor_y_hot },
-  { "tora", 16, 6, 32, 32, 125000L, 0, 0, mouse_cursor_bits,mouse_cursor_mask_bits,
-      mouse_cursor_width,mouse_cursor_height, mouse_cursor_x_hot,mouse_cursor_y_hot },
-  { "dog" , 10, 6, 32, 32, 125000L, 0, 0, bone_cursor_bits,bone_cursor_mask_bits,
-      bone_cursor_width,bone_cursor_height, bone_cursor_x_hot,bone_cursor_y_hot },
-  { "bsd_daemon" , 16, 6, 32, 32, 300000L, 22, 20, bsd_cursor_bits,bsd_cursor_mask_bits,
-      bsd_cursor_width,bsd_cursor_height, bsd_cursor_x_hot,bsd_cursor_y_hot },
-  { "sakura" , 13, 6, 32, 32, 125000L, 0, 0, card_cursor_bits,card_cursor_mask_bits,
-      card_cursor_width,card_cursor_height, card_cursor_x_hot,card_cursor_y_hot },
-  { "tomoyo" , 10, 6, 32, 32, 125000L, 32, 32, petal_cursor_bits,petal_cursor_mask_bits,
-      petal_cursor_width,petal_cursor_height, petal_cursor_x_hot,petal_cursor_y_hot },
+  { "neko", 13, 32, 32, 125000L },
+  { "dog" , 10, 32, 32, 125000L },
 };
 
 /*
@@ -70,15 +56,9 @@ char	*Foreground = NULL;		/*   foreground	*/
 char	*Background = NULL;		/*   background	*/
 long	IntervalTime = 0L;		/*   time	*/
 double	NekoSpeed = (double)0;		/*   speed	*/
-int Wander = 0;       /*  wander */
-int	IdleSpace = 0;			/*   idle	*/
-int	NekoMoyou = NOTDEFINED;		/*   tora	*/
+int	NekoMoyou = NOTDEFINED;		/*   animal bitmap */
 int	NoShape = NOTDEFINED;		/*   noshape	*/
 int	ReverseVideo = NOTDEFINED;	/*   reverse	*/
-int	ToWindow = NOTDEFINED;		/*   towindow	*/
-int	ToFocus = NOTDEFINED;		/*   tofocus	*/
-int     XOffset=0,YOffset=0;            /* X and Y offsets for cat from mouse
-					   pointer. */
 /*
  *	$@$$$m$$$m$J>uBVJQ?t(J
  */
@@ -106,7 +86,6 @@ int MaxWait = 100;
 
 int	PrevMouseX = 0;		/* $@D>A0$N%^%&%9#X:BI8(J */
 int	PrevMouseY = 0;		/* $@D>A0$N%^%&%9#Y:BI8(J */
-Window	PrevTarget = None;	/* $@D>A0$NL\I8%&%#%s%I%&$N#I#D(J */
 
 int	NekoX;			/* $@G-#X:BI8(J */
 int	NekoY;			/* $@G-#Y:BI8(J */
@@ -169,71 +148,71 @@ typedef struct {
 
 BitmapGCData	BitmapGCDataTable[] =
 {
-    { &Mati2GC, &Mati2Xbm,  mati2_bits, mati2_tora_bits, mati2_dog_bits, mati2_bsd_bits, mati2_sakura_bits, mati2_tomoyo_bits,
-      &Mati2Msk, mati2_mask_bits, mati2_mask_bits, mati2_dog_mask_bits, mati2_bsd_mask_bits, mati2_sakura_mask_bits, mati2_tomoyo_mask_bits },
-    { &Jare2GC, &Jare2Xbm,  jare2_bits, jare2_tora_bits, jare2_dog_bits, jare2_bsd_bits, jare2_sakura_bits, jare2_tomoyo_bits,
-      &Jare2Msk, jare2_mask_bits, jare2_mask_bits, jare2_dog_mask_bits, jare2_bsd_mask_bits, jare2_sakura_mask_bits, jare2_tomoyo_mask_bits },
-    { &Kaki1GC, &Kaki1Xbm,  kaki1_bits, kaki1_tora_bits, kaki1_dog_bits, kaki1_bsd_bits, kaki1_sakura_bits, kaki1_tomoyo_bits,
-      &Kaki1Msk, kaki1_mask_bits, kaki1_mask_bits, kaki1_dog_mask_bits, kaki1_bsd_mask_bits, kaki1_sakura_mask_bits, kaki1_tomoyo_mask_bits },
-    { &Kaki2GC, &Kaki2Xbm,  kaki2_bits, kaki2_tora_bits, kaki2_dog_bits, kaki2_bsd_bits, kaki2_sakura_bits, kaki2_tomoyo_bits,
-      &Kaki2Msk, kaki2_mask_bits, kaki2_mask_bits, kaki2_dog_mask_bits, kaki2_bsd_mask_bits, kaki2_sakura_mask_bits, kaki2_tomoyo_mask_bits },
-    { &Mati3GC, &Mati3Xbm,  mati3_bits, mati3_tora_bits, mati3_dog_bits, mati3_bsd_bits, mati3_sakura_bits, mati3_tomoyo_bits,
-      &Mati3Msk, mati3_mask_bits, mati3_mask_bits, mati3_dog_mask_bits, mati3_bsd_mask_bits, mati3_sakura_mask_bits, mati3_tomoyo_mask_bits },
-    { &Sleep1GC, &Sleep1Xbm,  sleep1_bits, sleep1_tora_bits, sleep1_dog_bits, sleep1_bsd_bits, sleep1_sakura_bits, sleep1_tomoyo_bits,
-      &Sleep1Msk, sleep1_mask_bits, sleep1_mask_bits, sleep1_dog_mask_bits, sleep1_bsd_mask_bits, sleep1_sakura_mask_bits, sleep1_tomoyo_mask_bits },
-    { &Sleep2GC, &Sleep2Xbm,  sleep2_bits, sleep2_tora_bits, sleep2_dog_bits, sleep2_bsd_bits, sleep2_sakura_bits, sleep2_tomoyo_bits,
-      &Sleep2Msk, sleep2_mask_bits, sleep2_mask_bits, sleep2_dog_mask_bits, sleep2_bsd_mask_bits, sleep2_sakura_mask_bits, sleep2_tomoyo_mask_bits },
-    { &AwakeGC, &AwakeXbm,  awake_bits, awake_tora_bits, awake_dog_bits, awake_bsd_bits, awake_sakura_bits, awake_tomoyo_bits,
-      &AwakeMsk, awake_mask_bits, awake_mask_bits, awake_dog_mask_bits, awake_bsd_mask_bits, awake_sakura_mask_bits, awake_tomoyo_mask_bits },
-    { &Up1GC, &Up1Xbm,  up1_bits, up1_tora_bits, up1_dog_bits, up1_bsd_bits, up1_sakura_bits, up1_tomoyo_bits,
-      &Up1Msk, up1_mask_bits, up1_mask_bits, up1_dog_mask_bits, up1_bsd_mask_bits, up1_sakura_mask_bits, up1_tomoyo_mask_bits },
-    { &Up2GC, &Up2Xbm,  up2_bits, up2_tora_bits, up2_dog_bits, up2_bsd_bits, up2_sakura_bits, up2_tomoyo_bits,
-      &Up2Msk, up2_mask_bits, up2_mask_bits, up2_dog_mask_bits, up2_bsd_mask_bits, up2_sakura_mask_bits, up2_tomoyo_mask_bits },
-    { &Down1GC, &Down1Xbm,  down1_bits, down1_tora_bits, down1_dog_bits, down1_bsd_bits, down1_sakura_bits, down1_tomoyo_bits,
-      &Down1Msk, down1_mask_bits, down1_mask_bits, down1_dog_mask_bits, down1_bsd_mask_bits, down1_sakura_mask_bits, down1_tomoyo_mask_bits },
-    { &Down2GC, &Down2Xbm,  down2_bits, down2_tora_bits, down2_dog_bits, down2_bsd_bits, down2_sakura_bits, down2_tomoyo_bits,
-      &Down2Msk, down2_mask_bits, down2_mask_bits, down2_dog_mask_bits, down2_bsd_mask_bits, down2_sakura_mask_bits, down2_tomoyo_mask_bits },
-    { &Left1GC, &Left1Xbm,  left1_bits, left1_tora_bits, left1_dog_bits, left1_bsd_bits, left1_sakura_bits, left1_tomoyo_bits,
-      &Left1Msk, left1_mask_bits, left1_mask_bits, left1_dog_mask_bits, left1_bsd_mask_bits, left1_sakura_mask_bits, left1_tomoyo_mask_bits },
-    { &Left2GC, &Left2Xbm,  left2_bits, left2_tora_bits, left2_dog_bits, left2_bsd_bits, left2_sakura_bits, left2_tomoyo_bits,
-      &Left2Msk, left2_mask_bits, left2_mask_bits, left2_dog_mask_bits, left2_bsd_mask_bits, left2_sakura_mask_bits, left2_tomoyo_mask_bits },
-    { &Right1GC, &Right1Xbm,  right1_bits, right1_tora_bits, right1_dog_bits, right1_bsd_bits, right1_sakura_bits, right1_tomoyo_bits,
-      &Right1Msk, right1_mask_bits, right1_mask_bits,right1_dog_mask_bits, right1_bsd_mask_bits, right1_sakura_mask_bits, right1_tomoyo_mask_bits },
-    { &Right2GC, &Right2Xbm,  right2_bits, right2_tora_bits, right2_dog_bits, right2_bsd_bits, right2_sakura_bits, right2_tomoyo_bits,
-      &Right2Msk, right2_mask_bits, right2_mask_bits, right2_dog_mask_bits, right2_bsd_mask_bits, right2_sakura_mask_bits, right2_tomoyo_mask_bits },
-    { &UpLeft1GC, &UpLeft1Xbm,  upleft1_bits, upleft1_tora_bits, upleft1_dog_bits, upleft1_bsd_bits, upleft1_sakura_bits, upleft1_tomoyo_bits,
-      &UpLeft1Msk, upleft1_mask_bits, upleft1_mask_bits, upleft1_dog_mask_bits, upleft1_bsd_mask_bits, upleft1_sakura_mask_bits, upleft1_tomoyo_mask_bits },
-    { &UpLeft2GC, &UpLeft2Xbm,  upleft2_bits, upleft2_tora_bits, upleft2_dog_bits, upleft2_bsd_bits, upleft2_sakura_bits, upleft2_tomoyo_bits,
-      &UpLeft2Msk, upleft2_mask_bits, upleft2_mask_bits,upleft2_dog_mask_bits, upleft2_bsd_mask_bits, upleft2_sakura_mask_bits, upleft2_tomoyo_mask_bits },
-    { &UpRight1GC, &UpRight1Xbm,  upright1_bits, upright1_tora_bits, upright1_dog_bits, upright1_bsd_bits, upright1_sakura_bits, upright1_tomoyo_bits,
-      &UpRight1Msk, upright1_mask_bits, upright1_mask_bits,upright1_dog_mask_bits, upright1_bsd_mask_bits, upright1_sakura_mask_bits, upright1_tomoyo_mask_bits },
-    { &UpRight2GC, &UpRight2Xbm,  upright2_bits, upright2_tora_bits, upright2_dog_bits, upright2_bsd_bits, upright2_sakura_bits, upright2_tomoyo_bits,
-      &UpRight2Msk, upright2_mask_bits, upright2_mask_bits,upright2_dog_mask_bits, upright2_bsd_mask_bits, upright2_sakura_mask_bits, upright2_tomoyo_mask_bits },
-    { &DownLeft1GC, &DownLeft1Xbm,  dwleft1_bits, dwleft1_tora_bits, dwleft1_dog_bits, dwleft1_bsd_bits, dwleft1_sakura_bits, dwleft1_tomoyo_bits,
-      &DownLeft1Msk, dwleft1_mask_bits, dwleft1_mask_bits, dwleft1_dog_mask_bits, dwleft1_bsd_mask_bits, dwleft1_sakura_mask_bits, dwleft1_tomoyo_mask_bits },
-    { &DownLeft2GC, &DownLeft2Xbm,  dwleft2_bits, dwleft2_tora_bits, dwleft2_dog_bits, dwleft2_bsd_bits, dwleft2_sakura_bits, dwleft2_tomoyo_bits,
-      &DownLeft2Msk, dwleft2_mask_bits, dwleft2_mask_bits, dwleft2_dog_mask_bits, dwleft2_bsd_mask_bits, dwleft2_sakura_mask_bits, dwleft2_tomoyo_mask_bits },
-    { &DownRight1GC, &DownRight1Xbm,  dwright1_bits, dwright1_tora_bits, dwright1_dog_bits, dwright1_bsd_bits, dwright1_sakura_bits, dwright1_tomoyo_bits,
-      &DownRight1Msk, dwright1_mask_bits, dwright1_mask_bits, dwright1_dog_mask_bits, dwright1_bsd_mask_bits, dwright1_sakura_mask_bits, dwright1_tomoyo_mask_bits },
-    { &DownRight2GC, &DownRight2Xbm,  dwright2_bits, dwright2_tora_bits, dwright2_dog_bits, dwright2_bsd_bits, dwright2_sakura_bits, dwright2_tomoyo_bits,
-      &DownRight2Msk, dwright2_mask_bits, dwright2_mask_bits, dwright2_dog_mask_bits, dwright2_bsd_mask_bits, dwright2_sakura_mask_bits, dwright2_tomoyo_mask_bits },
-    { &UpTogi1GC, &UpTogi1Xbm,  utogi1_bits, utogi1_tora_bits, utogi1_dog_bits, utogi1_bsd_bits, utogi1_sakura_bits, utogi1_tomoyo_bits,
-      &UpTogi1Msk, utogi1_mask_bits, utogi1_mask_bits, utogi1_dog_mask_bits, utogi1_bsd_mask_bits, utogi1_sakura_mask_bits, utogi1_tomoyo_mask_bits },
-    { &UpTogi2GC, &UpTogi2Xbm,  utogi2_bits, utogi2_tora_bits, utogi2_dog_bits, utogi2_bsd_bits, utogi2_sakura_bits, utogi2_tomoyo_bits,
-      &UpTogi2Msk, utogi2_mask_bits, utogi2_mask_bits, utogi2_dog_mask_bits, utogi2_bsd_mask_bits, utogi2_sakura_mask_bits, utogi2_tomoyo_mask_bits },
-    { &DownTogi1GC, &DownTogi1Xbm,  dtogi1_bits, dtogi1_tora_bits, dtogi1_dog_bits, dtogi1_bsd_bits, dtogi1_sakura_bits, dtogi1_tomoyo_bits,
-      &DownTogi1Msk, dtogi1_mask_bits, dtogi1_mask_bits, dtogi1_dog_mask_bits, dtogi1_bsd_mask_bits, dtogi1_sakura_mask_bits, dtogi1_tomoyo_mask_bits },
-    { &DownTogi2GC, &DownTogi2Xbm,  dtogi2_bits, dtogi2_tora_bits, dtogi2_dog_bits, dtogi2_bsd_bits, dtogi2_sakura_bits, dtogi2_tomoyo_bits,
-      &DownTogi2Msk, dtogi2_mask_bits, dtogi2_mask_bits, dtogi2_dog_mask_bits, dtogi2_bsd_mask_bits, dtogi2_sakura_mask_bits, dtogi2_tomoyo_mask_bits },
-    { &LeftTogi1GC, &LeftTogi1Xbm,  ltogi1_bits, ltogi1_tora_bits, ltogi1_dog_bits, ltogi1_bsd_bits, ltogi1_sakura_bits, ltogi1_tomoyo_bits,
-      &LeftTogi1Msk, ltogi1_mask_bits, ltogi1_mask_bits,ltogi1_dog_mask_bits, ltogi1_bsd_mask_bits, ltogi1_sakura_mask_bits, ltogi1_tomoyo_mask_bits },
-    { &LeftTogi2GC, &LeftTogi2Xbm,  ltogi2_bits, ltogi2_tora_bits, ltogi2_dog_bits, ltogi2_bsd_bits, ltogi2_sakura_bits, ltogi2_tomoyo_bits,
-      &LeftTogi2Msk, ltogi2_mask_bits, ltogi2_mask_bits,ltogi2_dog_mask_bits, ltogi2_bsd_mask_bits, ltogi2_sakura_mask_bits, ltogi2_tomoyo_mask_bits },
-    { &RightTogi1GC, &RightTogi1Xbm,  rtogi1_bits, rtogi1_tora_bits, rtogi1_dog_bits, rtogi1_bsd_bits, rtogi1_sakura_bits, rtogi1_tomoyo_bits,
-      &RightTogi1Msk, rtogi1_mask_bits, rtogi1_mask_bits,rtogi1_dog_mask_bits, rtogi1_bsd_mask_bits, rtogi1_sakura_mask_bits, rtogi1_tomoyo_mask_bits },
-    { &RightTogi2GC, &RightTogi2Xbm,  rtogi2_bits, rtogi2_tora_bits, rtogi2_dog_bits, rtogi2_bsd_bits, rtogi2_sakura_bits, rtogi2_tomoyo_bits,
-      &RightTogi2Msk, rtogi2_mask_bits, rtogi2_mask_bits,rtogi2_dog_mask_bits, rtogi2_bsd_mask_bits, rtogi2_sakura_mask_bits, rtogi2_tomoyo_mask_bits },
-    { NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL }
+    { &Mati2GC, &Mati2Xbm,  mati2_bits, mati2_dog_bits,
+      &Mati2Msk, mati2_mask_bits, mati2_dog_mask_bits },
+    { &Jare2GC, &Jare2Xbm,  jare2_bits, jare2_dog_bits,
+      &Jare2Msk, jare2_mask_bits, jare2_dog_mask_bits },
+    { &Kaki1GC, &Kaki1Xbm,  kaki1_bits, kaki1_dog_bits,
+      &Kaki1Msk, kaki1_mask_bits, kaki1_dog_mask_bits },
+    { &Kaki2GC, &Kaki2Xbm,  kaki2_bits, kaki2_dog_bits,
+      &Kaki2Msk, kaki2_mask_bits, kaki2_dog_mask_bits },
+    { &Mati3GC, &Mati3Xbm,  mati3_bits, mati3_dog_bits,
+      &Mati3Msk, mati3_mask_bits, mati3_dog_mask_bits },
+    { &Sleep1GC, &Sleep1Xbm,  sleep1_bits, sleep1_dog_bits,
+      &Sleep1Msk, sleep1_mask_bits, sleep1_dog_mask_bits },
+    { &Sleep2GC, &Sleep2Xbm,  sleep2_bits, sleep2_dog_bits,
+      &Sleep2Msk, sleep2_mask_bits, sleep2_dog_mask_bits },
+    { &AwakeGC, &AwakeXbm,  awake_bits, awake_dog_bits,
+      &AwakeMsk, awake_mask_bits, awake_dog_mask_bits },
+    { &Up1GC, &Up1Xbm,  up1_bits, up1_dog_bits,
+      &Up1Msk, up1_mask_bits, up1_dog_mask_bits },
+    { &Up2GC, &Up2Xbm,  up2_bits, up2_dog_bits,
+      &Up2Msk, up2_mask_bits, up2_dog_mask_bits },
+    { &Down1GC, &Down1Xbm,  down1_bits, down1_dog_bits,
+      &Down1Msk, down1_mask_bits, down1_dog_mask_bits },
+    { &Down2GC, &Down2Xbm,  down2_bits, down2_dog_bits,
+      &Down2Msk, down2_mask_bits, down2_dog_mask_bits },
+    { &Left1GC, &Left1Xbm,  left1_bits, left1_dog_bits,
+      &Left1Msk, left1_mask_bits, left1_dog_mask_bits },
+    { &Left2GC, &Left2Xbm,  left2_bits, left2_dog_bits,
+      &Left2Msk, left2_mask_bits, left2_dog_mask_bits },
+    { &Right1GC, &Right1Xbm,  right1_bits, right1_dog_bits,
+      &Right1Msk, right1_mask_bits, right1_dog_mask_bits },
+    { &Right2GC, &Right2Xbm,  right2_bits, right2_dog_bits,
+      &Right2Msk, right2_mask_bits, right2_dog_mask_bits },
+    { &UpLeft1GC, &UpLeft1Xbm,  upleft1_bits, upleft1_dog_bits,
+      &UpLeft1Msk, upleft1_mask_bits, upleft1_dog_mask_bits },
+    { &UpLeft2GC, &UpLeft2Xbm,  upleft2_bits, upleft2_dog_bits,
+      &UpLeft2Msk, upleft2_mask_bits, upleft2_dog_mask_bits },
+    { &UpRight1GC, &UpRight1Xbm,  upright1_bits, upright1_dog_bits,
+      &UpRight1Msk, upright1_mask_bits, upright1_dog_mask_bits },
+    { &UpRight2GC, &UpRight2Xbm,  upright2_bits, upright2_dog_bits,
+      &UpRight2Msk, upright2_mask_bits, upright2_dog_mask_bits },
+    { &DownLeft1GC, &DownLeft1Xbm,  dwleft1_bits, dwleft1_dog_bits,
+      &DownLeft1Msk, dwleft1_mask_bits, dwleft1_dog_mask_bits },
+    { &DownLeft2GC, &DownLeft2Xbm,  dwleft2_bits, dwleft2_dog_bits,
+      &DownLeft2Msk, dwleft2_mask_bits, dwleft2_dog_mask_bits },
+    { &DownRight1GC, &DownRight1Xbm,  dwright1_bits, dwright1_dog_bits,
+      &DownRight1Msk, dwright1_mask_bits, dwright1_dog_mask_bits },
+    { &DownRight2GC, &DownRight2Xbm,  dwright2_bits, dwright2_dog_bits,
+      &DownRight2Msk, dwright2_mask_bits, dwright2_dog_mask_bits },
+    { &UpTogi1GC, &UpTogi1Xbm,  utogi1_bits, utogi1_dog_bits,
+      &UpTogi1Msk, utogi1_mask_bits, utogi1_dog_mask_bits },
+    { &UpTogi2GC, &UpTogi2Xbm,  utogi2_bits, utogi2_dog_bits,
+      &UpTogi2Msk, utogi2_mask_bits, utogi2_dog_mask_bits },
+    { &DownTogi1GC, &DownTogi1Xbm,  dtogi1_bits, dtogi1_dog_bits,
+      &DownTogi1Msk, dtogi1_mask_bits, dtogi1_dog_mask_bits },
+    { &DownTogi2GC, &DownTogi2Xbm,  dtogi2_bits, dtogi2_dog_bits,
+      &DownTogi2Msk, dtogi2_mask_bits, dtogi2_dog_mask_bits },
+    { &LeftTogi1GC, &LeftTogi1Xbm,  ltogi1_bits, ltogi1_dog_bits,
+      &LeftTogi1Msk, ltogi1_mask_bits, ltogi1_dog_mask_bits },
+    { &LeftTogi2GC, &LeftTogi2Xbm,  ltogi2_bits, ltogi2_dog_bits,
+      &LeftTogi2Msk, ltogi2_mask_bits, ltogi2_dog_mask_bits },
+    { &RightTogi1GC, &RightTogi1Xbm,  rtogi1_bits, rtogi1_dog_bits,
+      &RightTogi1Msk, rtogi1_mask_bits, rtogi1_dog_mask_bits },
+    { &RightTogi2GC, &RightTogi2Xbm,  rtogi2_bits, rtogi2_dog_bits,
+      &RightTogi2Msk, rtogi2_mask_bits, rtogi2_dog_mask_bits },
+    { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
 typedef struct {
@@ -284,7 +263,8 @@ Animation	AnimationPattern[][2] =
 static void NullFunction(int signum);
 
 /*
- *	$@%S%C%H%^%C%W%G!<%?!&(JGC $@=i4|2=(J
+ *	$@%S%C%H%^%C%W%G!<%?!&(JGC $@=i4|/*
+ *	$@%9%/%j!<%s4D6-=i4|2=(J
  */
 
 void
@@ -383,13 +363,6 @@ int GetResources()
     }
   }
 
-  if (IdleSpace == 0) {
-    if ((resource = NekoGetDefault("idle")) != NULL) {
-      if (num = atoi(resource)) {
-	IdleSpace = num;
-      }
-    }
-  }
 
   if (NekoMoyou == NOTDEFINED) {
     for (loop=0;loop<BITMAPTYPES;loop++)
@@ -426,57 +399,13 @@ int GetResources()
   if (NekoSpeed == (double)0) {
     NekoSpeed = (double)(AnimalDefaultsDataTable[NekoMoyou].speed);
   }
-  if (IdleSpace == 0) {
-    IdleSpace = AnimalDefaultsDataTable[NekoMoyou].idle;
-  }
-  XOffset = XOffset + AnimalDefaultsDataTable[NekoMoyou].off_x;
-  YOffset = YOffset + AnimalDefaultsDataTable[NekoMoyou].off_y;
   if (NoShape == NOTDEFINED) {
     NoShape = False;
   }
   if (ReverseVideo == NOTDEFINED) {
     ReverseVideo = False;
   }
-  if (ToWindow == NOTDEFINED) {
-    ToWindow = False;
-  }
-  if (ToFocus == NOTDEFINED) {
-    ToFocus = False;
-  }
 }
-
-/*
- *	$@$M$:$_7?%+!<%=%k$r:n$k(J
- */
-
-int MakeMouseCursor()
-{
-    Pixmap			theCursorSource;
-    Pixmap			theCursorMask;
-
-    theCursorSource
-	= XCreateBitmapFromData(theDisplay, theRoot,
-				AnimalDefaultsDataTable[NekoMoyou].cursor, 
-				AnimalDefaultsDataTable[NekoMoyou].cursor_width,
-				AnimalDefaultsDataTable[NekoMoyou].cursor_height);
-
-    theCursorMask
-	= XCreateBitmapFromData(theDisplay, theRoot,
-				AnimalDefaultsDataTable[NekoMoyou].mask,
-				AnimalDefaultsDataTable[NekoMoyou].cursor_width,
-				AnimalDefaultsDataTable[NekoMoyou].cursor_height);
-
-    theCursor = XCreatePixmapCursor(theDisplay, theCursorSource, theCursorMask,
-				    &theBackgroundColor, &theForegroundColor,
-				    AnimalDefaultsDataTable[NekoMoyou].cursor_x_hot,
-				    AnimalDefaultsDataTable[NekoMoyou].cursor_y_hot);
-    XFreePixmap(theDisplay,theCursorSource);
-    XFreePixmap(theDisplay,theCursorMask);
-}
-
-/*
- *	$@?'$r=i4|@_Dj$9$k(J
- */
 
 int SetupColors()
 {
@@ -511,93 +440,6 @@ int SetupColors()
 		ProgramName, Background);
 	exit(1);
     }
-}
-
-/*
- * Routine to let user select a window using the mouse
- *
- * This routine originate in dsimple.c
- */
-
-Window Select_Window(dpy)
-     Display *dpy;
-{
-  int status;
-  Cursor cursor;
-  XEvent event;
-  Window target_win = None, root = theRoot;
-  int buttons = 0;
-
-  /* Make the target cursor */
-  cursor = theCursor;
-
-  /* Grab the pointer using target cursor, letting it room all over */
-  status = XGrabPointer(dpy, root, False,
-			ButtonPressMask|ButtonReleaseMask, GrabModeSync,
-			GrabModeAsync, root, cursor, CurrentTime);
-  if (status != GrabSuccess) {
-    fprintf(stderr, "%s: Can't grab the mouse.\n", ProgramName);
-    exit(1);
-  }
-
-  /* Let the user select a window... */
-  while ((target_win == None) || (buttons != 0)) {
-    /* allow one more event */
-    XAllowEvents(dpy, SyncPointer, CurrentTime);
-    XWindowEvent(dpy, root, ButtonPressMask|ButtonReleaseMask, &event);
-    switch (event.type) {
-    case ButtonPress:
-      if (target_win == None) {
-	target_win = event.xbutton.subwindow; /* window selected */
-	if (target_win == None) target_win = root;
-      }
-      buttons++;
-      break;
-    case ButtonRelease:
-      if (buttons > 0) /* there may have been some down before we started */
-	buttons--;
-       break;
-    }
-  } 
-
-  XUngrabPointer(dpy, CurrentTime);      /* Done with pointer */
-
-  return(target_win);
-}
-
-/*
- * Window_With_Name: routine to locate a window with a given name on a display.
- *                   If no window with the given name is found, 0 is returned.
- *                   If more than one window has the given name, the first
- *                   one found will be returned.  Only top and its subwindows
- *                   are looked at.  Normally, top should be the RootWindow.
- *
- * This routine originate in dsimple.c
- */
-Window Window_With_Name(dpy, top, name)
-     Display *dpy;
-     Window top;
-     char *name;
-{
-	Window *children, dummy;
-	unsigned int nchildren;
-	int i;
-	Window w=0;
-	char *window_name;
-
-	if (XFetchName(dpy, top, &window_name) && !strcmp(window_name, name))
-	  return(top);
-
-	if (!XQueryTree(dpy, top, &dummy, &dummy, &children, &nchildren))
-	  return(0);
-
-	for (i=0; i<nchildren; i++) {
-		w = Window_With_Name(dpy, children[i], name);
-		if (w)
-		  break;
-	}
-	if (children) XFree ((char *)children);
-	return(w);
 }
 
 /*
@@ -639,7 +481,7 @@ InitScreen(DisplayName)
     fprintf(stderr, "Display not suported shape extension.\n");
     NoShape = True;
 				       }
-#endif SHAPE
+#endif /* SHAPE */
 
   theScreen = DefaultScreen(theDisplay);
   theDepth = DefaultDepth(theDisplay, theScreen);
@@ -652,56 +494,11 @@ InitScreen(DisplayName)
 	       &BorderWidth, &theDepth);
 
   SetupColors();
-  MakeMouseCursor();
-
-  if (ToWindow && theTarget == None) {
-    if (TargetName != NULL) {
-      int i;
-
-      for (i=0; i<5; i++) {
-	theTarget = Window_With_Name(theDisplay, theRoot, TargetName);
-	if (theTarget != None) break;
-      }
-      if (theTarget == None) {
-	fprintf(stderr, "%s: No window with name '%s' exists.\n",
-		ProgramName, TargetName);
-	exit(1);
-      }
-    } else {
-      theTarget = Select_Window(theDisplay);
-      if (theTarget == theRoot) {
-	theTarget = None;
-	ToWindow = False;
-      }
-    }
-    if (theTarget != None) {
-      Window		QueryRoot, QueryParent, *QueryChildren;
-      unsigned int	nchild;
-
-      for (;;) {
-	if (XQueryTree(theDisplay, theTarget, &QueryRoot,
-		       &QueryParent, &QueryChildren, &nchild)) {
-	  XFree(QueryChildren);
-	  if (QueryParent == QueryRoot) break;
-	  theTarget = QueryParent;
-	}
-	else {
-	  fprintf(stderr, "%s: Target Lost.\n",ProgramName);
-	  exit(1);
-	}
-      }
-    }
-  }
 
   theWindowAttributes.background_pixel = theBackgroundColor.pixel;
-  theWindowAttributes.cursor = theCursor;
   theWindowAttributes.override_redirect = True;
 
-  if (!ToWindow) XChangeWindowAttributes(theDisplay, theRoot, CWCursor,
-					 &theWindowAttributes);
-
   theWindowMask = CWBackPixel		|
-    CWCursor		|
       CWOverrideRedirect;
 
   theWindow = XCreateWindow(theDisplay, theRoot, 0, 0,
@@ -741,7 +538,6 @@ RestoreCursor()
     XFreePixmap(theDisplay,*(BitmapGCDataTablePtr->BitmapMasksPtr));
     XFreeGC(theDisplay,*(BitmapGCDataTablePtr->GCCreatePtr));
        }
-  XFreeCursor(theDisplay,theCursor);
   XCloseDisplay(theDisplay);
   exit(0);
 }
@@ -829,7 +625,7 @@ DrawNeko(x, y, DrawAnime)
 			  0, 0, DrawMask, ShapeSet);
 
       }
-#endif SHAPE
+#endif /* SHAPE */
       if (DontMapped) {
 	XMapWindow(theDisplay, theWindow);
 	DontMapped = 0;
@@ -973,15 +769,7 @@ IsNekoDontMove()
 Bool
 IsNekoMoveStart()
 {
-    if ((PrevMouseX >= MouseX - IdleSpace
-	 && PrevMouseX <= MouseX + IdleSpace) &&
-	 (PrevMouseY >= MouseY - IdleSpace 
-	 && PrevMouseY <= MouseY + IdleSpace) &&
-	(PrevTarget == theTarget)) {
-	return(False);
-    } else {
-	return(True);
-    }
+    return NekoMoveDx != 0 || NekoMoveDy != 0;
 }
 
 
@@ -992,223 +780,91 @@ IsNekoMoveStart()
 void
 CalcDxDy()
 {
-    Window		QueryRoot, QueryChild;
-    int			AbsoluteX, AbsoluteY;
-    int			RelativeX, RelativeY;
-    unsigned int	ModKeyMask;
-    double		LargeX, LargeY;
-    double		DoubleLength, Length;
+    double LargeX, LargeY;
+    double DoubleLength, Length;
 
-    if (Zoomies && time(NULL) > ZoomiesEndTime)
-    {
+    if (Zoomies && time(NULL) > ZoomiesEndTime) {
       Zoomies = 0;
-      printf("zoomies ended\n");
     }
 
-    if (Wander && Waiting)
-{
-    if (time(NULL) < NextMoveTime)
-    {
+    if (Waiting) {
+      if (time(NULL) < NextMoveTime) {
         NekoMoveDx = 0;
         NekoMoveDy = 0;
         return;
-    }
-
-    Waiting = 0;
-
-    if (Zoomies)
-    {
-      TargetX = rand() % WindowWidth;
-      TargetY = rand() % WindowHeight;
-    }
-    else
-    {
-      if (rand() % 100 < 70)
-      {
-        TargetX = NekoX + (rand() % 601 - 300);
-        TargetY = NekoY + (rand() % 601 - 300);
       }
-      else
-      {
+
+      Waiting = 0;
+
+      if (Zoomies) {
         TargetX = rand() % WindowWidth;
         TargetY = rand() % WindowHeight;
-      }
-      if (rand() % 100 < 15)
-      {
-        TargetX = NekoX;
-        TargetY = NekoY;
-      }
-    }
-
-    if (!Zoomies && rand() % 100 < 5)
-    {
-      Zoomies = 1;
-      ZoomiesEndTime = time(NULL) + 20;
-
-      printf("ZOOMIES!\n");
-    }
-
-
-    if (TargetX < 0)
-      TargetX = 0;
-    if (TargetX > WindowWidth)
-      TargetX = WindowWidth;
-
-    if (TargetY < 0)
-      TargetY = 0;
-    if (TargetY > WindowHeight)
-      TargetY = WindowHeight;
-}
-
-    XQueryPointer(theDisplay, theWindow,
-		   &QueryRoot, &QueryChild,
-		   &AbsoluteX, &AbsoluteY,
-		   &RelativeX, &RelativeY,
-		   &ModKeyMask);
-
-    PrevMouseX = MouseX;
-    PrevMouseY = MouseY;
-    PrevTarget = theTarget;
-
-    if (Wander)
-    {
-      MouseX = TargetX;
-      MouseY = TargetY;
-    }
-    else
-    {
-      MouseX = AbsoluteX + XOffset;
-      MouseY = AbsoluteY + YOffset;
-    }
-
-    if (ToFocus) {
-      int		revert;
-
-      XGetInputFocus(theDisplay, &theTarget, &revert);
-
-      if (theTarget != theRoot
-	  && theTarget != PointerRoot && theTarget != None) {
-	Window		QueryParent, *QueryChildren;
-	unsigned int	nchild;
-
-	for (;;) {
-	  if (XQueryTree(theDisplay, theTarget, &QueryRoot,
-			 &QueryParent, &QueryChildren, &nchild)) {
-	    XFree(QueryChildren);
-	    if (QueryParent == QueryRoot) break;
-	    theTarget = QueryParent;
-	  }
-	  else {
-	    theTarget = None;
-	    break;
-	  }
-	}
-      }
-      else {
-	theTarget = None;
-      }
-    }
-
-    if ((ToWindow || ToFocus) && theTarget != None) {
-      int			status;
-      XWindowAttributes		theTargetAttributes;
-
-      status =
-	XGetWindowAttributes(theDisplay, theTarget, &theTargetAttributes);
-
-      if (ToWindow && status == 0) {
-	fprintf(stderr, "%s: '%s', Target Lost.\n",ProgramName, WindowName);
-	RestoreCursor();
+      } else {
+        if (rand() % 100 < 70) {
+          TargetX = NekoX + (rand() % 601 - 300);
+          TargetY = NekoY + (rand() % 601 - 300);
+        } else {
+          TargetX = rand() % WindowWidth;
+          TargetY = rand() % WindowHeight;
+        }
+        if (rand() % 100 < 15) {
+          TargetX = NekoX;
+          TargetY = NekoY;
+        }
       }
 
-      if (theTargetAttributes.x+theTargetAttributes.width > 0 
-	  && theTargetAttributes.x < (int)WindowWidth
-	  && theTargetAttributes.y+theTargetAttributes.height > 0 
-	  && theTargetAttributes.y < (int)WindowHeight
-	  && theTargetAttributes.map_state == IsViewable) {
-	if (ToFocus) {
-	  if (MouseX < theTargetAttributes.x+BITMAP_WIDTH/2)
-	    LargeX = (double)(theTargetAttributes.x + XOffset - NekoX);
-	  else if (MouseX > theTargetAttributes.x+theTargetAttributes.width
-		   -BITMAP_WIDTH/2)
-	    LargeX = (double)(theTargetAttributes.x + theTargetAttributes.width
-			      + XOffset - NekoX - BITMAP_WIDTH);
-	  else 
-	    LargeX = (double)(MouseX - NekoX - BITMAP_WIDTH / 2);
-
-	  LargeY = (double)(theTargetAttributes.y
-			    + YOffset - NekoY - BITMAP_HEIGHT);
-	}
-	else {
-	  MouseX = theTargetAttributes.x 
-	    + theTargetAttributes.width / 2 + XOffset;
-	  MouseY = theTargetAttributes.y + YOffset;
-	  LargeX = (double)(MouseX - NekoX - BITMAP_WIDTH / 2);
-	  LargeY = (double)(MouseY - NekoY - BITMAP_HEIGHT);	
-	}
+      if (!Zoomies && rand() % 100 < 5) {
+        Zoomies = 1;
+        ZoomiesEndTime = time(NULL) + 20;
       }
-      else {
-	LargeX = (double)(MouseX - NekoX - BITMAP_WIDTH / 2);
-	LargeY = (double)(MouseY - NekoY - BITMAP_HEIGHT);
-      }
-    }
-    else {
-      LargeX = (double)(MouseX - NekoX - BITMAP_WIDTH / 2);
-      LargeY = (double)(MouseY - NekoY - BITMAP_HEIGHT);
-    }
-    
-    if (Wander &&
-      !Waiting &&
-      abs(NekoX - TargetX) < 40 &&
-      abs(NekoY - TargetY) < 40)
-    {
-      Waiting = 1;
-      
-      int distance =
-          abs(TargetX - NekoX) +
-          abs(TargetY - NekoY);
 
+      if (TargetX < 0) TargetX = 0;
+      if (TargetX > (int)WindowWidth) TargetX = WindowWidth;
+      if (TargetY < 0) TargetY = 0;
+      if (TargetY > (int)WindowHeight) TargetY = WindowHeight;
+    }
+
+    MouseX = TargetX;
+    MouseY = TargetY;
+
+    LargeX = (double)(MouseX - NekoX - BITMAP_WIDTH / 2);
+    LargeY = (double)(MouseY - NekoY - BITMAP_HEIGHT);
+
+    if (!Waiting && abs(NekoX - TargetX) < 40 && abs(NekoY - TargetY) < 40) {
+      int distance = abs(TargetX - NekoX) + abs(TargetY - NekoY);
       double factor;
+      int delay;
 
-      if (distance < 300)
-        factor = 0.5;
-      else if (distance < 1000)
-        factor = 1.0;
-      else
-        factor = 2.0;
+      Waiting = 1;
 
-      int delay =
-        (int)((MinWait +
-            rand() % (MaxWait - MinWait + 1))
-            * factor);
-      
-      if (Zoomies)
-      {
-        delay = 1 + rand() % 3;
-      }
+      if (distance < 300) factor = 0.5;
+      else if (distance < 1000) factor = 1.0;
+      else factor = 2.0;
+
+      delay = (int)((MinWait + rand() % (MaxWait - MinWait + 1)) * factor);
+      if (Zoomies) delay = 1 + rand() % 3;
 
       NextMoveTime = time(NULL) + delay;
-
       NekoMoveDx = 0;
       NekoMoveDy = 0;
+      return;
     }
 
     DoubleLength = LargeX * LargeX + LargeY * LargeY;
 
     if (DoubleLength != (double)0) {
-	Length = sqrt(DoubleLength);
-	if (Length <= NekoSpeed) {
-	    NekoMoveDx = (int)LargeX;
-	    NekoMoveDy = (int)LargeY;
-	} else {
-	    NekoMoveDx = (int)((NekoSpeed * LargeX) / Length);
-	    NekoMoveDy = (int)((NekoSpeed * LargeY) / Length);
-	}
+      Length = sqrt(DoubleLength);
+      if (Length <= NekoSpeed) {
+        NekoMoveDx = (int)LargeX;
+        NekoMoveDy = (int)LargeY;
+      } else {
+        NekoMoveDx = (int)((NekoSpeed * LargeX) / Length);
+        NekoMoveDy = (int)((NekoSpeed * LargeY) / Length);
+      }
     } else {
-	NekoMoveDx = NekoMoveDy = 0;
+      NekoMoveDx = NekoMoveDy = 0;
     }
 }
-
 
 /*
  *	$@F0:n2r@OG-IA2h=hM}(J
@@ -1243,11 +899,10 @@ NekoThinkDraw()
 	} else if (NekoMoveDx > 0 && NekoX >= WindowWidth - BITMAP_WIDTH) {
 	    SetNekoState(NEKO_R_TOGI);
 	} else if ((NekoMoveDy < 0 && NekoY <= 0)
-		   || (ToFocus && theTarget != None && NekoY > MouseY)){
+		  ){
 	    SetNekoState(NEKO_U_TOGI);
 	} else if ((NekoMoveDy > 0 && NekoY >= WindowHeight - BITMAP_HEIGHT)
-		   || (ToFocus && theTarget != None 
-		       &&  NekoY < MouseY - BITMAP_HEIGHT)){
+		  ){
 	    SetNekoState(NEKO_D_TOGI);
 	} else {
 	    SetNekoState(NEKO_JARE);
@@ -1428,6 +1083,10 @@ ProcessNeko()
 
   NekoLastX = NekoX;
   NekoLastY = NekoY;
+  TargetX = NekoX;
+  TargetY = NekoY;
+  Waiting = 1;
+  NextMoveTime = time(NULL);
 
   SetNekoState(NEKO_STOP);
 
@@ -1471,14 +1130,10 @@ NekoErrorHandler(dpy, err)
      Display		*dpy;
      XErrorEvent	*err;
 {
-  if (err->error_code==BadWindow && (ToWindow || ToFocus)) {
-  }
-  else {
     char msg[80];
     XGetErrorText(dpy, err->error_code, msg, 80);
     fprintf(stderr, "%s: Error and exit.\n%s\n", ProgramName, msg);
     exit(1);
-  }
 }
 
 
@@ -1494,16 +1149,10 @@ char	*message[] = {
 "-bg <color>		: Background color",
 "-speed <dots>",
 "-time <microseconds>",
-"-idle <dots>",
 "-name <name>		: set window name of neko.",
-"-towindow	       	: Neko chases selected window.",
-"-toname <name>		: Neko chases specified window.",
-"-tofocus      		: Neko runs on top of focus window",
 "-rv			: Reverse video. (effects monochrome display only)",
-"-position <geometry>   : adjust position relative to mouse pointer.",
 "-debug                 : puts you in synchronous mode.",
 "-patchlevel            : print out your current patchlevel.",
-"-wander      : Neko wanders on their own, not reacting to your cursor",
 "-wander-min-wait <seconds>    : set minimal idle time between walks in wander mode (default: 10)",
 "-wander-max-wait <seconds>    : set maximum idle time between walks in wander mode (default: 200)",
 NULL };
@@ -1536,8 +1185,6 @@ GetArguments(argc, argv, theDisplayName)
     char	*theDisplayName;
 {
   int		ArgCounter;
-  int    result,foo,bar;
-  extern int XOffset,YOffset;
   int loop,found=0;
 
   theDisplayName[0] = '\0';
@@ -1575,15 +1222,6 @@ GetArguments(argc, argv, theDisplayName)
 	exit(1);
       }
     }
-    else if (strcmp(argv[ArgCounter], "-idle") == 0) {
-      ArgCounter++;
-      if (ArgCounter < argc) {
-	IdleSpace = atol(argv[ArgCounter]);
-      } else {
-	fprintf(stderr, "%s: -idle option error.\n", ProgramName);
-	exit(1);
-      }
-    }
     else if (strcmp(argv[ArgCounter], "-name") == 0) {
       ArgCounter++;
       if (ArgCounter < argc) {
@@ -1592,25 +1230,6 @@ GetArguments(argc, argv, theDisplayName)
 	fprintf(stderr, "%s: -name option error.\n", ProgramName);
 	exit(1);
       }
-    }
-    else if (strcmp(argv[ArgCounter], "-towindow") == 0) {
-      ToWindow = True;
-      ToFocus = False;
-    }
-    else if (strcmp(argv[ArgCounter], "-toname") == 0) {
-      ArgCounter++;
-      if (ArgCounter < argc) {
-	TargetName = argv[ArgCounter];
-	ToWindow = True;
-	ToFocus = False;
-      } else {
-	fprintf(stderr, "%s: -toname option error.\n", ProgramName);
-	exit(1);
-      }
-    }
-    else if (strcmp(argv[ArgCounter], "-tofocus") == 0) {
-      ToFocus = True;
-      ToWindow = False;
     }
     else if ((strcmp(argv[ArgCounter], "-fg") == 0) ||
 	     (strcmp(argv[ArgCounter], "-foreground") == 0)) {
@@ -1628,18 +1247,11 @@ GetArguments(argc, argv, theDisplayName)
     else if (strcmp(argv[ArgCounter], "-noshape") == 0) {
       NoShape = True;
     }
-    else if (strcmp(argv[ArgCounter], "-position") == 0) {
-      ArgCounter++;
-      result=XParseGeometry(argv[ArgCounter],&XOffset,&YOffset,&foo,&bar);
-    }
     else if (strcmp(argv[ArgCounter], "-debug") ==0) {
       Synchronous = True;
     }
     else if (strcmp(argv[ArgCounter], "-patchlevel") == 0) {
       fprintf(stderr,"Patchlevel :%s\n",PATCHLEVEL);
-    }
-    else if (strcmp(argv[ArgCounter], "-wander") == 0) {
-      Wander = 1;
     }
     else if (strcmp(argv[ArgCounter], "-wander-min-wait") == 0) {
       ArgCounter++;
@@ -1661,8 +1273,7 @@ GetArguments(argc, argv, theDisplayName)
     }
     else {
       char *av = argv[ArgCounter] + 1;
-      if (strcmp(av, "bsd") == 0)
-	av = "bsd_daemon";
+      found = 0;
       for (loop=0;loop<BITMAPTYPES;loop++) {
 	if (strcmp(av,AnimalDefaultsDataTable[loop].name)==0)
 	  {NekoMoyou = loop;found=1;}
