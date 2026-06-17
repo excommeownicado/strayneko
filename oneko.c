@@ -69,11 +69,8 @@ int	NekoTickCount;		/* 猫動作カウンタ */
 int	NekoStateCount;		/* 猫同一状態カウンタ */
 int	NekoState;		/* 猫の状態 */
 
-int	MouseX;			/* マウスＸ座標 */
-int	MouseY;			/* マウスＹ座標 */
-
-int TargetX = 2240;
-int TargetY = 540;
+int TargetX;
+int TargetY;
 
 int Waiting = 0;
 time_t NextMoveTime = 0;
@@ -82,10 +79,7 @@ int Zoomies = 0;
 time_t ZoomiesEndTime = 0;
 
 int MinWait = 20;
-int MaxWait = 100;
-
-int	PrevMouseX = 0;		/* 直前のマウスＸ座標 */
-int	PrevMouseY = 0;		/* 直前のマウスＹ座標 */
+int MaxWait = 150;
 
 int	NekoX;			/* 猫Ｘ座標 */
 int	NekoY;			/* 猫Ｙ座標 */
@@ -784,85 +778,105 @@ CalcDxDy()
     double DoubleLength, Length;
 
     if (Zoomies && time(NULL) > ZoomiesEndTime) {
-      Zoomies = 0;
+        Zoomies = 0;
     }
 
     if (Waiting) {
-      if (time(NULL) < NextMoveTime) {
+        if (time(NULL) < NextMoveTime) {
+            NekoMoveDx = 0;
+            NekoMoveDy = 0;
+            return;
+        }
+
+        Waiting = 0;
+
+        if (Zoomies) {
+            TargetX = rand() % WindowWidth;
+            TargetY = rand() % WindowHeight;
+        } else {
+            if (rand() % 100 < 70) {
+                TargetX = NekoX + (rand() % 601 - 300);
+                TargetY = NekoY + (rand() % 601 - 300);
+            } else {
+                TargetX = rand() % WindowWidth;
+                TargetY = rand() % WindowHeight;
+            }
+
+            if (rand() % 100 < 15) {
+                TargetX = NekoX;
+                TargetY = NekoY;
+            }
+        }
+
+        if (!Zoomies && rand() % 100 < 5) {
+            Zoomies = 1;
+            ZoomiesEndTime = time(NULL) + 50;
+        }
+
+        if (TargetX < 0)
+            TargetX = 0;
+        if (TargetX > (int)WindowWidth)
+            TargetX = WindowWidth;
+
+        if (TargetY < 0)
+            TargetY = 0;
+        if (TargetY > (int)WindowHeight)
+            TargetY = WindowHeight;
+    }
+
+    if (!Waiting &&
+        abs(NekoX - TargetX) < 40 &&
+        abs(NekoY - TargetY) < 40)
+    {
+        int distance =
+            abs(TargetX - NekoX) +
+            abs(TargetY - NekoY);
+
+        double factor;
+        int delay;
+
+        Waiting = 1;
+
+        if (distance < 300)
+            factor = 0.5;
+        else if (distance < 1000)
+            factor = 1.0;
+        else
+            factor = 2.0;
+
+        delay =
+            (int)((MinWait +
+            rand() % (MaxWait - MinWait + 1))
+            * factor);
+
+        if (Zoomies)
+            delay = 1 + rand() % 3;
+
+        NextMoveTime = time(NULL) + delay;
+
         NekoMoveDx = 0;
         NekoMoveDy = 0;
         return;
-      }
-
-      Waiting = 0;
-
-      if (Zoomies) {
-        TargetX = rand() % WindowWidth;
-        TargetY = rand() % WindowHeight;
-      } else {
-        if (rand() % 100 < 70) {
-          TargetX = NekoX + (rand() % 601 - 300);
-          TargetY = NekoY + (rand() % 601 - 300);
-        } else {
-          TargetX = rand() % WindowWidth;
-          TargetY = rand() % WindowHeight;
-        }
-        if (rand() % 100 < 15) {
-          TargetX = NekoX;
-          TargetY = NekoY;
-        }
-      }
-
-      if (!Zoomies && rand() % 100 < 5) {
-        Zoomies = 1;
-        ZoomiesEndTime = time(NULL) + 20;
-      }
-
-      if (TargetX < 0) TargetX = 0;
-      if (TargetX > (int)WindowWidth) TargetX = WindowWidth;
-      if (TargetY < 0) TargetY = 0;
-      if (TargetY > (int)WindowHeight) TargetY = WindowHeight;
     }
 
-    MouseX = TargetX;
-    MouseY = TargetY;
-
-    LargeX = (double)(MouseX - NekoX - BITMAP_WIDTH / 2);
-    LargeY = (double)(MouseY - NekoY - BITMAP_HEIGHT);
-
-    if (!Waiting && abs(NekoX - TargetX) < 40 && abs(NekoY - TargetY) < 40) {
-      int distance = abs(TargetX - NekoX) + abs(TargetY - NekoY);
-      double factor;
-      int delay;
-
-      Waiting = 1;
-
-      if (distance < 300) factor = 0.5;
-      else if (distance < 1000) factor = 1.0;
-      else factor = 2.0;
-
-      delay = (int)((MinWait + rand() % (MaxWait - MinWait + 1)) * factor);
-      if (Zoomies) delay = 1 + rand() % 3;
-
-      NextMoveTime = time(NULL) + delay;
-      NekoMoveDx = 0;
-      NekoMoveDy = 0;
-      return;
-    }
+    LargeX = (double)(TargetX - NekoX - BITMAP_WIDTH / 2);
+    LargeY = (double)(TargetY - NekoY - BITMAP_HEIGHT);
 
     DoubleLength = LargeX * LargeX + LargeY * LargeY;
 
-    if (DoubleLength != (double)0) {
-      Length = sqrt(DoubleLength);
-      if (Length <= NekoSpeed) {
-        NekoMoveDx = (int)LargeX;
-        NekoMoveDy = (int)LargeY;
-      } else {
-        NekoMoveDx = (int)((NekoSpeed * LargeX) / Length);
-        NekoMoveDy = (int)((NekoSpeed * LargeY) / Length);
-      }
+    if (DoubleLength != 0.0) {
+        Length = sqrt(DoubleLength);
+
+        if (Length <= NekoSpeed) {
+            NekoMoveDx = (int)LargeX;
+            NekoMoveDy = (int)LargeY;
+        } else {
+            NekoMoveDx = (int)((NekoSpeed * LargeX) / Length);
+            NekoMoveDy = (int)((NekoSpeed * LargeY) / Length);
+        }
     } else {
-      NekoMoveDx = NekoMoveDy = 0;
+        NekoMoveDx = 0;
+        NekoMoveDy = 0;
     }
 }
 
@@ -1144,17 +1158,17 @@ NekoErrorHandler(dpy, err)
 char	*message[] = {
 "",
 "Options are:",
-"-display <display>	: Neko appears on specified display.",
-"-fg <color>		: Foreground color",
-"-bg <color>		: Background color",
-"-speed <dots>",
-"-time <microseconds>",
-"-name <name>		: set window name of neko.",
-"-rv			: Reverse video. (effects monochrome display only)",
-"-debug                 : puts you in synchronous mode.",
-"-patchlevel            : print out your current patchlevel.",
-"-wander-min-wait <seconds>    : set minimal idle time between walks in wander mode (default: 10)",
-"-wander-max-wait <seconds>    : set maximum idle time between walks in wander mode (default: 200)",
+"--display <display>	: neko appears on specified display.",
+"--fg <color>		: foreground color",
+"--bg <color>		: background color",
+"--speed <dots>",
+"--time <microseconds>",
+"--name <name>		: set window name of neko.",
+"--rv			: reverse video. (effects monochrome display only)",
+"--debug			: puts you in synchronous mode.",
+"--patchlevel		: print out your current patchlevel.",
+"--min-wait <seconds>	: set minimum idle time between walks (default: 20)",
+"--max-wait <seconds>	: set maximum idle time between walks (default: 150)",
 NULL };
 
 void
@@ -1170,7 +1184,7 @@ Usage()
     mptr++;
   }
   for (loop=0;loop<BITMAPTYPES;loop++)
-    fprintf(stderr,"-%s Use %s bitmaps\n",AnimalDefaultsDataTable[loop].name,AnimalDefaultsDataTable[loop].name);
+    fprintf(stderr,"--%s 			: use %s bitmaps\n",AnimalDefaultsDataTable[loop].name,AnimalDefaultsDataTable[loop].name);
 }
 
 
@@ -1191,83 +1205,83 @@ GetArguments(argc, argv, theDisplayName)
 
   for (ArgCounter = 0; ArgCounter < argc; ArgCounter++) {
 
-    if (strncmp(argv[ArgCounter], "-h", 2) == 0) {
+    if (strncmp(argv[ArgCounter], "--h", 2) == 0) {
       Usage();
       exit(0);
     }
-    if (strcmp(argv[ArgCounter], "-display") == 0) {
+    if (strcmp(argv[ArgCounter], "--display") == 0) {
       ArgCounter++;
       if (ArgCounter < argc) {
 	strcpy(theDisplayName, argv[ArgCounter]);
       } else {
-	fprintf(stderr, "%s: -display option error.\n", ProgramName);
+	fprintf(stderr, "%s: --display option error.\n", ProgramName);
 	exit(1);
       }
     }
-    else if (strcmp(argv[ArgCounter], "-speed") == 0) {
+    else if (strcmp(argv[ArgCounter], "--speed") == 0) {
       ArgCounter++;
       if (ArgCounter < argc) {
 	NekoSpeed = atof(argv[ArgCounter]);
       } else {
-	fprintf(stderr, "%s: -speed option error.\n", ProgramName);
+	fprintf(stderr, "%s: --speed option error.\n", ProgramName);
 	exit(1);
       }
     }
-    else if (strcmp(argv[ArgCounter], "-time") == 0) {
+    else if (strcmp(argv[ArgCounter], "--time") == 0) {
       ArgCounter++;
       if (ArgCounter < argc) {
 	IntervalTime = atol(argv[ArgCounter]);
       } else {
-	fprintf(stderr, "%s: -time option error.\n", ProgramName);
+	fprintf(stderr, "%s: --time option error.\n", ProgramName);
 	exit(1);
       }
     }
-    else if (strcmp(argv[ArgCounter], "-name") == 0) {
+    else if (strcmp(argv[ArgCounter], "--name") == 0) {
       ArgCounter++;
       if (ArgCounter < argc) {
 	WindowName = argv[ArgCounter];
       } else {
-	fprintf(stderr, "%s: -name option error.\n", ProgramName);
+	fprintf(stderr, "%s: --name option error.\n", ProgramName);
 	exit(1);
       }
     }
-    else if ((strcmp(argv[ArgCounter], "-fg") == 0) ||
-	     (strcmp(argv[ArgCounter], "-foreground") == 0)) {
+    else if ((strcmp(argv[ArgCounter], "--fg") == 0) ||
+	     (strcmp(argv[ArgCounter], "--foreground") == 0)) {
       ArgCounter++;
       Foreground = argv[ArgCounter];
 	     }
-    else if ((strcmp(argv[ArgCounter], "-bg") == 0) ||
-	     (strcmp(argv[ArgCounter], "-background") == 0)) {
+    else if ((strcmp(argv[ArgCounter], "--bg") == 0) ||
+	     (strcmp(argv[ArgCounter], "--background") == 0)) {
       ArgCounter++;
       Background = argv[ArgCounter];
 	     }
-    else if (strcmp(argv[ArgCounter], "-rv") == 0) {
+    else if (strcmp(argv[ArgCounter], "--rv") == 0) {
       ReverseVideo = True;
     }
-    else if (strcmp(argv[ArgCounter], "-noshape") == 0) {
+    else if (strcmp(argv[ArgCounter], "--noshape") == 0) {
       NoShape = True;
     }
-    else if (strcmp(argv[ArgCounter], "-debug") ==0) {
+    else if (strcmp(argv[ArgCounter], "--debug") ==0) {
       Synchronous = True;
     }
-    else if (strcmp(argv[ArgCounter], "-patchlevel") == 0) {
+    else if (strcmp(argv[ArgCounter], "--patchlevel") == 0) {
       fprintf(stderr,"Patchlevel :%s\n",PATCHLEVEL);
     }
-    else if (strcmp(argv[ArgCounter], "-wander-min-wait") == 0) {
+    else if (strcmp(argv[ArgCounter], "--min-wait") == 0) {
       ArgCounter++;
       if (ArgCounter < argc) {
         MinWait = atoi(argv[ArgCounter]);
       } else {
-        fprintf(stderr, "%s: -wander-min-wait option error.\n", ProgramName);
+        fprintf(stderr, "%s: --min-wait option error.\n", ProgramName);
         exit(1);
       }
     }
-    else if (strcmp(argv[ArgCounter], "-wander-max-wait") == 0) {
+    else if (strcmp(argv[ArgCounter], "--max-wait") == 0) {
       ArgCounter++;
       if (ArgCounter < argc) {
         MaxWait = atoi(argv[ArgCounter]);
       } else {
-        fprintf(stderr, "%s: -wander-max-wait option error.\n", ProgramName);
+        fprintf(stderr, "%s: --max-wait option error.\n", ProgramName);
         exit(1);
       }
     }
