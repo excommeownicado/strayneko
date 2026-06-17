@@ -10,6 +10,8 @@ static char rcsid[] = "$Header: /home/sun/unix/kato/xsam/oneko/oneko.c,v 1.5 90/
 #include "oneko.h"
 #include "patchlevel.h"
 #include <time.h>
+#include <X11/extensions/Xrandr.h>
+
 /*
  *	グローバル変数
  */
@@ -22,9 +24,6 @@ int	theScreen;			/* スクリーン番号 */
 unsigned int	theDepth;		/* デプス */
 Window	theRoot;			/* ルートウィンドウのＩＤ */
 Window	theWindow;			/* 猫ウィンドウのＩＤ */
-char    *WindowName = NULL;		/* 猫ウィンドウの名前 */
-Window	theTarget = None;		/* 目標ウィンドウのＩＤ */
-char    *TargetName = NULL;		/* 目標ウィンドウの名前 */
 
 unsigned int	WindowWidth;		/* ルートウィンドウの幅 */
 unsigned int	WindowHeight;		/* ルートウィンドウの高さ */
@@ -68,6 +67,11 @@ Bool	DontMapped = True;
 int	NekoTickCount;		/* 猫動作カウンタ */
 int	NekoStateCount;		/* 猫同一状態カウンタ */
 int	NekoState;		/* 猫の状態 */
+
+XRRMonitorInfo *Monitors = NULL;
+int MonitorCount = 0;
+
+int RestrictMonitor = -1;
 
 int TargetX;
 int TargetY;
@@ -441,6 +445,25 @@ int SetupColors()
  */
 
 void
+InitMonitors()
+{
+    Window root;
+
+    root = RootWindow(
+        theDisplay,
+        DefaultScreen(theDisplay)
+    );
+
+    Monitors =
+        XRRGetMonitors(
+            theDisplay,
+            root,
+            True,
+            &MonitorCount
+        );
+}
+
+void
 InitScreen(DisplayName)
     char	*DisplayName;
 {
@@ -461,6 +484,8 @@ InitScreen(DisplayName)
     }
     exit(1);
   }
+
+  InitMonitors();
 
   GetResources();
 
@@ -499,9 +524,6 @@ InitScreen(DisplayName)
 			    BITMAP_WIDTH, BITMAP_HEIGHT,
 			    0, theDepth, InputOutput, CopyFromParent,
 			    theWindowMask, &theWindowAttributes);
-
-  if (WindowName == NULL) WindowName = ProgramName;
-  XStoreName(theDisplay, theWindow, WindowName);
 
   InitBitmapAndGCs();
 
@@ -772,6 +794,83 @@ IsNekoMoveStart()
  */
 
 void
+PickRandomTarget()
+{
+    int m;
+
+    if (MonitorCount <= 0) {
+        TargetX = rand() % WindowWidth;
+        TargetY = rand() % WindowHeight;
+        return;
+    }
+
+    if (RestrictMonitor >= 0 &&
+      RestrictMonitor < MonitorCount)
+    {
+      m = RestrictMonitor;
+    }
+    else
+    {
+      m = rand() % MonitorCount;
+    }
+
+    TargetX =
+      Monitors[m].x +
+      rand() % (Monitors[m].width - BITMAP_WIDTH);
+
+    TargetY =
+      Monitors[m].y +
+      rand() % (Monitors[m].height - BITMAP_HEIGHT);
+}
+
+int
+PointOnMonitor(int x, int y)
+{
+    int i;
+
+    if (RestrictMonitor >= 0 &&
+        RestrictMonitor < MonitorCount)
+    {
+        i = RestrictMonitor;
+
+        return
+            x >= Monitors[i].x &&
+            x < Monitors[i].x + Monitors[i].width &&
+            y >= Monitors[i].y &&
+            y < Monitors[i].y + Monitors[i].height;
+    }
+
+    for (i = 0; i < MonitorCount; i++)
+    {
+        if (x >= Monitors[i].x &&
+            x < Monitors[i].x + Monitors[i].width &&
+            y >= Monitors[i].y &&
+            y < Monitors[i].y + Monitors[i].height)
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+void
+PickNearbyTarget(int radius)
+{
+    int x, y;
+
+    do
+    {
+        x = NekoX + (rand() % (radius * 2 + 1) - radius);
+        y = NekoY + (rand() % (radius * 2 + 1) - radius);
+    }
+    while (!PointOnMonitor(x, y));
+
+    TargetX = x;
+    TargetY = y;
+}
+
+void
 CalcDxDy()
 {
     double LargeX, LargeY;
@@ -791,15 +890,12 @@ CalcDxDy()
         Waiting = 0;
 
         if (Zoomies) {
-            TargetX = rand() % WindowWidth;
-            TargetY = rand() % WindowHeight;
+            PickRandomTarget();
         } else {
             if (rand() % 100 < 70) {
-                TargetX = NekoX + (rand() % 601 - 300);
-                TargetY = NekoY + (rand() % 601 - 300);
+                PickNearbyTarget(300);
             } else {
-                TargetX = rand() % WindowWidth;
-                TargetY = rand() % WindowHeight;
+                PickRandomTarget();
             }
 
             if (rand() % 100 < 15) {
@@ -1092,13 +1188,14 @@ ProcessNeko()
 
   /* 猫の初期化 */
 
-  NekoX = (WindowWidth - BITMAP_WIDTH / 2) / 2;
-  NekoY = (WindowHeight - BITMAP_HEIGHT / 2) / 2;
+  PickRandomTarget();
+
+  NekoX = TargetX;
+  NekoY = TargetY;
 
   NekoLastX = NekoX;
   NekoLastY = NekoY;
-  TargetX = NekoX;
-  TargetY = NekoY;
+
   Waiting = 1;
   NextMoveTime = time(NULL);
 
@@ -1158,15 +1255,12 @@ NekoErrorHandler(dpy, err)
 char	*message[] = {
 "",
 "Options are:",
-"--display <display>	: neko appears on specified display.",
+"--monitor <number>	: neko appears on specified monitor",
 "--fg <color>		: foreground color",
 "--bg <color>		: background color",
 "--speed <dots>",
 "--time <microseconds>",
 "--name <name>		: set window name of neko.",
-"--rv			: reverse video. (effects monochrome display only)",
-"--debug			: puts you in synchronous mode.",
-"--patchlevel		: print out your current patchlevel.",
 "--min-wait <seconds>	: set minimum idle time between walks (default: 20)",
 "--max-wait <seconds>	: set maximum idle time between walks (default: 150)",
 NULL };
@@ -1205,17 +1299,19 @@ GetArguments(argc, argv, theDisplayName)
 
   for (ArgCounter = 0; ArgCounter < argc; ArgCounter++) {
 
-    if (strncmp(argv[ArgCounter], "--h", 2) == 0) {
-      Usage();
-      exit(0);
+    if (strcmp(argv[ArgCounter], "--help") == 0 ||
+        strcmp(argv[ArgCounter], "-h") == 0)
+    {
+        Usage();
+        exit(0);
     }
-    if (strcmp(argv[ArgCounter], "--display") == 0) {
+    else if (strcmp(argv[ArgCounter], "--monitor") == 0)
+    {
       ArgCounter++;
-      if (ArgCounter < argc) {
-	strcpy(theDisplayName, argv[ArgCounter]);
-      } else {
-	fprintf(stderr, "%s: --display option error.\n", ProgramName);
-	exit(1);
+
+      if (ArgCounter < argc)
+      {
+        RestrictMonitor = atoi(argv[ArgCounter]);
       }
     }
     else if (strcmp(argv[ArgCounter], "--speed") == 0) {
@@ -1236,15 +1332,6 @@ GetArguments(argc, argv, theDisplayName)
 	exit(1);
       }
     }
-    else if (strcmp(argv[ArgCounter], "--name") == 0) {
-      ArgCounter++;
-      if (ArgCounter < argc) {
-	WindowName = argv[ArgCounter];
-      } else {
-	fprintf(stderr, "%s: --name option error.\n", ProgramName);
-	exit(1);
-      }
-    }
     else if ((strcmp(argv[ArgCounter], "--fg") == 0) ||
 	     (strcmp(argv[ArgCounter], "--foreground") == 0)) {
       ArgCounter++;
@@ -1255,17 +1342,8 @@ GetArguments(argc, argv, theDisplayName)
       ArgCounter++;
       Background = argv[ArgCounter];
 	     }
-    else if (strcmp(argv[ArgCounter], "--rv") == 0) {
-      ReverseVideo = True;
-    }
     else if (strcmp(argv[ArgCounter], "--noshape") == 0) {
       NoShape = True;
-    }
-    else if (strcmp(argv[ArgCounter], "--debug") ==0) {
-      Synchronous = True;
-    }
-    else if (strcmp(argv[ArgCounter], "--patchlevel") == 0) {
-      fprintf(stderr,"Patchlevel :%s\n",PATCHLEVEL);
     }
     else if (strcmp(argv[ArgCounter], "--min-wait") == 0) {
       ArgCounter++;

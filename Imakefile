@@ -2,7 +2,7 @@
              CC = cc
 
   SYS_LIBRARIES = MathLibrary
-LOCAL_LIBRARIES = $(XLIB)
+LOCAL_LIBRARIES = $(XLIB) -lXrandr
         DEPLIBS = $(DEPXLIB)
         DEFINES = -DSHAPE
 
