@@ -29,11 +29,13 @@
 
 #include "bitmaps/neko/neko.include"
 #include "bitmaps/dog/dog.include"
+#include "bitmaps/bed/bed.include"
 
 /* These are the bitmasks that allow the use of the shape extension. */
 
 #include "bitmasks/neko/neko.mask.include"
 #include "bitmasks/dog/dog.mask.include"
+#include "bitmasks/bed/bed.mask.include"
 
 /*
  *	定数定義

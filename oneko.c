@@ -25,6 +25,12 @@ unsigned int	theDepth;		/* デプス */
 Window	theRoot;			/* ルートウィンドウのＩＤ */
 Window	theWindow;			/* 猫ウィンドウのＩＤ */
 
+Window BedWindow;
+
+GC BedGC;
+Pixmap BedPixmap;
+Pixmap BedMask;
+
 unsigned int	WindowWidth;		/* ルートウィンドウの幅 */
 unsigned int	WindowHeight;		/* ルートウィンドウの高さ */
 
@@ -75,6 +81,15 @@ int RestrictMonitor = -1;
 
 int TargetX;
 int TargetY;
+
+int BedX = 500;
+int BedY = 500;
+
+int GoingToBed;
+
+int DraggingBed = 0;
+int DragOffsetX = 0;
+int DragOffsetY = 0;
 
 int Waiting = 0;
 time_t NextMoveTime = 0;
@@ -524,13 +539,83 @@ InitScreen(DisplayName)
 			    BITMAP_WIDTH, BITMAP_HEIGHT,
 			    0, theDepth, InputOutput, CopyFromParent,
 			    theWindowMask, &theWindowAttributes);
+  BedWindow = XCreateWindow(theDisplay, theRoot, BedX, BedY,
+          BITMAP_WIDTH, BITMAP_HEIGHT,
+          0, theDepth, InputOutput, CopyFromParent,
+          theWindowMask, &theWindowAttributes);
 
   InitBitmapAndGCs();
+
+  BedPixmap = XCreateBitmapFromData(
+    theDisplay,
+    theRoot,
+    bed_bits,
+    bed_width,
+    bed_height
+  );
+
+  BedMask = XCreateBitmapFromData(
+    theDisplay,
+    theRoot,
+    bed_mask_bits,
+    bed_mask_width,
+    bed_mask_height
+  );
+
+  #ifdef SHAPE
+  XShapeCombineMask(
+    theDisplay,
+    BedWindow,
+    ShapeBounding,
+    0,
+    0,
+    BedMask,
+    ShapeSet
+  );
+  #endif
+
+  BedGC = XCreateGC(
+    theDisplay,
+    theRoot,
+    0,
+    NULL
+  );
+
+  XSetForeground(
+    theDisplay,
+    BedGC,
+    theForegroundColor.pixel
+  );
+
+  XSetBackground(
+    theDisplay,
+    BedGC,
+    theBackgroundColor.pixel
+  );
+
+  XSetStipple(
+    theDisplay,
+    BedGC,
+    BedPixmap
+  );
+
+  XSetFillStyle(
+    theDisplay,
+    BedGC,
+    FillOpaqueStippled
+  );
 
   XSelectInput(theDisplay, theWindow, 
 	       ExposureMask|VisibilityChangeMask|KeyPressMask);
 
+  XSelectInput(theDisplay, BedWindow,
+    ExposureMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
+
   XFlush(theDisplay);
+  XMapWindow(theDisplay, BedWindow);
+  XFillRectangle(
+    theDisplay, BedWindow, BedGC, 0, 0,
+    BITMAP_WIDTH, BITMAP_HEIGHT);
 }
 
 
@@ -881,6 +966,7 @@ CalcDxDy()
     }
 
     if (Waiting) {
+
         if (time(NULL) < NextMoveTime) {
             NekoMoveDx = 0;
             NekoMoveDy = 0;
@@ -889,61 +975,70 @@ CalcDxDy()
 
         Waiting = 0;
 
+        GoingToBed = 0;
+
         if (Zoomies) {
             PickRandomTarget();
         } else {
-            if (rand() % 100 < 70) {
+            int r = rand() % 100;
+
+            if (r < 15)
+            {
+                TargetX = BedX + 16;
+                TargetY = BedY + 32;
+                GoingToBed = 1;
+            }
+            else if (r < 55)
+            {
                 PickNearbyTarget(300);
-            } else {
+            }
+            else if (r < 85)
+            {
                 PickRandomTarget();
             }
-
-            if (rand() % 100 < 15) {
+            else
+            {
                 TargetX = NekoX;
                 TargetY = NekoY;
             }
         }
 
-        if (!Zoomies && rand() % 100 < 5) {
+        if (!Zoomies && rand() % 100 < 50) {
             Zoomies = 1;
             ZoomiesEndTime = time(NULL) + 50;
         }
 
-        if (TargetX < 0)
-            TargetX = 0;
+        if (TargetY < BITMAP_HEIGHT)
+            TargetY = BITMAP_HEIGHT;
         if (TargetX > (int)WindowWidth)
             TargetX = WindowWidth;
 
-        if (TargetY < 0)
-            TargetY = 0;
+        if (TargetY < BITMAP_HEIGHT)
+            TargetY = BITMAP_HEIGHT;
         if (TargetY > (int)WindowHeight)
             TargetY = WindowHeight;
     }
 
+    int ReachDistance = 2;
+
     if (!Waiting &&
-        abs(NekoX - TargetX) < 40 &&
-        abs(NekoY - TargetY) < 40)
+        abs(TargetX - NekoX - BITMAP_WIDTH / 2) < ReachDistance &&
+        abs(TargetY - NekoY - BITMAP_HEIGHT) < ReachDistance)
     {
-        int distance =
-            abs(TargetX - NekoX) +
-            abs(TargetY - NekoY);
 
         double factor;
         int delay;
 
         Waiting = 1;
 
-        if (distance < 300)
-            factor = 0.5;
-        else if (distance < 1000)
-            factor = 1.0;
-        else
-            factor = 2.0;
-
         delay =
             (int)((MinWait +
-            rand() % (MaxWait - MinWait + 1))
-            * factor);
+            rand() % (MaxWait - MinWait + 1)));
+
+        if (GoingToBed)
+        {
+            delay *= 2;
+        }
 
         if (Zoomies)
             delay = 1 + rand() % 3;
@@ -1167,6 +1262,44 @@ ProcessEvent()
 	      XRaiseWindow(theDisplay,theWindow);
 	      RaiseWindowDelay=DEFAULT_RAISE_WAIT;
 	    } 
+  case ButtonPress:
+    if (theEvent.xbutton.window == BedWindow &&
+        theEvent.xbutton.button == Button1)
+    {
+        DraggingBed = 1;
+
+        DragOffsetX = theEvent.xbutton.x;
+        DragOffsetY = theEvent.xbutton.y;
+    }
+    break;
+  case MotionNotify:
+    while (XCheckTypedEvent(
+        theDisplay,
+        MotionNotify,
+        &theEvent))
+    {
+        ;
+    }
+
+    if (DraggingBed)
+    {
+        BedX = theEvent.xmotion.x_root - DragOffsetX;
+        BedY = theEvent.xmotion.y_root - DragOffsetY;
+
+        XMoveWindow(
+            theDisplay,
+            BedWindow,
+            BedX,
+            BedY
+        );
+    }
+    break;
+  case ButtonRelease:
+    if (theEvent.xbutton.button == Button1)
+    {
+        DraggingBed = 0;
+    }
+    break;
 	default:
 	    /* Unknown Event */
 	    break;
