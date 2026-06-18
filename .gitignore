@@ -1,0 +1,6 @@
+# build artifacts
+oneko
+*.o
+
+# imake/xmkmf
+Makefile
