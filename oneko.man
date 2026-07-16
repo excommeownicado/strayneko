@@ -1,55 +1,45 @@
 .TH ONEKO 6
 .SH NAME oneko
-The program oneko creates a cute cat chasing around your mouse cursor.
+oneko displays a cat that wanders around the desktop on its own.
 .SH SYNOPSIS
 .B oneko
-[\fB-help\fP] [\fB-time\fP \fIn\fP] [\fB-speed\fP \fIn\fP]
-[\fB-rv\fP] [\fB-noshape\fP] [\fB-fg\fP] [\fB-bg\fP]
+[\fB--help\fP] [\fB--monitor\fP \fIn\fP] [\fB--time\fP \fIn\fP]
+[\fB--speed\fP \fIn\fP] [\fB--min-wait\fP \fIn\fP]
+[\fB--max-wait\fP \fIn\fP] [\fB--bed\fP]
 .SH DESCRIPTION
 .I oneko
-changes your mouse cursor into mouse and creates a little cute cat and the
-cat start chasing around your mouse cursor.  If the cat catchup the ``mouse'',
-start sleeping.
+creates a small desktop pet. The cat alternates between waiting, wandering,
+sleeping, and occasional zoomies. It does not follow the mouse cursor.
 .SS Options
 .TP
-.B -help
+.B --help
 Prints help message on usage.
 .TP
-.B -dog
-Runs a dog instead of a cat.
+.B --bed
+Shows a draggable bed that the cat may occasionally visit.
 .TP
-.BI \-time " interval"
-Sets interval timer which determine intervals for cat animation.
-Default value is 125000 and unit is micro-second.  Smaller value makes cat
-run faster.
+.BI --monitor " number"
+Restricts the cat and bed to the specified XRandR monitor.
 .TP
-.BI \-speed " distance"
-Specify the distance where cat jumps at one move in dot resolution.
-Default is 16.
+.BI --time " microseconds"
+Sets the animation interval. The default is 125000 microseconds.
 .TP
-.BI \-name " name"
-Specify the window name of cat.
+.BI --speed " pixels"
+Sets the maximum distance moved in one animation tick. The default is 13.
 .TP
-.BI \-toname " name"
-Specify the window name of target to make cat chase it instead of
-mouse.
-You can specify another running
-.I oneko
-as the target window.
-When the target window is not in sight and not closed, cat chases
-mouse as usually.
-If the target window is closed, this program exit.
+.BI --min-wait " seconds"
+Sets the minimum idle time between walks.
 .TP
-.B -rv
-Reverse background color and foreground color.
+.BI --max-wait " seconds"
+Sets the maximum idle time between walks.
 .TP
-.B -noshape
+.B --noshape
 Don't use SHAPE extension.
 .TP
-.BI \-fg " color"
+.BI --fg " color"
 Foreground color.
 .TP
-.BI \-bg " color"
+.BI --bg " color"
 Background color.
 .SS Resources
 Application name is "neko" and class name is "Oneko".
@@ -59,15 +49,8 @@ Sets interval timer in micro-second.
 .TP
 .B speed
 Sets distance to jump in pixel.
-.TP
-.B idle
-Sets speed threshold to wake cat up when ``mouse'' running away.
-.TP
 .B noshape
 Set ``True'' if you don't want to use SHAPE extension.
-.TP
-.B reverse
-Set ``True'' if you want to switch foreground and background color.
 .TP
 .B foreground
 Foreground color.

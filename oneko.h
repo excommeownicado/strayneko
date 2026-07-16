@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
+#include <limits.h>
 
 #include <signal.h>
 #include <math.h>
@@ -28,13 +30,11 @@
  */
 
 #include "bitmaps/neko/neko.include"
-#include "bitmaps/dog/dog.include"
 #include "bitmaps/bed/bed.include"
 
 /* These are the bitmasks that allow the use of the shape extension. */
 
 #include "bitmasks/neko/neko.mask.include"
-#include "bitmasks/dog/dog.mask.include"
 #include "bitmasks/bed/bed.mask.include"
 
 /*

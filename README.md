@@ -11,7 +11,7 @@ Unlike the original neko, this version doesn't feature mouse-chasing behavior an
 * Optional monitor restriction
 * Adjustable idle time between walks
 * Zoomies mode
-* Cat and dog sprites
+* Optional draggable bed (`--bed`)
 
 ## Building
 
@@ -25,6 +25,7 @@ sudo make install
 * `--monitor` – restricts neko to a specified monitor
 * `--min-wait` – sets the minimum idle time between walks
 * `--max-wait` – sets the maximum idle time between walks
+* `--bed` – shows a draggable bed that neko may occasionally visit
 
 <details>
 <summary>Usage examples</summary>
@@ -45,5 +46,4 @@ http://www.daidouji.com/oneko/
 
 > [!NOTE]
 > This repository is an unofficial fork and is not affiliated with the original authors.
-
 
