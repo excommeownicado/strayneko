@@ -155,6 +155,47 @@ FindMonitorFor(int x, int y)
     return -1;
 }
 
+static int
+GetTargetEdgeTogiState(void)
+{
+    int monitor;
+    int min_x, min_y, max_x, max_y;
+
+    if (MonitorCount <= 0) {
+        min_x = 0;
+        min_y = 0;
+        max_x = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 0;
+        max_y = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 0;
+    } else {
+        monitor = FindMonitorFor(TargetX, TargetY);
+        if (monitor < 0) {
+            monitor = FindMonitorFor(NekoX + BITMAP_WIDTH / 2, NekoY + BITMAP_HEIGHT / 2);
+        }
+        if (monitor < 0) {
+            monitor = 0;
+        }
+
+        min_x = Monitors[monitor].x;
+        min_y = Monitors[monitor].y;
+        max_x = Monitors[monitor].width > BITMAP_WIDTH ? Monitors[monitor].x + Monitors[monitor].width - BITMAP_WIDTH : Monitors[monitor].x;
+        max_y = Monitors[monitor].height > BITMAP_HEIGHT ? Monitors[monitor].y + Monitors[monitor].height - BITMAP_HEIGHT : Monitors[monitor].y;
+    }
+
+    if (TargetY == min_y) {
+        return NEKO_U_TOGI;
+    }
+    if (TargetY == max_y) {
+        return NEKO_D_TOGI;
+    }
+    if (TargetX == min_x) {
+        return NEKO_L_TOGI;
+    }
+    if (TargetX == max_x) {
+        return NEKO_R_TOGI;
+    }
+    return -1;
+}
+
 static void
 ClampTarget(void)
 {
@@ -610,6 +651,14 @@ NekoThinkDraw(void)
         }
         if (NekoStateCount < NEKO_STOP_TIME) {
             break;
+        }
+        {
+            int edgeState = GetTargetEdgeTogiState();
+            if (edgeState >= 0) {
+                DebugLog("NEKO_STOP: target at monitor edge, selecting state=%d\n", edgeState);
+                SetNekoState(edgeState);
+                break;
+            }
         }
         if (NekoMoveDx < 0 && NekoX <= 0) {
             SetNekoState(NEKO_L_TOGI);
