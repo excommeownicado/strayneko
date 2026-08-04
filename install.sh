@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PREFIX=/usr
+PREFIX_SET=false
 DESTDIR=
 ICON_DIR=share/icons/hicolor/scalable/apps
 DESKTOP_DIR=share/applications
@@ -43,7 +44,6 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
   esac
-  shift
 done
 
 if [[ $EUID -ne 0 && $PREFIX == "/usr" && $PREFIX_SET == false ]]; then
