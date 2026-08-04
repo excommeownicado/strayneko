@@ -185,6 +185,8 @@ void InitScreen(char *DisplayName);
 void RestoreCursor(void);
 void RestoreCursorHandler(int signum);
 void Interval(void);
+Bool LoadBedPosition(void);
+void SaveBedPosition(void);
 void TickCount(void);
 void SetNekoState(int SetValue);
 void DrawNeko(int x, int y, Animation DrawAnime);

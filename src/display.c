@@ -165,7 +165,9 @@ InitScreen(char *DisplayName)
                  &BorderWidth, &theDepth);
 
     if (UseBed) {
-        PlaceBedOnMonitor();
+        if (!LoadBedPosition() || !RectOnMonitor(BedX, BedY, bed_width, bed_height)) {
+            PlaceBedOnMonitor();
+        }
     }
 
     SetupColors();
@@ -322,6 +324,7 @@ ProcessEvent(void)
             if (UseBed && DraggingBed && theEvent.xbutton.button == Button1) {
                 DraggingBed = 0;
                 XUngrabPointer(theDisplay, theEvent.xbutton.time);
+                SaveBedPosition();
             }
             break;
         default:
