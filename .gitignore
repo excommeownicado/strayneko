@@ -1,8 +1,3 @@
-# build artifacts
-oneko
-*.o
-*.o.d
-
 # CMake / out-of-source build
 build/
 CMakeFiles/
@@ -10,9 +5,6 @@ CMakeCache.txt
 cmake_install.cmake
 cmake_install.*
 a.out
-
-# imake/xmkmf
-Makefile
 
 # Additional ignores
 # static/shared libs and archives

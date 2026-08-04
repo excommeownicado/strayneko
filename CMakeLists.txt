@@ -5,6 +5,20 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS OFF)
 
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+endif()
+set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
+
+option(ENABLE_DEBUG "Enable debug logging support" OFF)
+
+if(NOT CMAKE_C_FLAGS_DEBUG)
+    set(CMAKE_C_FLAGS_DEBUG "-g")
+endif()
+if(NOT CMAKE_C_FLAGS_RELEASE)
+    set(CMAKE_C_FLAGS_RELEASE "-O3")
+endif()
+
 include(GNUInstallDirs)
 
 find_package(X11 REQUIRED)

@@ -153,7 +153,12 @@ extern Bool UseBed;
 extern int DraggingBed;
 extern int DragOffsetX;
 extern int DragOffsetY;
+
+#ifdef ENABLE_DEBUG
 extern int DebugMode;
+#else
+#define DebugMode 0
+#endif
 
 extern int Waiting;
 extern time_t NextMoveTime;

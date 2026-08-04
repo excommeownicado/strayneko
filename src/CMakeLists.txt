@@ -16,6 +16,10 @@ target_compile_definitions(oneko PRIVATE
     SHAPE
 )
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR ENABLE_DEBUG)
+    target_compile_definitions(oneko PRIVATE ENABLE_DEBUG)
+endif()
+
 target_link_libraries(oneko PRIVATE
     ${X11_LIBRARIES}
     ${XRANDR_LIBRARY}

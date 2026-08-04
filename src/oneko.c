@@ -56,12 +56,31 @@ int DraggingBed = 0;
 int DragOffsetX = 0;
 int DragOffsetY = 0;
 
+#ifdef ENABLE_DEBUG
+int DebugMode = 0;
+
+static void
+DebugLog(const char *format, ...)
+{
+    va_list args;
+
+    if (!DebugMode) {
+        return;
+    }
+
+    va_start(args, format);
+    vfprintf(stderr, format, args);
+    va_end(args);
+}
+#else
+#define DebugLog(...) ((void)0)
+#endif
+
 int Waiting = 0;
 time_t NextMoveTime = 0;
 
 time_t ZoomiesEndTime = 0;
 int Zoomies = 0;
-int DebugMode = 0;
 
 int MinWait = 20;
 int MaxWait = 150;
@@ -115,27 +134,13 @@ Animation AnimationPattern[][2] = {
     { { &Right1GC, &Right1Msk }, { &Right2GC, &Right2Msk } },
     { { &UpLeft1GC, &UpLeft1Msk }, { &UpLeft2GC, &UpLeft2Msk } },
     { { &UpRight1GC, &UpRight1Msk }, { &UpRight2GC, &UpRight2Msk } },
-    { { &DownLeft1GC, &DownLeft2Msk }, { &DownLeft2GC, &DownLeft2Msk } },
-    { { &DownRight1GC, &DownRight2Msk }, { &DownRight2GC, &DownRight2Msk } },
+    { { &DownLeft1GC, &DownLeft1Msk }, { &DownLeft2GC, &DownLeft2Msk } },
+    { { &DownRight1GC, &DownRight1Msk }, { &DownRight2GC, &DownRight2Msk } },
     { { &UpTogi1GC, &UpTogi1Msk }, { &UpTogi2GC, &UpTogi2Msk } },
     { { &DownTogi1GC, &DownTogi1Msk }, { &DownTogi2GC, &DownTogi2Msk } },
     { { &LeftTogi1GC, &LeftTogi1Msk }, { &LeftTogi2GC, &LeftTogi2Msk } },
     { { &RightTogi1GC, &RightTogi1Msk }, { &RightTogi2GC, &RightTogi2Msk } },
 };
-
-static void
-DebugLog(const char *format, ...)
-{
-    va_list args;
-
-    if (!DebugMode) {
-        return;
-    }
-
-    va_start(args, format);
-    vfprintf(stderr, format, args);
-    va_end(args);
-}
 
 static int
 FindMonitorFor(int x, int y)

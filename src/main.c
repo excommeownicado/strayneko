@@ -32,7 +32,9 @@ static char *message[] = {
     "--min-wait <seconds>\t: set minimum idle time between walks (default: 20)",
     "--max-wait <seconds>\t: set maximum idle time between walks (default: 150)",
     "--bed\t\t\t: show a draggable bed",
+#ifdef ENABLE_DEBUG
     "--debug\t\t: enable debug log output to stderr",
+#endif
     NULL
 };
 
@@ -116,9 +118,11 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
             NoShape = True;
         } else if (strcmp(argv[ArgCounter], "--bed") == 0) {
             UseBed = True;
+#ifdef ENABLE_DEBUG
         } else if (strcmp(argv[ArgCounter], "--debug") == 0) {
             DebugMode = 1;
-            } else if (strcmp(argv[ArgCounter], "--force-target") == 0) {
+#endif
+        } else if (strcmp(argv[ArgCounter], "--force-target") == 0) {
                 ArgCounter++;
                 if (ArgCounter >= argc) {
                     fprintf(stderr, "%s: --force-target option error. Expected format x,y\n", ProgramName);
