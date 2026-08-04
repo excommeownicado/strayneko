@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir -p release
           cp build/src/strayneko release/
-          cp README.md LICENSE CREDITS release/
+          cp README.md LICENSE CREDITS strayneko.man release/
           cp install.sh release/ 2>/dev/null || true
           cp -r desktop release/
           tar -czf strayneko-${GITHUB_REF_NAME}-linux.tar.gz -C release .

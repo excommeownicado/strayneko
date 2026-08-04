@@ -5,6 +5,7 @@ PREFIX=/usr
 DESTDIR=
 ICON_DIR=share/icons/hicolor/scalable/apps
 DESKTOP_DIR=share/applications
+MAN_DIR=share/man/man6
 BINARY_NAME=strayneko
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -12,7 +13,7 @@ usage() {
   cat <<EOF
 Usage: $0 [--prefix PREFIX] [--destdir DESTDIR]
 
-Installs the strayneko binary, desktop launcher, and icon.
+Installs the release-ready strayneko binary, desktop launcher, icon, and man page.
 
 Options:
   --prefix PREFIX   Installation prefix (default: /usr)
@@ -44,16 +45,19 @@ while [[ $# -gt 0 ]]; do
 done
 
 install_bin() {
-  local src="$SCRIPT_DIR/build/$BINARY_NAME"
-  local dst="$DESTDIR${PREFIX}/bin/$BINARY_NAME"
+  local src="$SCRIPT_DIR/$BINARY_NAME"
+  if [[ ! -f "$src" ]]; then
+    src="$SCRIPT_DIR/build/$BINARY_NAME"
+  fi
 
   if [[ ! -f "$src" ]]; then
-    echo "Error: Built binary not found at $src" >&2
-    echo "Please run cmake --build build before installing." >&2
+    echo "Error: Binary not found in release package or build directory." >&2
+    echo "If you are using the repository, build it first with cmake --build build." >&2
     exit 1
   fi
 
   chmod +x "$src"
+  local dst="$DESTDIR${PREFIX}/bin/$BINARY_NAME"
   mkdir -p "$(dirname "$dst")"
   install -Dm755 "$src" "$dst"
 }
@@ -84,8 +88,18 @@ install_icon() {
   install -Dm644 "$src" "$dst"
 }
 
+install_man() {
+  local src="$SCRIPT_DIR/strayneko.man"
+  if [[ ! -f "$src" ]]; then
+    return
+  fi
+
+  local dst="$DESTDIR${PREFIX}/${MAN_DIR}/strayneko.man"
+  mkdir -p "$(dirname "$dst")"
+  install -Dm644 "$src" "$dst"
+}
+
 install_bin
 install_desktop
 install_icon
-
-echo "strayneko installed to ${DESTDIR}${PREFIX}"
+install_man
