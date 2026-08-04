@@ -35,7 +35,7 @@ jobs:
       - name: Package release artifact
         run: |
           mkdir -p release
-          cp build/strayneko release/
+          cp build/src/strayneko release/
           cp README.md LICENSE CREDITS release/
           cp install.sh release/ 2>/dev/null || true
           cp -r desktop release/
