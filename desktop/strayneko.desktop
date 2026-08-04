@@ -1,7 +1,7 @@
 [Desktop Entry]
 Categories=Game;
-Comment=A cat that chases around your cursor
-Exec=/usr/bin/strayneko
+Comment=A cat that wanders around your screen
+Exec=strayneko
 Icon=strayneko
 Name=strayneko
 NoDisplay=false
