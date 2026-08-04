@@ -69,9 +69,14 @@ CLAMP SCHOOL WEB CAMPUS (http://www.clamp.f-2.co.jp/).
 .SH AUTHOR
 Original
 .I xneko
-is written by Masayuki Koba and modified to 
+is written by Masayuki Koba and modified to
 .I oneko
 by Tatsuya Kato, and modified furthermore by John Lerchey, Eric
 Anderson, Toshihiro Kanda and Kiichiroh Mukose.
+.PP
+This repository is a fork by excommeownicado, who adapted and modernized
+the project while preserving the original authors' contributions.
 .SH MAINTAINER
-Send questions or problems to mukose@hbar.mp.es.osaka-u.ac.jp
+Fork maintainer: excommeownicado
+.PP
+Original maintainer: Send questions or problems to mukose@hbar.mp.es.osaka-u.ac.jp

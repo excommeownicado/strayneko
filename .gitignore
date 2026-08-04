@@ -4,3 +4,48 @@ oneko
 
 # imake/xmkmf
 Makefile
+
+# Additional ignores
+# static/shared libs and archives
+*.a
+*.so
+*.la
+
+# backup and swap files
+*~
+*.bak
+*.swp
+*.swo
+
+# editor/IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# temporary and logs
+*.tmp
+*.log
+
+# tags / cscope
+tags
+cscope.out
+cscope.*
+
+# autotools / configure
+configure
+config.log
+config.status
+Makefile.in
+aclocal.m4
+autom4te.cache/
+
+# coverage
+.coverage
+coverage/
+htmlcov/
+
+# core dumps
+core
+core.*

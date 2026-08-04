@@ -44,6 +44,16 @@ This project is based on oneko 1.2.sakura.5
 Original project:
 http://www.daidouji.com/oneko/
 
+Fork maintainer: excommeownicado
+
+## License
+
+This fork is released under the MIT License. See the LICENSE file for details.
+
+The original upstream code includes portions that are Public Domain; where
+applicable, original authors' public-domain notices are preserved in the
+source and credits.
+
 > [!NOTE]
 > This repository is an unofficial fork and is not affiliated with the original authors.
 

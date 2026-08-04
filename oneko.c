@@ -1,12 +1,22 @@
 /*
  *	oneko  -  X11 猫
+/*
+ * oneko - desktop pet for X11
+ *
+ * Fork: maintained and modernized by excommeownicado
+ * Based on oneko by Tatsuya Kato and original xneko by Masayuki Koba.
+ * Original maintainer/contact: Kiichiroh Mukose <mukose@hbar.mp.es.osaka-u.ac.jp>
+ *
+ * Licensing: this fork is released under the MIT License (see LICENSE).
+ * Portions of the original upstream work are Public Domain; original
+ * authors' public-domain notices are preserved where present.
  */
 
 #ifndef	lint
 static char rcsid[] = "$Header: /home/sun/unix/kato/xsam/oneko/oneko.c,v 1.5 90/10/19 21:25:16 kato Exp $";
 #endif
-
 #include <unistd.h>
+#include <signal.h>
 #include "oneko.h"
 #include "patchlevel.h"
 #include <time.h>
@@ -815,9 +825,12 @@ PickRandomTarget()
     int m;
 
     if (MonitorCount <= 0) {
-        TargetX = rand() % WindowWidth;
-        TargetY = rand() % WindowHeight;
-        return;
+      int width = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 1;
+      int height = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 1;
+
+      TargetX = rand() % (width + 1);
+      TargetY = rand() % (height + 1);
+      return;
     }
 
     if (RestrictMonitor >= 0 &&
@@ -960,6 +973,16 @@ CalcDxDy()
             Zoomies = 1;
             ZoomiesEndTime = time(NULL) + 50;
         }
+
+        if (TargetX < 0)
+          TargetX = 0;
+        if (TargetX > (int)WindowWidth - BITMAP_WIDTH)
+          TargetX = WindowWidth - BITMAP_WIDTH;
+
+        if (TargetY < 0)
+          TargetY = 0;
+        if (TargetY > (int)WindowHeight - BITMAP_HEIGHT)
+          TargetY = WindowHeight - BITMAP_HEIGHT;
 
     }
 
