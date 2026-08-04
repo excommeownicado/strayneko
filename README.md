@@ -13,13 +13,21 @@ Unlike the original neko, this version doesn't feature mouse-chasing behavior an
 * Zoomies mode
 * Optional draggable bed (`--bed`)
 
-## Building
+## Building with CMake
 
 ```bash
-xmkmf -a
-make
-sudo make install
+mkdir -p build
+cd build
+cmake ..
+cmake --build .
 ```
+
+To install:
+
+```bash
+sudo cmake --install .
+```
+
 ## Usage
 
 * `--monitor` – restricts neko to a specified monitor
