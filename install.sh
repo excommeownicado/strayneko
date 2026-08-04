@@ -16,7 +16,7 @@ Usage: $0 [--prefix PREFIX] [--destdir DESTDIR]
 Installs the release-ready strayneko binary, desktop launcher, icon, and man page.
 
 Options:
-  --prefix PREFIX   Installation prefix (default: /usr)
+  --prefix PREFIX   Installation prefix (default: /usr; without root falls back to ~/.local)
   --destdir DIR     Temporary staging directory for packaging.
   -h, --help        Show this help message.
 EOF
@@ -26,6 +26,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --prefix)
       PREFIX="$2"
+      PREFIX_SET=true
       shift 2
       ;;
     --destdir)
@@ -42,7 +43,15 @@ while [[ $# -gt 0 ]]; do
       exit 1
       ;;
   esac
+  shift
 done
+
+if [[ $EUID -ne 0 && $PREFIX == "/usr" && $PREFIX_SET == false ]]; then
+  PREFIX="$HOME/.local"
+  echo "No root privileges detected; installing to $PREFIX instead." >&2
+elif [[ $EUID -ne 0 && $PREFIX == "/usr" ]]; then
+  echo "Warning: not running as root; installing to $PREFIX may fail unless you have write access." >&2
+fi
 
 install_bin() {
   local candidates=(
