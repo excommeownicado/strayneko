@@ -96,6 +96,8 @@ install_desktop() {
 
   mkdir -p "$(dirname "$dst")"
   install -Dm644 "$src" "$dst"
+
+  sed -i "s|^Exec=.*|Exec=$PREFIX/bin/$BINARY_NAME|" "$dst"
 }
 
 install_icon() {
