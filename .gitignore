@@ -1,6 +1,15 @@
 # build artifacts
 oneko
 *.o
+*.o.d
+
+# CMake / out-of-source build
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+cmake_install.*
+a.out
 
 # imake/xmkmf
 Makefile
@@ -10,6 +19,7 @@ Makefile
 *.a
 *.so
 *.la
+*.dll
 
 # backup and swap files
 *~
@@ -27,6 +37,8 @@ Makefile
 # temporary and logs
 *.tmp
 *.log
+*.tar.gz
+*.zip
 
 # tags / cscope
 tags
