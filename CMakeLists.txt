@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(oneko VERSION 1.2 LANGUAGES C)
+project(strayneko VERSION 1.2 LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -35,4 +35,4 @@ endif()
 
 add_subdirectory(src)
 
-install(FILES oneko.man DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
+install(FILES strayneko.man DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)

@@ -1,13 +1,13 @@
-.TH ONEKO 6
-.SH NAME oneko
-oneko displays a cat that wanders around the desktop on its own.
+.TH STRAYNEKO 6
+.SH NAME strayneko
+strayneko displays a cat that wanders around the desktop on its own.
 .SH SYNOPSIS
-.B oneko
+.B strayneko
 [\fB--help\fP] [\fB--monitor\fP \fIn\fP] [\fB--time\fP \fIn\fP]
 [\fB--speed\fP \fIn\fP] [\fB--min-wait\fP \fIn\fP]
 [\fB--max-wait\fP \fIn\fP] [\fB--bed\fP]
 .SH DESCRIPTION
-.I oneko
+.I strayneko
 creates a small desktop pet. The cat alternates between waiting, wandering,
 sleeping, and occasional zoomies. It does not follow the mouse cursor.
 .SS Options
@@ -42,7 +42,7 @@ Foreground color.
 .BI --bg " color"
 Background color.
 .SS Resources
-Application name is "neko" and class name is "Oneko".
+Application name is "neko" and class name is "Strayneko".
 .TP
 .B time
 Sets interval timer in micro-second.

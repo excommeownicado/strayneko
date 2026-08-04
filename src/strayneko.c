@@ -1,7 +1,7 @@
-#include "oneko.h"
+#include "strayneko.h"
 #include <stdarg.h>
 
-char *ClassName = "Oneko";
+char *ClassName = "Strayneko";
 char *ProgramName;
 
 Display *theDisplay;

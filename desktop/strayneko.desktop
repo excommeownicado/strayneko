@@ -1,0 +1,15 @@
+[Desktop Entry]
+Categories=Game;
+Comment=A cat that chases around your cursor
+Exec=/usr/bin/strayneko
+Icon=strayneko
+Name=strayneko
+NoDisplay=false
+Path=
+PrefersNonDefaultGPU=false
+StartupNotify=true
+Terminal=false
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

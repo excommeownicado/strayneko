@@ -1,30 +1,30 @@
-add_executable(oneko
+add_executable(strayneko
     main.c
     config.c
     display.c
     bed.c
-    oneko.c
+    strayneko.c
 )
 
-target_include_directories(oneko PRIVATE
+target_include_directories(strayneko PRIVATE
     ${CMAKE_SOURCE_DIR}
     ${X11_INCLUDE_DIR}
 )
 
-target_compile_definitions(oneko PRIVATE
+target_compile_definitions(strayneko PRIVATE
     _DEFAULT_SOURCE
     SHAPE
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR ENABLE_DEBUG)
-    target_compile_definitions(oneko PRIVATE ENABLE_DEBUG)
+    target_compile_definitions(strayneko PRIVATE ENABLE_DEBUG)
 endif()
 
-target_link_libraries(oneko PRIVATE
+target_link_libraries(strayneko PRIVATE
     ${X11_LIBRARIES}
     ${XRANDR_LIBRARY}
     ${XEXT_LIBRARY}
     m
 )
 
-install(TARGETS oneko RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS strayneko RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

@@ -1,4 +1,4 @@
-#include "oneko.h"
+#include "strayneko.h"
 #include <sys/stat.h>
 
 static char *
@@ -10,13 +10,13 @@ GetBedConfigPath(void)
 
     config_home = getenv("XDG_CONFIG_HOME");
     if (config_home != NULL && config_home[0] != '\0') {
-        snprintf(path, sizeof(path), "%s/oneko/bedpos", config_home);
+        snprintf(path, sizeof(path), "%s/strayneko/bedpos", config_home);
         return path;
     }
 
     home = getenv("HOME");
     if (home != NULL && home[0] != '\0') {
-        snprintf(path, sizeof(path), "%s/.config/oneko/bedpos", home);
+        snprintf(path, sizeof(path), "%s/.config/strayneko/bedpos", home);
         return path;
     }
 

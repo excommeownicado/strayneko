@@ -1,4 +1,4 @@
-#include "oneko.h"
+#include "strayneko.h"
 
 static BitmapGCData BitmapGCDataTable[] = {
     { &Mati2GC, &Mati2Xbm, mati2_bits, &Mati2Msk, mati2_mask_bits },

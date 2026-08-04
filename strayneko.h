@@ -1,5 +1,5 @@
-#ifndef ONEKO_H
-#define ONEKO_H
+#ifndef STRAYNEKO_H
+#define STRAYNEKO_H
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -213,4 +213,4 @@ void GetArguments(int argc, char *argv[], char *theDisplayName);
 int ParseLongOption(const char *option, const char *value, long minimum, long *result);
 int ParseDoubleOption(const char *option, const char *value, double minimum, double *result);
 
-#endif /* ONEKO_H */
+#endif /* STRAYNEKO_H */

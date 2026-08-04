@@ -1,4 +1,4 @@
-#include "oneko.h"
+#include "strayneko.h"
 #include <stdlib.h>
 
 void

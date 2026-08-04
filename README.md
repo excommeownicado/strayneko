@@ -1,6 +1,6 @@
 # strayneko
 
-Modernized version of the classic oneko desktop pet for X11 (also works on Wayland through XWayland).
+Modernized version of the classic neko desktop pet for X11 (also works on Wayland through XWayland).
 
 Unlike the original neko, this version doesn't feature mouse-chasing behavior and instead makes neko wander around your desktop on their own.
 
@@ -39,8 +39,8 @@ sudo cmake --install .
 <summary>Usage examples</summary>
   
 ```bash
-oneko --monitor 0
-oneko --min-wait 10 --max-wait 100
+strayneko --monitor 0
+strayneko --min-wait 10 --max-wait 100
 ```
 
 </details>
