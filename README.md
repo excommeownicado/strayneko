@@ -2,6 +2,14 @@
   <img src="assets/logo.svg" alt="strayneko" width="500">
 </p>
 
+<p align="center">
+
+<img alt="linux" src="https://img.shields.io/badge/Linux-262c33?logo=linux&style=for-the-badge&logoColor=white">
+<img alt="xwayland" src="https://img.shields.io/badge/X11_·_XWayland-262c33?style=for-the-badge">
+<img alt="cmake" src="https://img.shields.io/badge/CMake-3.16+-064F8C?labelColor=262c33&logo=cmake&style=for-the-badge">
+
+</p>
+
 Modern take on the classic neko desktop pet for X11. Also works on Wayland through XWayland.
 
 Unlike the original oneko, strayneko doesn't constantly chase your mouse cursor. Instead, it wanders around your desktop on its own.
