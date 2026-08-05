@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.svg" alt="strayneko" width="500">
+  <img src="assets/logo.svg" alt="strayneko" width="500">
 </p>
 
 Modern take on the classic neko desktop pet for X11. Also works on Wayland through XWayland.
@@ -8,7 +8,7 @@ Unlike the original oneko, strayneko doesn't constantly chase your mouse cursor.
 
 ## Features
 
-<img align="right" src="demo.gif" height="235">
+<img align="right" src="assets/demo.gif" height="235">
 
 * Autonomous wandering
 * Random spawn position
