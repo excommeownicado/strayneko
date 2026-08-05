@@ -10,9 +10,11 @@
 
 </p>
 
-Modern take on the classic neko desktop pet for X11. Also works on Wayland through XWayland.
+Modern take on the classic neko desktop pet for X11. Works on Wayland through XWayland.
 
 Unlike the original oneko, strayneko doesn't constantly chase your mouse cursor. Instead, it wanders around your desktop on its own.
+
+Originally created for personal use, but shared in case someone else finds it useful or enjoyable.
 
 ## Features
 
@@ -28,15 +30,17 @@ Unlike the original oneko, strayneko doesn't constantly chase your mouse cursor.
 
 ## Installation
 
-### From a release
+### From a release (recommended)
 
-Download the latest release, extract the archive, and run:
+Download the [latest release](https://github.com/excommeownicado/strayneko/releases/latest), extract the archive, and run:
 
 ```bash
 ./install.sh
 ```
 
 The installer will automatically install the binary, desktop entry, and application icon.
+
+---
 
 ### Build from source
 
@@ -50,6 +54,22 @@ cmake -B build
 cmake --build build
 ```
 
+<details>
+  
+<summary>For developers</summary>
+  
+To enable developer-only options and debug logging, build with:
+
+```bash
+cmake -B build \
+      -DCMAKE_BUILD_TYPE=Debug \
+      -DENABLE_DEBUG=ON
+
+cmake --build build
+```
+
+</details>
+
 To install system-wide:
 
 ```bash
@@ -58,15 +78,31 @@ sudo cmake --install build
 
 ## Usage
 
+Simply execute `strayneko` to go with a default look and behavior. For customization use the following command-line arguments.
+
 Available command-line options:
 
-* `--monitor` – restricts neko to a specified monitor
+* `--fg` – changes color of neko's outline
+* `--bg` – changes color of neko's body
+* `--bed` – shows a draggable bed that neko may occasionally visit
 * `--min-wait` – sets the minimum idle time between walks
 * `--max-wait` – sets the maximum idle time between walks
-* `--bed` – shows a draggable bed that neko may occasionally visit
+* `--monitor` – restricts neko to a specified monitor
 
 <details>
-<summary>Usage examples</summary>
+  
+<summary>Developer options</summary>
+
+If debug mode is enabled (only available through building from source):
+  
+* `--debug` – enables debug log output
+* `--force-target` – forces neko to go to the specified coordinates
+
+</details>
+
+<details open>
+
+<summary>Examples</summary>
   
 ```bash
 strayneko --monitor 0 --bed
@@ -77,22 +113,21 @@ strayneko --min-wait 10 --max-wait 100
 
 ## Credits
 
-This project is based on oneko 1.2.sakura.5.
+This project is based on **oneko 1.2.sakura.5**.
 
-Original project:
+Original project:    
 http://www.daidouji.com/oneko/
 
-Modern fork and additional features:
-excommeownicado
+See [CREDITS](CREDITS.md) for full attribution.
 
 ## License
 
-This fork is released under the MIT License. See the LICENSE file for details.
+This fork is released under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 The original upstream code includes portions that are Public Domain; where
 applicable, original authors' public-domain notices are preserved in the
 source and credits.
 
 > [!NOTE]
-> This project is not affiliated with the original authors.
+> This project is an idependent fork and is not affiliated with the original authors.
 
