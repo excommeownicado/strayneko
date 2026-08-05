@@ -1,34 +1,52 @@
 # strayneko
 
-Modernized version of the classic neko desktop pet for X11 (also works on Wayland through XWayland).
+Modern version of the classic neko desktop pet for X11. It also works on Wayland through XWayland.
 
-Unlike the original neko, this version doesn't feature mouse-chasing behavior and instead makes neko wander around your desktop on their own.
+Unlike the original oneko, strayneko doesn't constantly chase your mouse cursor. Instead, it wanders around your desktop on its own.
 
 ## Features
 
-* Random spawn point and autonomous wandering
-* Multi-monitor support via XRandR
+* Autonomous wandering
+* Random spawn position
+* Multi-monitor support
 * Optional monitor restriction
-* Adjustable idle time between walks
+* Configurable idle time between walks
 * Zoomies mode
-* Optional draggable bed (`--bed`)
+* Optional draggable bed with saved position
 
-## Building with CMake
+## Installation
+
+### From a release
+
+Download the latest release, extract the archive, and run:
 
 ```bash
-mkdir -p build
-cd build
-cmake ..
-cmake --build .
+./install.sh
 ```
 
-To install:
+The installer will automatically install the binary, desktop entry, and application icon.
+
+### Build from source
 
 ```bash
-sudo cmake --install .
+git clone https://github.com/excommeownicado/strayneko.git
+cd strayneko
+```
+
+```bash
+cmake -B build
+cmake --build build
+```
+
+To install system-wide:
+
+```bash
+sudo cmake --install build
 ```
 
 ## Usage
+
+Available command-line options:
 
 * `--monitor` – restricts neko to a specified monitor
 * `--min-wait` – sets the minimum idle time between walks
@@ -39,7 +57,7 @@ sudo cmake --install .
 <summary>Usage examples</summary>
   
 ```bash
-strayneko --monitor 0
+strayneko --monitor 0 --bed
 strayneko --min-wait 10 --max-wait 100
 ```
 
@@ -47,12 +65,13 @@ strayneko --min-wait 10 --max-wait 100
 
 ## Credits
 
-This project is based on oneko 1.2.sakura.5
+This project is based on oneko 1.2.sakura.5.
 
 Original project:
 http://www.daidouji.com/oneko/
 
-Fork maintainer: excommeownicado
+Modern fork and additional features:
+excommeownicado
 
 ## License
 
@@ -63,5 +82,5 @@ applicable, original authors' public-domain notices are preserved in the
 source and credits.
 
 > [!NOTE]
-> This repository is an unofficial fork and is not affiliated with the original authors.
+> This project is not affiliated with the original authors.
 
