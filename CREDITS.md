@@ -1,4 +1,4 @@
-This repository is a fork maintained by excommeownicado.
+This repository is a fork created by excommeownicado.
 
 Original project and contributors (preserved):
 - Original "xneko" written by Masayuki Koba.
@@ -17,5 +17,5 @@ Licensing:
 	the Public Domain by their authors; those public-domain attributions are
 	preserved in-source where present.
 
-Notes:
-- This file preserves original credits and notes the fork author and maintainer.
+> [NOTE]
+> This file preserves original credits and notes the fork author and maintainer.
