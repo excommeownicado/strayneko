@@ -2,19 +2,21 @@
   <img src="logo.svg" alt="strayneko" width="500">
 </p>
 
-Modern version of the classic neko desktop pet for X11. It also works on Wayland through XWayland.
+Modern take on the classic neko desktop pet for X11. Also works on Wayland through XWayland.
 
 Unlike the original oneko, strayneko doesn't constantly chase your mouse cursor. Instead, it wanders around your desktop on its own.
 
 ## Features
 
+<img align="right" src="demo.gif" height="235">
+
 * Autonomous wandering
 * Random spawn position
-* Multi-monitor support
-* Optional monitor restriction
-* Configurable idle time between walks
 * Zoomies mode
 * Optional draggable bed with saved position
+* Configurable idle time between walks
+* Multi-monitor support
+* Optional monitor restriction
 
 ## Installation
 
