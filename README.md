@@ -8,7 +8,7 @@ Unlike the original oneko, strayneko doesn't constantly chase your mouse cursor.
 
 ## Features
 
-<img align="right" src="assets/demo.gif" height="235">
+<img align="right" src="assets/demo.gif" height="100%">
 
 * Autonomous wandering
 * Random spawn position
