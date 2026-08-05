@@ -17,5 +17,5 @@ Licensing:
 	the Public Domain by their authors; those public-domain attributions are
 	preserved in-source where present.
 
-> [NOTE]
+> [!NOTE]
 > This file preserves original credits and notes the fork author and maintainer.
