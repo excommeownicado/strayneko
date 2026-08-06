@@ -7,7 +7,8 @@ add_executable(strayneko
 )
 
 target_include_directories(strayneko PRIVATE
-    ${CMAKE_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/resources
     ${X11_INCLUDE_DIR}
 )
 

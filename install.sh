@@ -86,7 +86,7 @@ install_bin() {
 }
 
 install_desktop() {
-  local src="$SCRIPT_DIR/desktop/strayneko.desktop"
+  local src="$SCRIPT_DIR/resources/desktop/strayneko.desktop"
   local dst="$DESTDIR${PREFIX}/${DESKTOP_DIR}/strayneko.desktop"
 
   if [[ ! -f "$src" ]]; then
@@ -101,7 +101,7 @@ install_desktop() {
 }
 
 install_icon() {
-  local src="$SCRIPT_DIR/desktop/strayneko.svg"
+  local src="$SCRIPT_DIR/resources/desktop/strayneko.svg"
   local dst="$DESTDIR${PREFIX}/${ICON_DIR}/strayneko.svg"
 
   if [[ ! -f "$src" ]]; then
@@ -114,7 +114,7 @@ install_icon() {
 }
 
 install_man() {
-  local src="$SCRIPT_DIR/strayneko.6"
+  local src="$SCRIPT_DIR/docs/strayneko.6"
   if [[ ! -f "$src" ]]; then
     return
   fi

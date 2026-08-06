@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" alt="strayneko" width="500">
+  <img src="docs/assets/logo.svg" alt="strayneko" width="500">
 </p>
 
 <p align="center">
@@ -18,7 +18,7 @@ Originally created for personal use, but shared in case someone else finds it us
 
 ## Features
 
-<img align="right" src="assets/demo.gif" height="100%">
+<img align="right" src="docs/assets/demo.gif" height="100%">
 
 * Autonomous wandering
 * Random spawn position
@@ -126,7 +126,7 @@ This project is based on **oneko 1.2.sakura.5**.
 Original project:    
 http://www.daidouji.com/oneko/
 
-See [CREDITS](CREDITS.md) for full attribution.
+See [CREDITS](docs/CREDITS.md) for full attribution.
 
 ## License
 

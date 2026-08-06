@@ -31,9 +31,9 @@ jobs:
         run: |
           mkdir -p release
           cp "$(find build -type f -name strayneko | head -n1)" release/
-          cp LICENSE strayneko.6 release/
+          cp LICENSE docs/strayneko.6 release/
           cp install.sh uninstall.sh release/
-          cp -r desktop release/
+          cp -r resources/desktop release/
           tar -czf strayneko-${GITHUB_REF_NAME}-linux.tar.gz -C release .
 
       - name: Create GitHub Release and upload artifact

@@ -35,4 +35,4 @@ endif()
 
 add_subdirectory(src)
 
-install(FILES strayneko.man DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
+install(FILES strayneko.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
