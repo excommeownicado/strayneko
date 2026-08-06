@@ -114,12 +114,12 @@ install_icon() {
 }
 
 install_man() {
-  local src="$SCRIPT_DIR/strayneko.man"
+  local src="$SCRIPT_DIR/strayneko.6"
   if [[ ! -f "$src" ]]; then
     return
   fi
 
-  local dst="$DESTDIR${PREFIX}/${MAN_DIR}/strayneko.man"
+  local dst="$DESTDIR${PREFIX}/${MAN_DIR}/strayneko.6"
   mkdir -p "$(dirname "$dst")"
   install -Dm644 "$src" "$dst"
 }

@@ -1,0 +1,134 @@
+.TH STRAYNEKO 6
+
+.SH NAME
+strayneko \- desktop pet that wanders around your screen
+
+.SH SYNOPSIS
+.B strayneko
+[\fB--help\fP]
+[\fB--monitor\fP \fIn\fP]
+[\fB--time\fP \fImicroseconds\fP]
+[\fB--speed\fP \fIpixels\fP]
+[\fB--min-wait\fP \fIseconds\fP]
+[\fB--max-wait\fP \fIseconds\fP]
+[\fB--bed\fP]
+[\fB--fg\fP \fIcolor\fP]
+[\fB--bg\fP \fIcolor\fP]
+[\fB--noshape\fP]
+
+.SH DESCRIPTION
+.B strayneko
+creates a small desktop pet that autonomously wanders around your desktop.
+The cat alternates between idling, walking, sleeping, and occasional zoomies.
+Unlike the original
+.BR oneko ,
+it does not chase the mouse cursor.
+
+.SH OPTIONS
+
+.TP
+.B --help
+Display the help message and exit.
+
+.TP
+.B --bed
+Show a draggable bed that the cat may occasionally visit.
+
+.TP
+.BI --monitor " number"
+Restrict the cat and bed to the specified XRandR monitor.
+
+.TP
+.BI --time " microseconds"
+Set the animation interval.
+The default is 125000 microseconds.
+
+.TP
+.BI --speed " pixels"
+Set the maximum distance moved in one animation tick.
+The default is 13 pixels.
+
+.TP
+.BI --min-wait " seconds"
+Set the minimum idle time between walks.
+
+.TP
+.BI --max-wait " seconds"
+Set the maximum idle time between walks.
+
+.TP
+.B --noshape
+Disable the X11 SHAPE extension.
+
+.TP
+.BI --fg " color"
+Set the cat outline color.
+
+.TP
+.BI --bg " color"
+Set the cat body color.
+
+.SH DEVELOPER OPTIONS
+The following options are only available when strayneko is built with
+.BR -DENABLE_DEBUG=ON .
+
+.TP
+.B --debug
+Enables verbose debug logging.
+
+.TP
+.BI --force-target " x,y"
+Forces the cat to move toward the specified coordinates.
+Intended for debugging and testing only.
+
+.SH X RESOURCES
+
+The application name is
+.B strayneko
+and the class name is
+.B Strayneko.
+
+.TP
+.B time
+Animation interval in microseconds.
+
+.TP
+.B speed
+Movement speed in pixels.
+
+.TP
+.B noshape
+Disable the SHAPE extension.
+
+.TP
+.B foreground
+Outline color.
+
+.TP
+.B background
+Body color.
+
+.SH AUTHOR
+
+Original
+.B xneko
+was written by Masayuki Koba and later modified into
+.B oneko
+by Tatsuya Kato, John Lerchey, Eric Anderson, Toshihiro Kanda and Kiichiroh Mukose.
+
+.PP
+.B strayneko
+is a modern fork created and maintained by
+.B excommeownicado,
+adding autonomous wandering, multi-monitor support, beds, configurable idle timing and other features while preserving the original authors' work.
+
+.SH SEE ALSO
+
+Project page:
+https://github.com/excommeownicado/strayneko
+
+.SH BUGS
+
+Report bugs and feature requests at:
+
+https://github.com/excommeownicado/strayneko/issues
