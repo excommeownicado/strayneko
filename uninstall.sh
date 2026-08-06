@@ -78,4 +78,6 @@ if command -v mandb >/dev/null 2>&1; then
   mandb >/dev/null 2>&1 || true
 fi
 
+remove_file "$DESTDIR${PREFIX}/bin/strayneko-uninstall"
+
 echo "Uninstall complete."

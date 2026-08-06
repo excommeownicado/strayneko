@@ -22,22 +22,17 @@ jobs:
             build-essential cmake libx11-dev libxrandr-dev libxext-dev
 
       - name: Configure CMake
-        run: |
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_BUILD_TYPE=Release ..
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: Build strayneko
-        run: |
-          cd build
-          cmake --build . --config Release
+        run: cmake --build build
 
       - name: Package release artifact
         run: |
           mkdir -p release
-          cp build/src/strayneko release/
-          cp README.md LICENSE CREDITS strayneko.man release/
-          cp install.sh release/ 2>/dev/null || true
+          cp "$(find build -type f -name strayneko | head -n1)" release/
+          cp LICENSE strayneko.6 release/
+          cp install.sh uninstall.sh release/
           cp -r desktop release/
           tar -czf strayneko-${GITHUB_REF_NAME}-linux.tar.gz -C release .
 

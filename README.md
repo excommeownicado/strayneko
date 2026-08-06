@@ -38,7 +38,13 @@ Download the [latest release](https://github.com/excommeownicado/strayneko/relea
 ./install.sh
 ```
 
-The installer will automatically install the binary, desktop entry, and application icon.
+The installer will automatically install the binary, desktop entry, application icon, man page, and uninstaller.
+
+To uninstall strayneko later, simply run:
+
+```bash
+strayneko-uninstall
+```
 
 ---
 
@@ -82,11 +88,13 @@ Simply execute `strayneko` to go with a default look and behavior. For customiza
 
 Available command-line options:
 
-* `--fg` – changes color of neko's outline
-* `--bg` – changes color of neko's body
+* `--fg` – changes the color of neko's outline
+* `--bg` – changes the color of neko's body
 * `--bed` – shows a draggable bed that neko may occasionally visit
 * `--min-wait` – sets the minimum idle time between walks
 * `--max-wait` – sets the maximum idle time between walks
+* `--speed` – sets neko's movement speed
+* `--time` – sets the interval between animation frames
 * `--monitor` – restricts neko to a specified monitor
 
 <details>

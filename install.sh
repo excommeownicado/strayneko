@@ -124,7 +124,15 @@ install_man() {
   install -Dm644 "$src" "$dst"
 }
 
+install_uninstaller() {
+  local src="$SCRIPT_DIR/uninstall.sh"
+  local dst="$DESTDIR${PREFIX}/bin/strayneko-uninstall"
+
+  install -Dm755 "$src" "$dst"
+}
+
 install_bin
 install_desktop
 install_icon
 install_man
+install_uninstaller
