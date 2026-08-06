@@ -52,13 +52,16 @@ elif [[ $EUID -ne 0 && $PREFIX == "/usr" ]]; then
   echo "Warning: not running as root; removing from $PREFIX may fail unless you have write access." >&2
 fi
 
-remove_file() {
-  local file="$1"
+removed_any=false
 
-  if [[ -e "$file" ]]; then
-    rm -f "$file"
-    echo "Removed: $file"
-  fi
+remove_file() {
+    local file="$1"
+
+    if [[ -e "$file" ]]; then
+        rm -f "$file"
+        echo "Removed: $file"
+        removed_any=true
+    fi
 }
 
 remove_file "$DESTDIR${PREFIX}/bin/$BINARY_NAME"
@@ -80,4 +83,12 @@ fi
 
 remove_file "$DESTDIR${PREFIX}/bin/strayneko-uninstall"
 
-echo "Uninstall complete."
+if [[ "$removed_any" = false ]]; then
+    echo
+    echo "Nothing to remove."
+else
+    echo
+    echo "Strayneko was successfully removed."
+fi
+
+echo

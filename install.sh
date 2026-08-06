@@ -23,6 +23,16 @@ Options:
 EOF
 }
 
+find_existing() {
+  for path in "$@"; do
+    [[ -f "$path" ]] && {
+      printf '%s\n' "$path"
+      return 0
+    }
+  done
+  return 1
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --prefix)
@@ -54,78 +64,77 @@ elif [[ $EUID -ne 0 && $PREFIX == "/usr" ]]; then
 fi
 
 install_bin() {
-  local candidates=(
-    "$SCRIPT_DIR/$BINARY_NAME"
-    "$SCRIPT_DIR/build/$BINARY_NAME"
-    "$SCRIPT_DIR/src/$BINARY_NAME"
-    "$SCRIPT_DIR/release/$BINARY_NAME"
-  )
-
-  local src=""
-  for candidate in "${candidates[@]}"; do
-    if [[ -f "$candidate" ]]; then
-      src="$candidate"
-      break
-    fi
-  done
-
-  if [[ -z "$src" ]]; then
-    echo "Error: Binary not found in release package or build directory." >&2
-    echo "Searched paths:" >&2
-    for candidate in "${candidates[@]}"; do
-      echo "  - $candidate" >&2
-    done
-    echo "If you are using the source repository, build it first with cmake --build build." >&2
-    exit 1
-  fi
+  local src
+  src=$(find_existing \
+    "$SCRIPT_DIR/$BINARY_NAME" \
+    "$SCRIPT_DIR/build/src/$BINARY_NAME" \
+    "$SCRIPT_DIR/build/$BINARY_NAME" \
+    "$SCRIPT_DIR/build/bin/$BINARY_NAME") || {
+      echo "Error: Binary not found." >&2
+      echo "Looked in:" >&2
+      echo "  $SCRIPT_DIR/$BINARY_NAME" >&2
+      echo "  $SCRIPT_DIR/build/src/$BINARY_NAME" >&2
+      echo "  $SCRIPT_DIR/build/$BINARY_NAME" >&2
+      echo "If you are using the source repository, build it first with:"
+      echo "  cmake -B build"
+      echo "  cmake --build build"
+      exit 1
+    }
 
   chmod +x "$src"
+
   local dst="$DESTDIR${PREFIX}/bin/$BINARY_NAME"
-  mkdir -p "$(dirname "$dst")"
+
   install -Dm755 "$src" "$dst"
 }
 
 install_desktop() {
-  local src="$SCRIPT_DIR/resources/desktop/strayneko.desktop"
+  local src
+  src=$(find_existing \
+    "$SCRIPT_DIR/resources/desktop/strayneko.desktop" \
+    "$SCRIPT_DIR/desktop/strayneko.desktop") || {
+      echo "Error: Desktop entry not found." >&2
+      exit 1
+    }
+
   local dst="$DESTDIR${PREFIX}/${DESKTOP_DIR}/strayneko.desktop"
 
-  if [[ ! -f "$src" ]]; then
-    echo "Error: Desktop entry not found at $src" >&2
-    exit 1
-  fi
-
-  mkdir -p "$(dirname "$dst")"
   install -Dm644 "$src" "$dst"
 
   sed -i "s|^Exec=.*|Exec=$PREFIX/bin/$BINARY_NAME|" "$dst"
 }
 
 install_icon() {
-  local src="$SCRIPT_DIR/resources/desktop/strayneko.svg"
+  local src
+  src=$(find_existing \
+    "$SCRIPT_DIR/resources/desktop/strayneko.svg" \
+    "$SCRIPT_DIR/desktop/strayneko.svg") || {
+      echo "Error: Icon not found." >&2
+      exit 1
+    }
+
   local dst="$DESTDIR${PREFIX}/${ICON_DIR}/strayneko.svg"
 
-  if [[ ! -f "$src" ]]; then
-    echo "Error: Icon file not found at $src" >&2
-    exit 1
-  fi
-
-  mkdir -p "$(dirname "$dst")"
   install -Dm644 "$src" "$dst"
 }
 
 install_man() {
-  local src="$SCRIPT_DIR/docs/strayneko.6"
-  if [[ ! -f "$src" ]]; then
-    return
-  fi
+  local src
+  src=$(find_existing \
+    "$SCRIPT_DIR/docs/strayneko.6" \
+    "$SCRIPT_DIR/strayneko.6") || return
 
   local dst="$DESTDIR${PREFIX}/${MAN_DIR}/strayneko.6"
-  mkdir -p "$(dirname "$dst")"
+
   install -Dm644 "$src" "$dst"
 }
 
 install_uninstaller() {
-  local src="$SCRIPT_DIR/uninstall.sh"
+  local src
+  src=$(find_existing \
+    "$SCRIPT_DIR/uninstall.sh" \
+    "$SCRIPT_DIR/scripts/uninstall.sh") || return
+
   local dst="$DESTDIR${PREFIX}/bin/strayneko-uninstall"
 
   install -Dm755 "$src" "$dst"
@@ -136,3 +145,16 @@ install_desktop
 install_icon
 install_man
 install_uninstaller
+
+echo
+echo "Strayneko has been installed successfully."
+echo
+echo "Run it with:"
+echo "  strayneko"
+echo
+echo "For available options:"
+echo "  strayneko --help"
+echo
+echo "To remove it later, run:"
+echo "  strayneko-uninstall"
+echo
