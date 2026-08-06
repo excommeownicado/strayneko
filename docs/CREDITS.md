@@ -12,7 +12,7 @@ Maintainers and contacts:
 
 Licensing:
 - This fork (the code in this repository) is released under the MIT License.
-	See the [LICENSE](LICENSE) file for the full text.
+	See the [LICENSE](../LICENSE) file for the full text.
 - The original upstream sources include code and assets that were released into
 	the Public Domain by their authors; those public-domain attributions are
 	preserved in-source where present.
