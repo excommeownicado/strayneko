@@ -100,16 +100,39 @@ static const SpriteID AnimationPattern[][2] = {
     {     SPRITE_RIGHTTOGI1,  SPRITE_RIGHTTOGI2   },
 };
 
+static MonitorBounds
+GetMonitorBounds(int monitor)
+{
+    MonitorRect rect = GetMonitorRect(monitor);
+
+    MonitorBounds bounds = {
+        .min_x = rect.x,
+        .min_y = rect.y,
+        .max_x = rect.width > BITMAP_WIDTH
+            ? rect.x + rect.width - BITMAP_WIDTH
+            : rect.x,
+        .max_y = rect.height > BITMAP_HEIGHT
+            ? rect.y + rect.height - BITMAP_HEIGHT
+            : rect.y
+    };
+
+    return bounds;
+}
+
 static int
 FindMonitorFor(int x, int y)
 {
     for (int i = 0; i < MonitorCount; i++) {
-        if (x >= Monitors[i].x && y >= Monitors[i].y &&
-            x < Monitors[i].x + Monitors[i].width &&
-            y < Monitors[i].y + Monitors[i].height) {
+        MonitorRect rect = GetMonitorRect(i);
+
+        if (x >= rect.x &&
+            y >= rect.y &&
+            x < rect.x + rect.width &&
+            y < rect.y + rect.height) {
             return i;
         }
     }
+
     return -1;
 }
 
@@ -117,46 +140,50 @@ static int
 GetTargetEdgeTogiState(void)
 {
     int monitor;
-    int min_x, min_y, max_x, max_y;
+    MonitorBounds bounds;
 
     if (MonitorCount <= 0) {
-        min_x = 0;
-        min_y = 0;
-        max_x = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 0;
-        max_y = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 0;
+        bounds.min_x = 0;
+        bounds.min_y = 0;
+        bounds.max_x = WindowWidth > BITMAP_WIDTH
+            ? WindowWidth - BITMAP_WIDTH
+            : 0;
+        bounds.max_y = WindowHeight > BITMAP_HEIGHT
+            ? WindowHeight - BITMAP_HEIGHT
+            : 0;
     } else {
         monitor = FindMonitorFor(Neko.target_x, Neko.target_y);
+
         if (monitor < 0) {
-            monitor = FindMonitorFor(Neko.x + BITMAP_WIDTH / 2, Neko.y + BITMAP_HEIGHT / 2);
+            monitor = FindMonitorFor(
+                Neko.x + BITMAP_WIDTH / 2,
+                Neko.y + BITMAP_HEIGHT / 2
+            );
         }
+
         if (monitor < 0) {
             monitor = 0;
         }
 
-        MonitorRect rect = GetMonitorRect(monitor);
-
-        min_x = rect.x;
-        min_y = rect.y;
-        max_x = rect.width > BITMAP_WIDTH
-            ? rect.x + rect.width - BITMAP_WIDTH
-            : rect.x;
-        max_y = rect.height > BITMAP_HEIGHT
-            ? rect.y + rect.height - BITMAP_HEIGHT
-            : rect.y;
+        bounds = GetMonitorBounds(monitor);
     }
 
-    if (Neko.target_y == min_y) {
+    if (Neko.target_y == bounds.min_y) {
         return NEKO_U_TOGI;
     }
-    if (Neko.target_y == max_y) {
+
+    if (Neko.target_y == bounds.max_y) {
         return NEKO_D_TOGI;
     }
-    if (Neko.target_x == min_x) {
+
+    if (Neko.target_x == bounds.min_x) {
         return NEKO_L_TOGI;
     }
-    if (Neko.target_x == max_x) {
+
+    if (Neko.target_x == bounds.max_x) {
         return NEKO_R_TOGI;
     }
+
     return -1;
 }
 
@@ -198,38 +225,34 @@ ClampTarget(void)
         }
     }
 
-    MonitorRect rect = GetMonitorRect(monitor);
-
-    int min_x = rect.x;
-    int min_y = rect.y;
-    int max_x = rect.width > BITMAP_WIDTH
-        ? rect.x + rect.width - BITMAP_WIDTH
-        : rect.x;
-    int max_y = rect.height > BITMAP_HEIGHT
-        ? rect.y + rect.height - BITMAP_HEIGHT
-        : rect.y;
+    MonitorBounds bounds = GetMonitorBounds(monitor);
     
-    if (Neko.target_x < min_x) {
-        DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n", Neko.target_x, min_x, monitor);
-        Neko.target_x = min_x;
-    } else if (Neko.target_x > max_x) {
-        DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n", Neko.target_x, max_x, monitor);
-        Neko.target_x = max_x;
+    if (Neko.target_x < bounds.min_x) {
+        DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n",
+                Neko.target_x, bounds.min_x, monitor);
+        Neko.target_x = bounds.min_x;
+    } else if (Neko.target_x > bounds.max_x) {
+        DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n",
+                Neko.target_x, bounds.max_x, monitor);
+        Neko.target_x = bounds.max_x;
     }
 
-    if (Neko.target_y < min_y) {
-        DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n", Neko.target_y, min_y, monitor);
-        Neko.target_y = min_y;
-    } else if (Neko.target_y > max_y) {
-        DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n", Neko.target_y, max_y, monitor);
-        Neko.target_y = max_y;
+    if (Neko.target_y < bounds.min_y) {
+        DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n",
+                Neko.target_y, bounds.min_y, monitor);
+        Neko.target_y = bounds.min_y;
+    } else if (Neko.target_y > bounds.max_y) {
+        DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n",
+                Neko.target_y, bounds.max_y, monitor);
+        Neko.target_y = bounds.max_y;
     }
 
     if (!RectOnMonitor(Neko.target_x, Neko.target_y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
         DebugLog("ClampTarget: Target (%d,%d) still invalid for monitor %d, resetting to (%d,%d)\n",
-                 Neko.target_x, Neko.target_y, monitor, min_x, min_y);
-        Neko.target_x = min_x;
-        Neko.target_y = min_y;
+                Neko.target_x, Neko.target_y, monitor,
+                bounds.min_x, bounds.min_y);
+        Neko.target_x = bounds.min_x;
+        Neko.target_y = bounds.min_y;
     }
 }
 
@@ -402,21 +425,16 @@ PickRandomTarget(void)
         m = rand() % MonitorCount;
     }
 
-    MonitorRect rect = GetMonitorRect(m);
+    MonitorBounds bounds = GetMonitorBounds(m);
 
-    int width = rect.width > BITMAP_WIDTH
-        ? rect.width - BITMAP_WIDTH
-        : 0;
+    int width = bounds.max_x - bounds.min_x;
+    int height = bounds.max_y - bounds.min_y;
 
-    int height = rect.height > BITMAP_HEIGHT
-        ? rect.height - BITMAP_HEIGHT
-        : 0;
-
-    Neko.target_x = rect.x + rand() % (width + 1);
-    Neko.target_y = rect.y + rand() % (height + 1);
+    Neko.target_x = bounds.min_x + rand() % (width + 1);
+    Neko.target_y = bounds.min_y + rand() % (height + 1);
 
     DebugLog("PickRandomTarget: monitor=%d target=(%d,%d) width=%d height=%d\n",
-             m, Neko.target_x, Neko.target_y, width, height);
+            m, Neko.target_x, Neko.target_y, width, height);
 }
 
 int
