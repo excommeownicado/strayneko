@@ -1,36 +1,36 @@
 #include "strayneko.h"
 
 static const SpriteData SpriteDataTable[SPRITE_COUNT] = {
-    [SPRITE_MATI2] = { mati2_bits, mati2_mask_bits },
-    [SPRITE_JARE2] = { jare2_bits, jare2_mask_bits },
-    [SPRITE_KAKI1] = { kaki1_bits, kaki1_mask_bits },
-    [SPRITE_KAKI2] = { kaki2_bits, kaki2_mask_bits },
-    [SPRITE_MATI3] = { mati3_bits, mati3_mask_bits },
-    [SPRITE_SLEEP1] = { sleep1_bits, sleep1_mask_bits },
-    [SPRITE_SLEEP2] = { sleep2_bits, sleep2_mask_bits },
-    [SPRITE_AWAKE] = { awake_bits, awake_mask_bits },
-    [SPRITE_UP1] = { up1_bits, up1_mask_bits },
-    [SPRITE_UP2] = { up2_bits, up2_mask_bits },
-    [SPRITE_DOWN1] = { down1_bits, down1_mask_bits },
-    [SPRITE_DOWN2] = { down2_bits, down2_mask_bits },
-    [SPRITE_LEFT1] = { left1_bits, left1_mask_bits },
-    [SPRITE_LEFT2] = { left2_bits, left2_mask_bits },
-    [SPRITE_RIGHT1] = { right1_bits, right1_mask_bits },
-    [SPRITE_RIGHT2] = { right2_bits, right2_mask_bits },
-    [SPRITE_UPLEFT1] = { upleft1_bits, upleft1_mask_bits },
-    [SPRITE_UPLEFT2] = { upleft2_bits, upleft2_mask_bits },
-    [SPRITE_UPRIGHT1] = { upright1_bits, upright1_mask_bits },
-    [SPRITE_UPRIGHT2] = { upright2_bits, upright2_mask_bits },
-    [SPRITE_DOWNLEFT1] = { dwleft1_bits, dwleft1_mask_bits },
-    [SPRITE_DOWNLEFT2] = { dwleft2_bits, dwleft2_mask_bits },
+    [SPRITE_MATI2]      = { mati2_bits, mati2_mask_bits },
+    [SPRITE_JARE2]      = { jare2_bits, jare2_mask_bits },
+    [SPRITE_KAKI1]      = { kaki1_bits, kaki1_mask_bits },
+    [SPRITE_KAKI2]      = { kaki2_bits, kaki2_mask_bits },
+    [SPRITE_MATI3]      = { mati3_bits, mati3_mask_bits },
+    [SPRITE_SLEEP1]     = { sleep1_bits, sleep1_mask_bits },
+    [SPRITE_SLEEP2]     = { sleep2_bits, sleep2_mask_bits },
+    [SPRITE_AWAKE]      = { awake_bits, awake_mask_bits },
+    [SPRITE_UP1]        = { up1_bits, up1_mask_bits },
+    [SPRITE_UP2]        = { up2_bits, up2_mask_bits },
+    [SPRITE_DOWN1]      = { down1_bits, down1_mask_bits },
+    [SPRITE_DOWN2]      = { down2_bits, down2_mask_bits },
+    [SPRITE_LEFT1]      = { left1_bits, left1_mask_bits },
+    [SPRITE_LEFT2]      = { left2_bits, left2_mask_bits },
+    [SPRITE_RIGHT1]     = { right1_bits, right1_mask_bits },
+    [SPRITE_RIGHT2]     = { right2_bits, right2_mask_bits },
+    [SPRITE_UPLEFT1]    = { upleft1_bits, upleft1_mask_bits },
+    [SPRITE_UPLEFT2]    = { upleft2_bits, upleft2_mask_bits },
+    [SPRITE_UPRIGHT1]   = { upright1_bits, upright1_mask_bits },
+    [SPRITE_UPRIGHT2]   = { upright2_bits, upright2_mask_bits },
+    [SPRITE_DOWNLEFT1]  = { dwleft1_bits, dwleft1_mask_bits },
+    [SPRITE_DOWNLEFT2]  = { dwleft2_bits, dwleft2_mask_bits },
     [SPRITE_DOWNRIGHT1] = { dwright1_bits, dwright1_mask_bits },
     [SPRITE_DOWNRIGHT2] = { dwright2_bits, dwright2_mask_bits },
-    [SPRITE_UPTOGI1] = { utogi1_bits, utogi1_mask_bits },
-    [SPRITE_UPTOGI2] = { utogi2_bits, utogi2_mask_bits },
-    [SPRITE_DOWNTOGI1] = { dtogi1_bits, dtogi1_mask_bits },
-    [SPRITE_DOWNTOGI2] = { dtogi2_bits, dtogi2_mask_bits },
-    [SPRITE_LEFTTOGI1] = { ltogi1_bits, ltogi1_mask_bits },
-    [SPRITE_LEFTTOGI2] = { ltogi2_bits, ltogi2_mask_bits },
+    [SPRITE_UPTOGI1]    = { utogi1_bits, utogi1_mask_bits },
+    [SPRITE_UPTOGI2]    = { utogi2_bits, utogi2_mask_bits },
+    [SPRITE_DOWNTOGI1]  = { dtogi1_bits, dtogi1_mask_bits },
+    [SPRITE_DOWNTOGI2]  = { dtogi2_bits, dtogi2_mask_bits },
+    [SPRITE_LEFTTOGI1]  = { ltogi1_bits, ltogi1_mask_bits },
+    [SPRITE_LEFTTOGI2]  = { ltogi2_bits, ltogi2_mask_bits },
     [SPRITE_RIGHTTOGI1] = { rtogi1_bits, rtogi1_mask_bits },
     [SPRITE_RIGHTTOGI2] = { rtogi2_bits, rtogi2_mask_bits }
 };
@@ -38,24 +38,24 @@ static const SpriteData SpriteDataTable[SPRITE_COUNT] = {
 Sprite Sprites[SPRITE_COUNT] = {0};
 
 static const SpriteID AnimationPattern[][2] = {
-    {     SPRITE_MATI2,       SPRITE_MATI2        },
-    {     SPRITE_JARE2,       SPRITE_MATI2        },
-    {     SPRITE_KAKI1,       SPRITE_KAKI2        },
-    {     SPRITE_MATI3,       SPRITE_MATI3        },
-    {     SPRITE_SLEEP1,      SPRITE_SLEEP2       },
-    {     SPRITE_AWAKE,       SPRITE_AWAKE        },
-    {     SPRITE_UP1,         SPRITE_UP2          },
-    {     SPRITE_DOWN1,       SPRITE_DOWN2        },
-    {     SPRITE_LEFT1,       SPRITE_LEFT2        },
-    {     SPRITE_RIGHT1,      SPRITE_RIGHT2       },
-    {     SPRITE_UPLEFT1,     SPRITE_UPLEFT2      },
-    {     SPRITE_UPRIGHT1,    SPRITE_UPRIGHT2     },
-    {     SPRITE_DOWNLEFT1,   SPRITE_DOWNLEFT2    },
-    {     SPRITE_DOWNRIGHT1,  SPRITE_DOWNRIGHT2   },
-    {     SPRITE_UPTOGI1,     SPRITE_UPTOGI2      },
-    {     SPRITE_DOWNTOGI1,   SPRITE_DOWNTOGI2    },
-    {     SPRITE_LEFTTOGI1,   SPRITE_LEFTTOGI2    },
-    {     SPRITE_RIGHTTOGI1,  SPRITE_RIGHTTOGI2   },
+    { SPRITE_MATI2,       SPRITE_MATI2 },
+    { SPRITE_JARE2,       SPRITE_MATI2 },
+    { SPRITE_KAKI1,       SPRITE_KAKI2 },
+    { SPRITE_MATI3,       SPRITE_MATI3 },
+    { SPRITE_SLEEP1,      SPRITE_SLEEP2 },
+    { SPRITE_AWAKE,       SPRITE_AWAKE },
+    { SPRITE_UP1,         SPRITE_UP2 },
+    { SPRITE_DOWN1,       SPRITE_DOWN2 },
+    { SPRITE_LEFT1,       SPRITE_LEFT2 },
+    { SPRITE_RIGHT1,      SPRITE_RIGHT2 },
+    { SPRITE_UPLEFT1,     SPRITE_UPLEFT2 },
+    { SPRITE_UPRIGHT1,    SPRITE_UPRIGHT2 },
+    { SPRITE_DOWNLEFT1,   SPRITE_DOWNLEFT2 },
+    { SPRITE_DOWNRIGHT1,  SPRITE_DOWNRIGHT2 },
+    { SPRITE_UPTOGI1,     SPRITE_UPTOGI2 },
+    { SPRITE_DOWNTOGI1,   SPRITE_DOWNTOGI2 },
+    { SPRITE_LEFTTOGI1,   SPRITE_LEFTTOGI2 },
+    { SPRITE_RIGHTTOGI1,  SPRITE_RIGHTTOGI2 },
 };
 
 MonitorRect
@@ -291,22 +291,22 @@ DrawNeko(int x, int y, int tick)
         (DrawGC != Neko.last_gc) ||
         (sprite_id != Neko.last_sprite)) {
         
-            XWindowChanges theChanges;
+        XWindowChanges theChanges;
 
-            theChanges.x = x;
-            theChanges.y = y;
-            XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
+        theChanges.x = x;
+        theChanges.y = y;
+        XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
 #ifdef SHAPE
-            if (Config.no_shape == False) {
-                XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
+        if (Config.no_shape == False) {
+            XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
                               0, 0, DrawMask, ShapeSet);
-            }
+        }
 #endif
-            if (DontMapped) {
-                XMapWindow(theDisplay, theWindow);
-                            DontMapped = 0;
-            }
-            XFillRectangle(theDisplay, theWindow, DrawGC,
+        if (DontMapped) {
+            XMapWindow(theDisplay, theWindow);
+                        DontMapped = 0;
+        }
+        XFillRectangle(theDisplay, theWindow, DrawGC,
                        0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
     }
 

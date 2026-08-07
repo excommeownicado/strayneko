@@ -288,11 +288,11 @@ NekoDirection(void)
         if (Neko.move_dx > 0) {
             if (SinTheta >= SinPiPer8Times3) {
                 NewState = NEKO_U_MOVE;
-            } else if ((SinTheta <= SinPiPer8Times3) && (SinTheta > SinPiPer8)) {
+            } else if (SinTheta > SinPiPer8) {
                 NewState = NEKO_UR_MOVE;
-            } else if ((SinTheta <= SinPiPer8) && (SinTheta > -(SinPiPer8))) {
+            } else if (SinTheta > -(SinPiPer8)) {
                 NewState = NEKO_R_MOVE;
-            } else if ((SinTheta <= -(SinPiPer8)) && (SinTheta > -(SinPiPer8Times3))) {
+            } else if (SinTheta > -(SinPiPer8Times3)) {
                 NewState = NEKO_DR_MOVE;
             } else {
                 NewState = NEKO_D_MOVE;
@@ -300,11 +300,11 @@ NekoDirection(void)
         } else {
             if (SinTheta >= SinPiPer8Times3) {
                 NewState = NEKO_U_MOVE;
-            } else if ((SinTheta <= SinPiPer8Times3) && (SinTheta > SinPiPer8)) {
+            } else if (SinTheta > SinPiPer8) {
                 NewState = NEKO_UL_MOVE;
-            } else if ((SinTheta <= SinPiPer8) && (SinTheta > -(SinPiPer8))) {
+            } else if (SinTheta > -(SinPiPer8)) {
                 NewState = NEKO_L_MOVE;
-            } else if ((SinTheta <= -(SinPiPer8)) && (SinTheta > -(SinPiPer8Times3))) {
+            } else if (SinTheta > -(SinPiPer8Times3)) {
                 NewState = NEKO_DL_MOVE;
             } else {
                 NewState = NEKO_D_MOVE;

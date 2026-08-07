@@ -274,16 +274,16 @@ SetupColors(void)
     }
 
     if (!XAllocNamedColor(theDisplay, theColormap,
-                          Config.foreground, &theForegroundColor, &theExactColor)) {
+                        foreground, &theForegroundColor, &theExactColor)) {
         fprintf(stderr, "%s: Can't XAllocNamedColor(\"%s\").\n",
-                ProgramName, Config.foreground);
+                ProgramName, foreground);
         exit(1);
     }
 
     if (!XAllocNamedColor(theDisplay, theColormap,
-                          Config.background, &theBackgroundColor, &theExactColor)) {
+                        background, &theBackgroundColor, &theExactColor)) {
         fprintf(stderr, "%s: Can't XAllocNamedColor(\"%s\").\n",
-                ProgramName, Config.background);
+                ProgramName, background);
         exit(1);
     }
 }
