@@ -290,7 +290,6 @@ DrawNeko(int x, int y, int tick)
         (y != Neko.last_y) ||
         (DrawGC != Neko.last_gc) ||
         (sprite_id != Neko.last_sprite)) {
-        
         XWindowChanges theChanges;
 
         theChanges.x = x;
@@ -343,7 +342,7 @@ InitScreen(char *DisplayName)
     InitMonitors();
 
     if (!Monitors) {
-    MonitorCount = 0;
+        MonitorCount = 0;
     }
 
     if (Config.restrict_monitor < -1 ||
