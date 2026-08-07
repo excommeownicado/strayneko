@@ -131,8 +131,12 @@ GetMonitorBounds(int monitor)
 
     bounds.min_x = rect.x;
     bounds.min_y = rect.y;
-    bounds.max_x = rect.x + rect.width - BITMAP_WIDTH;
-    bounds.max_y = rect.y + rect.height - BITMAP_HEIGHT;
+    bounds.max_x = rect.width > BITMAP_WIDTH
+        ? rect.x + rect.width - BITMAP_WIDTH
+        : rect.x;
+    bounds.max_y = rect.height > BITMAP_HEIGHT
+        ? rect.y + rect.height - BITMAP_HEIGHT
+        : rect.y;
 
     if (bounds.max_x < bounds.min_x) {
         bounds.max_x = bounds.min_x;
