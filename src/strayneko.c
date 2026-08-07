@@ -133,10 +133,16 @@ GetTargetEdgeTogiState(void)
             monitor = 0;
         }
 
-        min_x = Monitors[monitor].x;
-        min_y = Monitors[monitor].y;
-        max_x = Monitors[monitor].width > BITMAP_WIDTH ? Monitors[monitor].x + Monitors[monitor].width - BITMAP_WIDTH : Monitors[monitor].x;
-        max_y = Monitors[monitor].height > BITMAP_HEIGHT ? Monitors[monitor].y + Monitors[monitor].height - BITMAP_HEIGHT : Monitors[monitor].y;
+        MonitorRect rect = GetMonitorRect(monitor);
+
+        min_x = rect.x;
+        min_y = rect.y;
+        max_x = rect.width > BITMAP_WIDTH
+            ? rect.x + rect.width - BITMAP_WIDTH
+            : rect.x;
+        max_y = rect.height > BITMAP_HEIGHT
+            ? rect.y + rect.height - BITMAP_HEIGHT
+            : rect.y;
     }
 
     if (Neko.target_y == min_y) {
@@ -192,11 +198,17 @@ ClampTarget(void)
         }
     }
 
-    int min_x = Monitors[monitor].x;
-    int min_y = Monitors[monitor].y;
-    int max_x = Monitors[monitor].width > BITMAP_WIDTH ? Monitors[monitor].x + Monitors[monitor].width - BITMAP_WIDTH : Monitors[monitor].x;
-    int max_y = Monitors[monitor].height > BITMAP_HEIGHT ? Monitors[monitor].y + Monitors[monitor].height - BITMAP_HEIGHT : Monitors[monitor].y;
+    MonitorRect rect = GetMonitorRect(monitor);
 
+    int min_x = rect.x;
+    int min_y = rect.y;
+    int max_x = rect.width > BITMAP_WIDTH
+        ? rect.x + rect.width - BITMAP_WIDTH
+        : rect.x;
+    int max_y = rect.height > BITMAP_HEIGHT
+        ? rect.y + rect.height - BITMAP_HEIGHT
+        : rect.y;
+    
     if (Neko.target_x < min_x) {
         DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n", Neko.target_x, min_x, monitor);
         Neko.target_x = min_x;
@@ -390,11 +402,19 @@ PickRandomTarget(void)
         m = rand() % MonitorCount;
     }
 
-    int width = Monitors[m].width > BITMAP_WIDTH ? Monitors[m].width - BITMAP_WIDTH : 0;
-    int height = Monitors[m].height > BITMAP_HEIGHT ? Monitors[m].height - BITMAP_HEIGHT : 0;
+    MonitorRect rect = GetMonitorRect(m);
 
-    Neko.target_x = Monitors[m].x + rand() % (width + 1);
-    Neko.target_y = Monitors[m].y + rand() % (height + 1);
+    int width = rect.width > BITMAP_WIDTH
+        ? rect.width - BITMAP_WIDTH
+        : 0;
+
+    int height = rect.height > BITMAP_HEIGHT
+        ? rect.height - BITMAP_HEIGHT
+        : 0;
+
+    Neko.target_x = rect.x + rand() % (width + 1);
+    Neko.target_y = rect.y + rand() % (height + 1);
+
     DebugLog("PickRandomTarget: monitor=%d target=(%d,%d) width=%d height=%d\n",
              m, Neko.target_x, Neko.target_y, width, height);
 }
@@ -405,20 +425,29 @@ RectOnMonitor(int x, int y, int w, int h)
     int i;
 
     if (MonitorCount <= 0) {
-        return x >= 0 && y >= 0 && x + w <= (int)WindowWidth && y + h <= (int)WindowHeight;
+        return x >= 0 && y >= 0 &&
+            x + w <= (int)WindowWidth &&
+            y + h <= (int)WindowHeight;
     }
 
-    if (Config.restrict_monitor >= 0 && Config.restrict_monitor < MonitorCount) {
-        i = Config.restrict_monitor;
-        return x >= Monitors[i].x && y >= Monitors[i].y &&
-            x + w <= Monitors[i].x + Monitors[i].width &&
-            y + h <= Monitors[i].y + Monitors[i].height;
+    if (Config.restrict_monitor >= 0 &&
+        Config.restrict_monitor < MonitorCount) {
+
+        MonitorRect rect = GetMonitorRect(Config.restrict_monitor);
+
+        return x >= rect.x &&
+            y >= rect.y &&
+            x + w <= rect.x + rect.width &&
+            y + h <= rect.y + rect.height;
     }
 
     for (i = 0; i < MonitorCount; i++) {
-        if (x >= Monitors[i].x && y >= Monitors[i].y &&
-            x + w <= Monitors[i].x + Monitors[i].width &&
-            y + h <= Monitors[i].y + Monitors[i].height) {
+        MonitorRect rect = GetMonitorRect(i);
+
+        if (x >= rect.x &&
+            y >= rect.y &&
+            x + w <= rect.x + rect.width &&
+            y + h <= rect.y + rect.height) {
             return 1;
         }
     }

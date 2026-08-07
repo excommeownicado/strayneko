@@ -35,6 +35,17 @@ static const SpriteData SpriteDataTable[SPRITE_COUNT] = {
     [SPRITE_RIGHTTOGI2] = { rtogi2_bits, rtogi2_mask_bits }
 };
 
+MonitorRect
+GetMonitorRect(int monitor)
+{
+    return (MonitorRect) {
+        .x = Monitors[monitor].x,
+        .y = Monitors[monitor].y,
+        .width = Monitors[monitor].width,
+        .height = Monitors[monitor].height
+    };
+}
+
 static void
 CreateBedWindow(void)
 {

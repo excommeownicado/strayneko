@@ -175,6 +175,15 @@ typedef struct {
     int restrict_monitor;
 } ConfigData;
 
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+} MonitorRect;
+
+MonitorRect GetMonitorRect(int monitor);
+
 extern NekoData Neko;
 extern BedData Bed;
 extern ConfigData Config;
