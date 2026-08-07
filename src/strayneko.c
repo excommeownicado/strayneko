@@ -255,6 +255,11 @@ TickCount(void)
 void
 SetNekoState(int SetValue)
 {
+    if (SetValue < 0 ||
+        SetValue >= NEKO_STATE_COUNT) {
+        return;
+    }
+
     Neko.tick_count = 0;
     Neko.state_count = 0;
     Neko.state = SetValue;
@@ -274,6 +279,9 @@ NekoDirection(void)
         LargeX = (double)Neko.move_dx;
         LargeY = (double)(-Neko.move_dy);
         Length = sqrt(LargeX * LargeX + LargeY * LargeY);
+        if (Length == 0) {
+            return;
+        }
         SinTheta = LargeY / Length;
 
         if (Neko.move_dx > 0) {

@@ -133,9 +133,15 @@ FindMonitorFor(int x, int y)
 MonitorBounds
 GetMonitorBounds(int monitor)
 {
-    MonitorRect rect = GetMonitorRect(monitor);
+    MonitorBounds bounds = {0};
+    
+    if (!Monitors ||
+        monitor < 0 ||
+        monitor >= MonitorCount) {
+        return bounds;
+    }
 
-    MonitorBounds bounds;
+    MonitorRect rect = GetMonitorRect(monitor);
 
     bounds.min_x = rect.x;
     bounds.min_y = rect.y;
@@ -183,6 +189,16 @@ CreateBedWindow(void)
     }
 #endif
     Bed.gc = XCreateGC(theDisplay, theRoot, 0, NULL);
+
+    if (BedWindow == None ||
+        Bed.pixmap == None ||
+        Bed.mask == None ||
+        Bed.gc == NULL) {
+        fprintf(stderr, "%s: failed to create bed resources\n",
+                ProgramName);
+        exit(1);
+    }
+
     XSetForeground(theDisplay, Bed.gc, theForegroundColor.pixel);
     XSetBackground(theDisplay, Bed.gc, theBackgroundColor.pixel);
     XSetStipple(theDisplay, Bed.gc, Bed.pixmap);
@@ -318,6 +334,10 @@ InitScreen(char *DisplayName)
 
     InitMonitors();
 
+    if (!Monitors) {
+    MonitorCount = 0;
+    }
+
     if (Config.restrict_monitor < -1 ||
         Config.restrict_monitor >= MonitorCount) {
         fprintf(stderr, "%s: monitor %d is unavailable.\n",
@@ -367,6 +387,13 @@ InitScreen(char *DisplayName)
                               BITMAP_WIDTH, BITMAP_HEIGHT,
                               0, theDepth, InputOutput, CopyFromParent,
                               theWindowMask, &theWindowAttributes);
+
+    if (theWindow == None) {
+        fprintf(stderr, "%s: failed to create neko window\n",
+                ProgramName);
+        exit(1);
+    }
+
     InitBitmapAndGCs();
 
     XSelectInput(theDisplay, theWindow,
@@ -389,25 +416,31 @@ RestoreCursor(void)
                              &theWindowAttributes);
 
     for (int i = 0; i < SPRITE_COUNT; i++) {
-        if (Sprites[i].pixmap != None)
+        if (Sprites[i].pixmap != None) {
             XFreePixmap(theDisplay, Sprites[i].pixmap);
+        }
 
-        if (Sprites[i].mask != None)
+        if (Sprites[i].mask != None) {
             XFreePixmap(theDisplay, Sprites[i].mask);
+        }
 
-        if (Sprites[i].gc != NULL)
+        if (Sprites[i].gc != NULL) {
             XFreeGC(theDisplay, Sprites[i].gc);
+        }
     }
 
     if (Bed.enabled) {
-        if (Bed.pixmap != None)
+        if (Bed.pixmap != None) {
             XFreePixmap(theDisplay, Bed.pixmap);
+        }
 
-        if (Bed.mask != None)
+        if (Bed.mask != None) {
             XFreePixmap(theDisplay, Bed.mask);
+        }
 
-        if (Bed.gc != NULL)
+        if (Bed.gc != NULL) {
             XFreeGC(theDisplay, Bed.gc);
+        }
     }
 
     if (Monitors) {
