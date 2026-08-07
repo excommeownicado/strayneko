@@ -413,7 +413,7 @@ PickNearbyTarget(int radius)
     int x, y;
 
     if (radius < 0) {
-            return;
+        return;
     }
 
     for (int tries = 0; tries < 100; tries++) {

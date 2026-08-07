@@ -304,7 +304,7 @@ DrawNeko(int x, int y, int tick)
 #endif
         if (DontMapped) {
             XMapWindow(theDisplay, theWindow);
-                        DontMapped = 0;
+            DontMapped = 0;
         }
         XFillRectangle(theDisplay, theWindow, DrawGC,
                        0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
@@ -338,6 +338,8 @@ InitScreen(char *DisplayName)
         exit(1);
     }
 
+    GetResources();
+
     InitMonitors();
 
     if (!Monitors) {
@@ -350,8 +352,6 @@ InitScreen(char *DisplayName)
                 ProgramName, Config.restrict_monitor);
         exit(1);
     }
-
-    GetResources();
 
     if (Synchronous == True) {
         fprintf(stderr, "Synchronizing.\n");
