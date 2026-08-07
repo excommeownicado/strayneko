@@ -208,6 +208,8 @@ extern Window BedWindow;
 extern unsigned int WindowWidth;
 extern unsigned int WindowHeight;
 
+extern Sprite Sprites[SPRITE_COUNT];
+
 extern XColor theForegroundColor;
 extern XColor theBackgroundColor;
 

@@ -77,29 +77,6 @@ DebugLog(const char *format, ...)
 double SinPiPer8Times3;
 double SinPiPer8;
 
-Sprite Sprites[SPRITE_COUNT] = {0};
-
-static const SpriteID AnimationPattern[][2] = {
-    {     SPRITE_MATI2,       SPRITE_MATI2        },
-    {     SPRITE_JARE2,       SPRITE_MATI2        },
-    {     SPRITE_KAKI1,       SPRITE_KAKI2        },
-    {     SPRITE_MATI3,       SPRITE_MATI3        },
-    {     SPRITE_SLEEP1,      SPRITE_SLEEP2       },
-    {     SPRITE_AWAKE,       SPRITE_AWAKE        },
-    {     SPRITE_UP1,         SPRITE_UP2          },
-    {     SPRITE_DOWN1,       SPRITE_DOWN2        },
-    {     SPRITE_LEFT1,       SPRITE_LEFT2        },
-    {     SPRITE_RIGHT1,      SPRITE_RIGHT2       },
-    {     SPRITE_UPLEFT1,     SPRITE_UPLEFT2      },
-    {     SPRITE_UPRIGHT1,    SPRITE_UPRIGHT2     },
-    {     SPRITE_DOWNLEFT1,   SPRITE_DOWNLEFT2    },
-    {     SPRITE_DOWNRIGHT1,  SPRITE_DOWNRIGHT2   },
-    {     SPRITE_UPTOGI1,     SPRITE_UPTOGI2      },
-    {     SPRITE_DOWNTOGI1,   SPRITE_DOWNTOGI2    },
-    {     SPRITE_LEFTTOGI1,   SPRITE_LEFTTOGI2    },
-    {     SPRITE_RIGHTTOGI1,  SPRITE_RIGHTTOGI2   },
-};
-
 static MonitorBounds
 GetMonitorBounds(int monitor)
 {
@@ -285,39 +262,6 @@ SetNekoState(int SetValue)
     Neko.tick_count = 0;
     Neko.state_count = 0;
     Neko.state = SetValue;
-}
-
-void
-DrawNeko(int x, int y, int tick)
-{
-    Sprite *sprite = &Sprites[AnimationPattern[Neko.state][tick]];
-    GC DrawGC = sprite->gc;
-    Pixmap DrawMask = sprite->mask;
-
-    if ((x != Neko.last_x) || (y != Neko.last_y) || (DrawGC != Neko.last_gc)) {
-        XWindowChanges theChanges;
-
-        theChanges.x = x;
-        theChanges.y = y;
-        XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
-#ifdef SHAPE
-        if (Config.no_shape == False) {
-            XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
-                              0, 0, DrawMask, ShapeSet);
-        }
-#endif
-        if (DontMapped) {
-            XMapWindow(theDisplay, theWindow);
-            DontMapped = 0;
-        }
-        XFillRectangle(theDisplay, theWindow, DrawGC,
-                       0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
-    }
-
-    XFlush(theDisplay);
-    Neko.last_x = x;
-    Neko.last_y = y;
-    Neko.last_gc = DrawGC;
 }
 
 void
