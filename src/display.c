@@ -61,6 +61,14 @@ static const SpriteID AnimationPattern[][2] = {
 MonitorRect
 GetMonitorRect(int monitor)
 {
+    MonitorRect empty = {0};
+
+    if (!Monitors ||
+        monitor < 0 ||
+        monitor >= MonitorCount) {
+        return empty;
+    }
+
     return (MonitorRect) {
         .x = Monitors[monitor].x,
         .y = Monitors[monitor].y,
@@ -250,6 +258,13 @@ InitBitmapAndGCs(void)
 void
 DrawNeko(int x, int y, int tick)
 {
+    if (Neko.state < 0 ||
+        Neko.state >= (int)(sizeof(AnimationPattern) / sizeof(AnimationPattern[0]))) {
+        return;
+    }
+
+    tick &= 1;
+
     Sprite *sprite = &Sprites[AnimationPattern[Neko.state][tick]];
     GC DrawGC = sprite->gc;
     Pixmap DrawMask = sprite->mask;
@@ -303,7 +318,8 @@ InitScreen(char *DisplayName)
 
     InitMonitors();
 
-    if (Config.restrict_monitor >= MonitorCount) {
+    if (Config.restrict_monitor < -1 ||
+        Config.restrict_monitor >= MonitorCount) {
         fprintf(stderr, "%s: monitor %d is unavailable.\n",
                 ProgramName, Config.restrict_monitor);
         exit(1);

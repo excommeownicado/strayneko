@@ -6,15 +6,18 @@ PlaceBedOnMonitor(void)
 {
     int monitor;
 
-    if (MonitorCount <= 0) {
+    if (!Monitors || MonitorCount <= 0) {
         Bed.x = ((int)WindowWidth - bed_width) / 2;
         Bed.y = ((int)WindowHeight - bed_height) / 2;
         return;
     }
 
-    monitor = Config.restrict_monitor >= 0
-        ? Config.restrict_monitor
-        : rand() % MonitorCount;
+    if (Config.restrict_monitor >= 0 &&
+        Config.restrict_monitor < MonitorCount) {
+        monitor = Config.restrict_monitor;
+    } else {
+        monitor = rand() % MonitorCount;
+    }
 
     MonitorBounds bounds = GetMonitorBounds(monitor);
 

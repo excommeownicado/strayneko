@@ -118,8 +118,10 @@ SaveBedPosition(void)
         return;
     }
 
-    fprintf(file, "%d %d\n", Bed.x, Bed.y);
-    fclose(file);
+    if (fprintf(file, "%d %d\n", Bed.x, Bed.y) < 0) {
+        fclose(file);
+        return;
+    }
 }
 
 int
@@ -128,6 +130,12 @@ ParseLongOption(const char *option, const char *value, long minimum,
 {
     char *end;
     long parsed;
+
+    if (value == NULL) {
+    fprintf(stderr, "%s: missing value for %s.\n",
+            ProgramName, option);
+    return False;
+    }
 
     errno = 0;
     parsed = strtol(value, &end, 10);
@@ -148,6 +156,12 @@ ParseDoubleOption(const char *option, const char *value, double minimum,
 {
     char *end;
     double parsed;
+
+    if (value == NULL) {
+    fprintf(stderr, "%s: missing value for %s.\n",
+            ProgramName, option);
+    return False;
+    }
 
     errno = 0;
     parsed = strtod(value, &end);
@@ -250,11 +264,13 @@ SetupColors(void)
         Config.background = "white";
     }
 
-    if (Config.reverse_video == True) {
-        char *tmp;
-        tmp = Config.foreground;
-        Config.foreground = Config.background;
-        Config.background = tmp;
+    char *foreground = Config.foreground;
+    char *background = Config.background;
+
+    if (Config.reverse_video) {
+        char *tmp = foreground;
+        foreground = background;
+        background = tmp;
     }
 
     if (!XAllocNamedColor(theDisplay, theColormap,
@@ -279,4 +295,8 @@ InitMonitors(void)
 
     root = RootWindow(theDisplay, DefaultScreen(theDisplay));
     Monitors = XRRGetMonitors(theDisplay, root, True, &MonitorCount);
+
+    if (!Monitors) {
+        MonitorCount = 0;
+    }
 }

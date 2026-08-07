@@ -18,6 +18,7 @@ NekoErrorHandler(Display *dpy, XErrorEvent *err)
     char msg[80];
     XGetErrorText(dpy, err->error_code, msg, sizeof(msg));
     fprintf(stderr, "%s: Error and exit.\n%s\n", ProgramName, msg);
+    RestoreCursor();
     exit(1);
 }
 
@@ -122,7 +123,6 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
 #ifdef ENABLE_DEBUG
         } else if (strcmp(argv[ArgCounter], "--debug") == 0) {
             DebugMode = 1;
-#endif
         } else if (strcmp(argv[ArgCounter], "--force-target") == 0) {
             ArgCounter++;
             if (ArgCounter >= argc) {
@@ -140,6 +140,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 ForceTargetX = fx;
                 ForceTargetY = fy;
             }
+#endif
         } else if (strcmp(argv[ArgCounter], "--min-wait") == 0) {
             ArgCounter++;
             if (ArgCounter < argc) {
@@ -187,10 +188,14 @@ main(int argc, char *argv[])
     char theDisplayName[MAXDISPLAYNAME];
 
     srand(time(NULL));
-    ProgramName = argv[0];
+    ProgramName = (argv[0]) ? argv[0] : "strayneko";
 
     argc--;
     argv++;
+
+    if (argc < 1) {
+        return 1;
+    }
 
     GetArguments(argc, argv, theDisplayName);
 
