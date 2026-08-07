@@ -198,6 +198,11 @@ InitBitmapAndGCs(void)
     theGCValues.ts_y_origin = 0;
 
     for (int i = 0; i < SPRITE_COUNT; i++) {
+        if (!SpriteDataTable[i].bits || !SpriteDataTable[i].mask_bits) {
+            fprintf(stderr, "Missing sprite data %d\n", i);
+            exit(1);
+        }
+
         Sprites[i].pixmap = XCreatePixmapFromBitmapData(
             theDisplay,
             theRoot,
@@ -368,15 +373,25 @@ RestoreCursor(void)
                              &theWindowAttributes);
 
     for (int i = 0; i < SPRITE_COUNT; i++) {
-        XFreePixmap(theDisplay, Sprites[i].pixmap);
-        XFreePixmap(theDisplay, Sprites[i].mask);
-        XFreeGC(theDisplay, Sprites[i].gc);
+        if (Sprites[i].pixmap != None)
+            XFreePixmap(theDisplay, Sprites[i].pixmap);
+
+        if (Sprites[i].mask != None)
+            XFreePixmap(theDisplay, Sprites[i].mask);
+
+        if (Sprites[i].gc != NULL)
+            XFreeGC(theDisplay, Sprites[i].gc);
     }
 
     if (Bed.enabled) {
-        XFreePixmap(theDisplay, Bed.pixmap);
-        XFreePixmap(theDisplay, Bed.mask);
-        XFreeGC(theDisplay, Bed.gc);
+        if (Bed.pixmap != None)
+            XFreePixmap(theDisplay, Bed.pixmap);
+
+        if (Bed.mask != None)
+            XFreePixmap(theDisplay, Bed.mask);
+
+        if (Bed.gc != NULL)
+            XFreeGC(theDisplay, Bed.gc);
     }
 
     if (Monitors) {
