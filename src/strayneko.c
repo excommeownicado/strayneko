@@ -131,67 +131,99 @@ GetTargetEdgeTogiState(void)
 static void
 ClampTarget(void)
 {
+    MonitorBounds bounds;
+
     if (MonitorCount <= 0) {
+        int max_x = WindowWidth > BITMAP_WIDTH
+            ? WindowWidth - BITMAP_WIDTH
+            : 0;
+        int max_y = WindowHeight > BITMAP_HEIGHT
+            ? WindowHeight - BITMAP_HEIGHT
+            : 0;
+
         if (Neko.target_x < 0) {
-            DebugLog("ClampTarget: Neko.target_x %d -> 0 (root)\n", Neko.target_x);
+            DebugLog("ClampTarget: Neko.target_x %d -> 0 (root)\n",
+                     Neko.target_x);
             Neko.target_x = 0;
-        }
-        int max_x = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 0;
-        if (Neko.target_x > max_x) {
-            DebugLog("ClampTarget: Neko.target_x %d -> %d (root)\n", Neko.target_x, max_x);
+        } else if (Neko.target_x > max_x) {
+            DebugLog("ClampTarget: Neko.target_x %d -> %d (root)\n",
+                     Neko.target_x, max_x);
             Neko.target_x = max_x;
         }
+
         if (Neko.target_y < 0) {
-            DebugLog("ClampTarget: Neko.target_y %d -> 0 (root)\n", Neko.target_y);
+            DebugLog("ClampTarget: Neko.target_y %d -> 0 (root)\n",
+                     Neko.target_y);
             Neko.target_y = 0;
-        }
-        int max_y = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 0;
-        if (Neko.target_y > max_y) {
-            DebugLog("ClampTarget: Neko.target_y %d -> %d (root)\n", Neko.target_y, max_y);
+        } else if (Neko.target_y > max_y) {
+            DebugLog("ClampTarget: Neko.target_y %d -> %d (root)\n",
+                     Neko.target_y, max_y);
             Neko.target_y = max_y;
         }
+
         return;
     }
 
-    int monitor = -1;
-    if (Config.restrict_monitor >= 0 && Config.restrict_monitor < MonitorCount) {
+    int monitor;
+
+    if (Config.restrict_monitor >= 0 &&
+        Config.restrict_monitor < MonitorCount) {
+
         monitor = Config.restrict_monitor;
+
     } else {
         monitor = FindMonitorFor(Neko.target_x, Neko.target_y);
+
         if (monitor < 0) {
-            monitor = FindMonitorFor(Neko.x + BITMAP_WIDTH / 2, Neko.y + BITMAP_HEIGHT);
+            monitor = FindMonitorFor(
+                Neko.x + BITMAP_WIDTH / 2,
+                Neko.y + BITMAP_HEIGHT
+            );
         }
+
         if (monitor < 0) {
             monitor = 0;
         }
     }
 
-    MonitorBounds bounds = GetMonitorBounds(monitor);
-    
+    bounds = GetMonitorBounds(monitor);
+
     if (Neko.target_x < bounds.min_x) {
         DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n",
-                Neko.target_x, bounds.min_x, monitor);
+                 Neko.target_x, bounds.min_x, monitor);
         Neko.target_x = bounds.min_x;
     } else if (Neko.target_x > bounds.max_x) {
         DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n",
-                Neko.target_x, bounds.max_x, monitor);
+                 Neko.target_x, bounds.max_x, monitor);
         Neko.target_x = bounds.max_x;
     }
 
     if (Neko.target_y < bounds.min_y) {
         DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n",
-                Neko.target_y, bounds.min_y, monitor);
+                 Neko.target_y, bounds.min_y, monitor);
         Neko.target_y = bounds.min_y;
     } else if (Neko.target_y > bounds.max_y) {
         DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n",
-                Neko.target_y, bounds.max_y, monitor);
+                 Neko.target_y, bounds.max_y, monitor);
         Neko.target_y = bounds.max_y;
     }
 
-    if (!RectOnMonitor(Neko.target_x, Neko.target_y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
-        DebugLog("ClampTarget: Target (%d,%d) still invalid for monitor %d, resetting to (%d,%d)\n",
-                Neko.target_x, Neko.target_y, monitor,
-                bounds.min_x, bounds.min_y);
+    if (!RectOnMonitor(
+            Neko.target_x,
+            Neko.target_y,
+            BITMAP_WIDTH,
+            BITMAP_HEIGHT)) {
+
+        DebugLog(
+            "ClampTarget: Target (%d,%d) still invalid for monitor %d, "
+            "resetting to (%d,%d)\n",
+            Neko.target_x,
+            Neko.target_y,
+            monitor,
+            bounds.min_x,
+            bounds.min_y
+        );
+
         Neko.target_x = bounds.min_x;
         Neko.target_y = bounds.min_y;
     }
@@ -281,18 +313,27 @@ IsWindowOver(void)
 {
     Bool ReturnValue = False;
 
+    int max_x = WindowWidth > BITMAP_WIDTH
+        ? WindowWidth - BITMAP_WIDTH
+        : 0;
+
+    int max_y = WindowHeight > BITMAP_HEIGHT
+        ? WindowHeight - BITMAP_HEIGHT
+        : 0;
+
     if (Neko.y <= 0) {
         Neko.y = 0;
         ReturnValue = True;
-    } else if (Neko.y >= WindowHeight - BITMAP_HEIGHT) {
-        Neko.y = WindowHeight - BITMAP_HEIGHT;
+    } else if (Neko.y >= max_y) {
+        Neko.y = max_y;
         ReturnValue = True;
     }
+
     if (Neko.x <= 0) {
         Neko.x = 0;
         ReturnValue = True;
-    } else if (Neko.x >= WindowWidth - BITMAP_WIDTH) {
-        Neko.x = WindowWidth - BITMAP_WIDTH;
+    } else if (Neko.x >= max_x) {
+        Neko.x = max_x;
         ReturnValue = True;
     }
 
