@@ -69,6 +69,82 @@ GetMonitorRect(int monitor)
     };
 }
 
+int
+RectOnMonitor(int x, int y, int w, int h)
+{
+    int i;
+
+    if (MonitorCount <= 0) {
+        return x >= 0 && y >= 0 &&
+            x + w <= (int)WindowWidth &&
+            y + h <= (int)WindowHeight;
+    }
+
+    if (Config.restrict_monitor >= 0 &&
+        Config.restrict_monitor < MonitorCount) {
+
+        MonitorRect rect = GetMonitorRect(Config.restrict_monitor);
+
+        return x >= rect.x &&
+            y >= rect.y &&
+            x + w <= rect.x + rect.width &&
+            y + h <= rect.y + rect.height;
+    }
+
+    for (i = 0; i < MonitorCount; i++) {
+        MonitorRect rect = GetMonitorRect(i);
+
+        if (x >= rect.x &&
+            y >= rect.y &&
+            x + w <= rect.x + rect.width &&
+            y + h <= rect.y + rect.height) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+int
+FindMonitorFor(int x, int y)
+{
+    for (int i = 0; i < MonitorCount; i++) {
+        MonitorRect rect = GetMonitorRect(i);
+
+        if (x >= rect.x &&
+            y >= rect.y &&
+            x < rect.x + rect.width &&
+            y < rect.y + rect.height) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+MonitorBounds
+GetMonitorBounds(int monitor)
+{
+    MonitorRect rect = GetMonitorRect(monitor);
+
+    MonitorBounds bounds;
+
+    bounds.min_x = rect.x;
+    bounds.min_y = rect.y;
+    bounds.max_x = rect.x + rect.width - BITMAP_WIDTH;
+    bounds.max_y = rect.y + rect.height - BITMAP_HEIGHT;
+
+    if (bounds.max_x < bounds.min_x) {
+        bounds.max_x = bounds.min_x;
+    }
+
+    if (bounds.max_y < bounds.min_y) {
+        bounds.max_y = bounds.min_y;
+    }
+
+    return bounds;
+}
+
 static void
 CreateBedWindow(void)
 {

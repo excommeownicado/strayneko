@@ -182,8 +182,6 @@ typedef struct {
     int height;
 } MonitorRect;
 
-MonitorRect GetMonitorRect(int monitor);
-
 typedef struct {
     int min_x;
     int min_y;
@@ -254,7 +252,10 @@ Bool IsWindowOver(void);
 Bool IsNekoDontMove(void);
 Bool IsNekoMoveStart(void);
 void PickRandomTarget(void);
+MonitorRect GetMonitorRect(int monitor);
+MonitorBounds GetMonitorBounds(int monitor);
 int RectOnMonitor(int x, int y, int w, int h);
+int FindMonitorFor(int x, int y);
 void PickNearbyTarget(int radius);
 void CalcDxDy(void);
 void NekoThinkDraw(void);

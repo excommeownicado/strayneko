@@ -77,42 +77,6 @@ DebugLog(const char *format, ...)
 double SinPiPer8Times3;
 double SinPiPer8;
 
-static MonitorBounds
-GetMonitorBounds(int monitor)
-{
-    MonitorRect rect = GetMonitorRect(monitor);
-
-    MonitorBounds bounds = {
-        .min_x = rect.x,
-        .min_y = rect.y,
-        .max_x = rect.width > BITMAP_WIDTH
-            ? rect.x + rect.width - BITMAP_WIDTH
-            : rect.x,
-        .max_y = rect.height > BITMAP_HEIGHT
-            ? rect.y + rect.height - BITMAP_HEIGHT
-            : rect.y
-    };
-
-    return bounds;
-}
-
-static int
-FindMonitorFor(int x, int y)
-{
-    for (int i = 0; i < MonitorCount; i++) {
-        MonitorRect rect = GetMonitorRect(i);
-
-        if (x >= rect.x &&
-            y >= rect.y &&
-            x < rect.x + rect.width &&
-            y < rect.y + rect.height) {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
 static int
 GetTargetEdgeTogiState(void)
 {
@@ -379,42 +343,6 @@ PickRandomTarget(void)
 
     DebugLog("PickRandomTarget: monitor=%d target=(%d,%d) width=%d height=%d\n",
             m, Neko.target_x, Neko.target_y, width, height);
-}
-
-int
-RectOnMonitor(int x, int y, int w, int h)
-{
-    int i;
-
-    if (MonitorCount <= 0) {
-        return x >= 0 && y >= 0 &&
-            x + w <= (int)WindowWidth &&
-            y + h <= (int)WindowHeight;
-    }
-
-    if (Config.restrict_monitor >= 0 &&
-        Config.restrict_monitor < MonitorCount) {
-
-        MonitorRect rect = GetMonitorRect(Config.restrict_monitor);
-
-        return x >= rect.x &&
-            y >= rect.y &&
-            x + w <= rect.x + rect.width &&
-            y + h <= rect.y + rect.height;
-    }
-
-    for (i = 0; i < MonitorCount; i++) {
-        MonitorRect rect = GetMonitorRect(i);
-
-        if (x >= rect.x &&
-            y >= rect.y &&
-            x + w <= rect.x + rect.width &&
-            y + h <= rect.y + rect.height) {
-            return 1;
-        }
-    }
-
-    return 0;
 }
 
 void
