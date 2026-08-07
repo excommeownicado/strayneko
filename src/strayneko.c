@@ -311,33 +311,37 @@ NekoDirection(void)
 Bool
 IsWindowOver(void)
 {
-    Bool ReturnValue = False;
+    if (MonitorCount <= 0) {
+        Bool ReturnValue = False;
 
-    int max_x = WindowWidth > BITMAP_WIDTH
-        ? WindowWidth - BITMAP_WIDTH
-        : 0;
+        int max_x = WindowWidth > BITMAP_WIDTH
+            ? WindowWidth - BITMAP_WIDTH
+            : 0;
 
-    int max_y = WindowHeight > BITMAP_HEIGHT
-        ? WindowHeight - BITMAP_HEIGHT
-        : 0;
+        int max_y = WindowHeight > BITMAP_HEIGHT
+            ? WindowHeight - BITMAP_HEIGHT
+            : 0;
 
-    if (Neko.y <= 0) {
-        Neko.y = 0;
-        ReturnValue = True;
-    } else if (Neko.y >= max_y) {
-        Neko.y = max_y;
-        ReturnValue = True;
+        if (Neko.x < 0) {
+            Neko.x = 0;
+            ReturnValue = True;
+        } else if (Neko.x > max_x) {
+            Neko.x = max_x;
+            ReturnValue = True;
+        }
+
+        if (Neko.y < 0) {
+            Neko.y = 0;
+            ReturnValue = True;
+        } else if (Neko.y > max_y) {
+            Neko.y = max_y;
+            ReturnValue = True;
+        }
+
+        return ReturnValue;
     }
 
-    if (Neko.x <= 0) {
-        Neko.x = 0;
-        ReturnValue = True;
-    } else if (Neko.x >= max_x) {
-        Neko.x = max_x;
-        ReturnValue = True;
-    }
-
-    return ReturnValue;
+    return False;
 }
 
 Bool
