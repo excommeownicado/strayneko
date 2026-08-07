@@ -51,6 +51,8 @@
 #define NEKO_L_TOGI 16
 #define NEKO_R_TOGI 17
 
+#define NEKO_STATE_COUNT 18
+
 #define NEKO_STOP_TIME 4
 #define NEKO_JARE_TIME 10
 #define NEKO_KAKI_TIME 4

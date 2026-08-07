@@ -373,6 +373,10 @@ PickRandomTarget(void)
         int width = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 0;
         int height = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 0;
 
+        if (width < 0 || height < 0) {
+            return;
+        }
+
         Neko.target_x = rand() % (width + 1);
         Neko.target_y = rand() % (height + 1);
         DebugLog("PickRandomTarget: root target=(%d,%d) width=%d height=%d\n",
@@ -391,6 +395,10 @@ PickRandomTarget(void)
     int width = bounds.max_x - bounds.min_x;
     int height = bounds.max_y - bounds.min_y;
 
+    if (width < 0 || height < 0) {
+        return;
+    }
+
     Neko.target_x = bounds.min_x + rand() % (width + 1);
     Neko.target_y = bounds.min_y + rand() % (height + 1);
 
@@ -406,6 +414,10 @@ PickNearbyTarget(int radius)
     for (int tries = 0; tries < 100; tries++) {
         x = Neko.x + (rand() % (radius * 2 + 1) - radius);
         y = Neko.y + (rand() % (radius * 2 + 1) - radius);
+
+        if (radius < 0) {
+            return;
+        }
 
         if (RectOnMonitor(x, y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
             Neko.target_x = x;
