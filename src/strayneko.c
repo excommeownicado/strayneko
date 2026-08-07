@@ -8,7 +8,8 @@ NekoData Neko = {
     .x = 0,
     .y = 0,
     .target_x = 0,
-    .target_y = 0
+    .target_y = 0,
+    .last_sprite = SPRITE_COUNT
 };
 
 BedData Bed = {
@@ -285,7 +286,7 @@ NekoDirection(void)
         SinTheta = LargeY / Length;
 
         if (Neko.move_dx > 0) {
-            if (SinTheta > SinPiPer8Times3) {
+            if (SinTheta >= SinPiPer8Times3) {
                 NewState = NEKO_U_MOVE;
             } else if ((SinTheta <= SinPiPer8Times3) && (SinTheta > SinPiPer8)) {
                 NewState = NEKO_UR_MOVE;
@@ -297,7 +298,7 @@ NekoDirection(void)
                 NewState = NEKO_D_MOVE;
             }
         } else {
-            if (SinTheta > SinPiPer8Times3) {
+            if (SinTheta >= SinPiPer8Times3) {
                 NewState = NEKO_U_MOVE;
             } else if ((SinTheta <= SinPiPer8Times3) && (SinTheta > SinPiPer8)) {
                 NewState = NEKO_UL_MOVE;
@@ -411,13 +412,13 @@ PickNearbyTarget(int radius)
 {
     int x, y;
 
+    if (radius < 0) {
+            return;
+    }
+
     for (int tries = 0; tries < 100; tries++) {
         x = Neko.x + (rand() % (radius * 2 + 1) - radius);
         y = Neko.y + (rand() % (radius * 2 + 1) - radius);
-
-        if (radius < 0) {
-            return;
-        }
 
         if (RectOnMonitor(x, y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
             Neko.target_x = x;

@@ -281,27 +281,32 @@ DrawNeko(int x, int y, int tick)
 
     tick &= 1;
 
-    Sprite *sprite = &Sprites[AnimationPattern[Neko.state][tick]];
+    SpriteID sprite_id = AnimationPattern[Neko.state][tick];
+    Sprite *sprite = &Sprites[sprite_id];
     GC DrawGC = sprite->gc;
     Pixmap DrawMask = sprite->mask;
 
-    if ((x != Neko.last_x) || (y != Neko.last_y) || (DrawGC != Neko.last_gc)) {
-        XWindowChanges theChanges;
+    if ((x != Neko.last_x) ||
+        (y != Neko.last_y) ||
+        (DrawGC != Neko.last_gc) ||
+        (sprite_id != Neko.last_sprite)) {
+        
+            XWindowChanges theChanges;
 
-        theChanges.x = x;
-        theChanges.y = y;
-        XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
+            theChanges.x = x;
+            theChanges.y = y;
+            XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
 #ifdef SHAPE
-        if (Config.no_shape == False) {
-            XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
+            if (Config.no_shape == False) {
+                XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
                               0, 0, DrawMask, ShapeSet);
-        }
+            }
 #endif
-        if (DontMapped) {
-            XMapWindow(theDisplay, theWindow);
-            DontMapped = 0;
-        }
-        XFillRectangle(theDisplay, theWindow, DrawGC,
+            if (DontMapped) {
+                XMapWindow(theDisplay, theWindow);
+                            DontMapped = 0;
+            }
+            XFillRectangle(theDisplay, theWindow, DrawGC,
                        0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
     }
 
@@ -309,6 +314,7 @@ DrawNeko(int x, int y, int tick)
     Neko.last_x = x;
     Neko.last_y = y;
     Neko.last_gc = DrawGC;
+    Neko.last_sprite = sprite_id;
 }
 
 void
@@ -445,6 +451,7 @@ RestoreCursor(void)
 
     if (Monitors) {
         XRRFreeMonitors(Monitors);
+        Monitors = NULL;
     }
 
     XCloseDisplay(theDisplay);

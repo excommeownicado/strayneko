@@ -112,8 +112,6 @@ typedef struct {
     Pixmap mask;
 } Sprite;
 
-extern Sprite Sprites[SPRITE_COUNT];
-
 typedef struct {
     const unsigned char *bits;
     const unsigned char *mask_bits;
@@ -131,6 +129,7 @@ typedef struct {
     int last_x;
     int last_y;
     GC last_gc;
+    SpriteID last_sprite;
 
     int tick_count;
     int state_count;
