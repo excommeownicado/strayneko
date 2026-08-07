@@ -193,10 +193,6 @@ main(int argc, char *argv[])
     argc--;
     argv++;
 
-    if (argc < 1) {
-        return 1;
-    }
-
     GetArguments(argc, argv, theDisplayName);
 
     XSetErrorHandler(NekoErrorHandler);

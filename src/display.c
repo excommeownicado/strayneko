@@ -455,7 +455,6 @@ RestoreCursor(void)
     }
 
     XCloseDisplay(theDisplay);
-    exit(0);
 }
 
 void
