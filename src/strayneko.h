@@ -4,6 +4,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
+#include <math.h>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -168,7 +169,6 @@ typedef struct {
     double speed;
 
     int no_shape;
-    int reverse_video;
 
     int min_wait;
     int max_wait;

@@ -240,12 +240,6 @@ GetResources(void)
         }
     }
 
-    if (Config.reverse_video == NOTDEFINED) {
-        if ((resource = NekoGetDefault("reverse")) != NULL) {
-            Config.reverse_video = IsTrue(resource);
-        }
-    }
-
     if (Config.foreground == NULL) {
         Config.foreground = DEFAULT_FOREGROUND;
     }
@@ -260,9 +254,6 @@ GetResources(void)
     }
     if (Config.no_shape == NOTDEFINED) {
         Config.no_shape = False;
-    }
-    if (Config.reverse_video == NOTDEFINED) {
-        Config.reverse_video = False;
     }
 }
 
@@ -281,12 +272,6 @@ SetupColors(void)
 
     char *foreground = Config.foreground;
     char *background = Config.background;
-
-    if (Config.reverse_video) {
-        char *tmp = foreground;
-        foreground = background;
-        background = tmp;
-    }
 
     if (!XAllocNamedColor(theDisplay, theColormap,
                         foreground, &theForegroundColor, &theExactColor)) {

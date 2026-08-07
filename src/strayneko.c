@@ -24,7 +24,6 @@ ConfigData Config = {
     .interval_time = 0L,
     .speed = 0.0,
     .no_shape = NOTDEFINED,
-    .reverse_video = NOTDEFINED,
     .min_wait = 20,
     .max_wait = 150,
     .restrict_monitor = -1
