@@ -34,6 +34,7 @@ static char *message[] = {
     "--bed\t\t\t: show a draggable bed",
 #ifdef ENABLE_DEBUG
     "--debug\t\t: enable debug log output to stderr",
+    "--force-target <x,y>\t: force neko to go to the specified coordinates",
 #endif
     NULL
 };
@@ -123,21 +124,22 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
             DebugMode = 1;
 #endif
         } else if (strcmp(argv[ArgCounter], "--force-target") == 0) {
-                ArgCounter++;
-                if (ArgCounter >= argc) {
-                    fprintf(stderr, "%s: --force-target option error. Expected format x,y\n", ProgramName);
+            ArgCounter++;
+            if (ArgCounter >= argc) {
+                fprintf(stderr, "%s: --force-target option error. Expected format x,y\n", ProgramName);
+                exit(1);
+            }
+            {
+                int fx, fy;
+                char extra;
+                if (sscanf(argv[ArgCounter], "%d,%d%c", &fx, &fy, &extra) != 2) {
+                    fprintf(stderr, "%s: --force-target value is invalid. Expected x,y\n", ProgramName);
                     exit(1);
                 }
-                {
-                    int fx = 0, fy = 0;
-                    if (sscanf(argv[ArgCounter], "%d,%d", &fx, &fy) != 2) {
-                        fprintf(stderr, "%s: --force-target value is invalid. Expected x,y\n", ProgramName);
-                        exit(1);
-                    }
-                    ForceTargetFlag = 1;
-                    ForceTargetX = fx;
-                    ForceTargetY = fy;
-                }
+                ForceTargetFlag = 1;
+                ForceTargetX = fx;
+                ForceTargetY = fy;
+            }
         } else if (strcmp(argv[ArgCounter], "--min-wait") == 0) {
             ArgCounter++;
             if (ArgCounter < argc) {

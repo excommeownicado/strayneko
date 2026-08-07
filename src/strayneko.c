@@ -4,16 +4,37 @@
 char *ClassName = "Strayneko";
 char *ProgramName;
 
+NekoData Neko = {
+    .x = 0,
+    .y = 0,
+    .target_x = 0,
+    .target_y = 0
+};
+
+BedData Bed = {
+    .x = 500,
+    .y = 500,
+    .enabled = False
+};
+
+ConfigData Config = {
+    .foreground = NULL,
+    .background = NULL,
+    .interval_time = 0L,
+    .speed = 0.0,
+    .no_shape = NOTDEFINED,
+    .reverse_video = NOTDEFINED,
+    .min_wait = 20,
+    .max_wait = 150,
+    .restrict_monitor = -1
+};
+
 Display *theDisplay;
 int theScreen;
 unsigned int theDepth;
 Window theRoot;
 Window theWindow;
 Window BedWindow;
-
-GC BedGC;
-Pixmap BedPixmap;
-Pixmap BedMask;
 
 unsigned int WindowWidth;
 unsigned int WindowHeight;
@@ -24,37 +45,14 @@ XColor theBackgroundColor;
 int Synchronous = False;
 volatile sig_atomic_t TerminationRequested = 0;
 
-char *Foreground = NULL;
-char *Background = NULL;
-long IntervalTime = 0L;
-double NekoSpeed = 0.0;
-int NoShape = NOTDEFINED;
-int ReverseVideo = NOTDEFINED;
-
 Bool DontMapped = True;
-int NekoTickCount;
-int NekoStateCount;
-int NekoState;
 
 XRRMonitorInfo *Monitors = NULL;
 int MonitorCount = 0;
 
-int RestrictMonitor = -1;
-int TargetX;
-int TargetY;
 int ForceTargetFlag = 0;
 int ForceTargetX = 0;
 int ForceTargetY = 0;
-
-int BedX = 500;
-int BedY = 500;
-
-int GoingToBed;
-Bool UseBed = False;
-
-int DraggingBed = 0;
-int DragOffsetX = 0;
-int DragOffsetY = 0;
 
 #ifdef ENABLE_DEBUG
 int DebugMode = 0;
@@ -76,70 +74,30 @@ DebugLog(const char *format, ...)
 #define DebugLog(...) ((void)0)
 #endif
 
-int Waiting = 0;
-time_t NextMoveTime = 0;
-
-time_t ZoomiesEndTime = 0;
-int Zoomies = 0;
-
-int MinWait = 20;
-int MaxWait = 150;
-
-int NekoX;
-int NekoY;
-int NekoMoveDx;
-int NekoMoveDy;
-int NekoLastX;
-int NekoLastY;
-GC NekoLastGC;
-
-int RaiseWindowDelay = 0;
-
 double SinPiPer8Times3;
 double SinPiPer8;
 
-Pixmap Mati2Xbm, Jare2Xbm, Kaki1Xbm, Kaki2Xbm, Mati3Xbm, Sleep1Xbm, Sleep2Xbm;
-Pixmap Mati2Msk, Jare2Msk, Kaki1Msk, Kaki2Msk, Mati3Msk, Sleep1Msk, Sleep2Msk;
-Pixmap AwakeXbm, AwakeMsk;
-Pixmap Up1Xbm, Up2Xbm, Down1Xbm, Down2Xbm, Left1Xbm, Left2Xbm;
-Pixmap Up1Msk, Up2Msk, Down1Msk, Down2Msk, Left1Msk, Left2Msk;
-Pixmap Right1Xbm, Right2Xbm, UpLeft1Xbm, UpLeft2Xbm, UpRight1Xbm;
-Pixmap Right1Msk, Right2Msk, UpLeft1Msk, UpLeft2Msk, UpRight1Msk;
-Pixmap UpRight2Xbm, DownLeft1Xbm, DownLeft2Xbm, DownRight1Xbm, DownRight2Xbm;
-Pixmap UpRight2Msk, DownLeft1Msk, DownLeft2Msk, DownRight1Msk, DownRight2Msk;
-Pixmap UpTogi1Xbm, UpTogi2Xbm, DownTogi1Xbm, DownTogi2Xbm, LeftTogi1Xbm;
-Pixmap UpTogi1Msk, UpTogi2Msk, DownTogi1Msk, DownTogi2Msk, LeftTogi1Msk;
-Pixmap LeftTogi2Xbm, RightTogi1Xbm, RightTogi2Xbm;
-Pixmap LeftTogi2Msk, RightTogi1Msk, RightTogi2Msk;
-
-GC Mati2GC;
-GC Jare2GC, Kaki1GC, Kaki2GC, Mati3GC, Sleep1GC, Sleep2GC;
-GC AwakeGC;
-GC Up1GC, Up2GC, Down1GC, Down2GC, Left1GC, Left2GC, Right1GC, Right2GC;
-GC UpLeft1GC, UpLeft2GC, UpRight1GC, UpRight2GC, DownLeft1GC, DownLeft2GC;
-GC DownRight1GC, DownRight2GC;
-GC UpTogi1GC, UpTogi2GC, DownTogi1GC, DownTogi2GC, LeftTogi1GC;
-GC LeftTogi2GC, RightTogi1GC, RightTogi2GC;
+Sprite Sprites[SPRITE_COUNT] = {0};
 
 Animation AnimationPattern[][2] = {
-    { { &Mati2GC, &Mati2Msk }, { &Mati2GC, &Mati2Msk } },
-    { { &Jare2GC, &Jare2Msk }, { &Mati2GC, &Mati2Msk } },
-    { { &Kaki1GC, &Kaki1Msk }, { &Kaki2GC, &Kaki2Msk } },
-    { { &Mati3GC, &Mati3Msk }, { &Mati3GC, &Mati3Msk } },
-    { { &Sleep1GC, &Sleep1Msk }, { &Sleep2GC, &Sleep2Msk } },
-    { { &AwakeGC, &AwakeMsk }, { &AwakeGC, &AwakeMsk } },
-    { { &Up1GC, &Up1Msk }, { &Up2GC, &Up2Msk } },
-    { { &Down1GC, &Down1Msk }, { &Down2GC, &Down2Msk } },
-    { { &Left1GC, &Left1Msk }, { &Left2GC, &Left2Msk } },
-    { { &Right1GC, &Right1Msk }, { &Right2GC, &Right2Msk } },
-    { { &UpLeft1GC, &UpLeft1Msk }, { &UpLeft2GC, &UpLeft2Msk } },
-    { { &UpRight1GC, &UpRight1Msk }, { &UpRight2GC, &UpRight2Msk } },
-    { { &DownLeft1GC, &DownLeft1Msk }, { &DownLeft2GC, &DownLeft2Msk } },
-    { { &DownRight1GC, &DownRight1Msk }, { &DownRight2GC, &DownRight2Msk } },
-    { { &UpTogi1GC, &UpTogi1Msk }, { &UpTogi2GC, &UpTogi2Msk } },
-    { { &DownTogi1GC, &DownTogi1Msk }, { &DownTogi2GC, &DownTogi2Msk } },
-    { { &LeftTogi1GC, &LeftTogi1Msk }, { &LeftTogi2GC, &LeftTogi2Msk } },
-    { { &RightTogi1GC, &RightTogi1Msk }, { &RightTogi2GC, &RightTogi2Msk } },
+    { { &Sprites[SPRITE_MATI2] }, { &Sprites[SPRITE_MATI2] } },
+    { { &Sprites[SPRITE_JARE2] }, { &Sprites[SPRITE_MATI2] } },
+    { { &Sprites[SPRITE_KAKI1] }, { &Sprites[SPRITE_KAKI2] } },
+    { { &Sprites[SPRITE_MATI3] }, { &Sprites[SPRITE_MATI3] } },
+    { { &Sprites[SPRITE_SLEEP1] }, { &Sprites[SPRITE_SLEEP2] } },
+    { { &Sprites[SPRITE_AWAKE] }, { &Sprites[SPRITE_AWAKE] } },
+    { { &Sprites[SPRITE_UP1] }, { &Sprites[SPRITE_UP2] } },
+    { { &Sprites[SPRITE_DOWN1] }, { &Sprites[SPRITE_DOWN2] } },
+    { { &Sprites[SPRITE_LEFT1] }, { &Sprites[SPRITE_LEFT2] } },
+    { { &Sprites[SPRITE_RIGHT1] }, { &Sprites[SPRITE_RIGHT2] } },
+    { { &Sprites[SPRITE_UPLEFT1] }, { &Sprites[SPRITE_UPLEFT2] } },
+    { { &Sprites[SPRITE_UPRIGHT1] }, { &Sprites[SPRITE_UPRIGHT2] } },
+    { { &Sprites[SPRITE_DOWNLEFT1] }, { &Sprites[SPRITE_DOWNLEFT2] } },
+    { { &Sprites[SPRITE_DOWNRIGHT1] }, { &Sprites[SPRITE_DOWNRIGHT2] } },
+    { { &Sprites[SPRITE_UPTOGI1] }, { &Sprites[SPRITE_UPTOGI2] } },
+    { { &Sprites[SPRITE_DOWNTOGI1] }, { &Sprites[SPRITE_DOWNTOGI2] } },
+    { { &Sprites[SPRITE_LEFTTOGI1] }, { &Sprites[SPRITE_LEFTTOGI2] } },
+    { { &Sprites[SPRITE_RIGHTTOGI1] }, { &Sprites[SPRITE_RIGHTTOGI2] } },
 };
 
 static int
@@ -297,8 +255,8 @@ SetNekoState(int SetValue)
 void
 DrawNeko(int x, int y, Animation DrawAnime)
 {
-    register GC DrawGC = *(DrawAnime.TickGCPtr);
-    register Pixmap DrawMask = *(DrawAnime.TickMaskPtr);
+    register GC DrawGC = DrawAnime.sprite->gc;
+    register Pixmap DrawMask = DrawAnime.sprite->mask;
 
     if ((x != NekoLastX) || (y != NekoLastY) || (DrawGC != NekoLastGC)) {
         XWindowChanges theChanges;

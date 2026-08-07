@@ -64,18 +64,160 @@
 
 #define IsTrue(str) (strcmp((str), "true") == 0)
 
-typedef struct {
-    GC *GCCreatePtr;
-    Pixmap *BitmapCreatePtr;
-    char *PixelPattern;
-    Pixmap *BitmapMasksPtr;
-    char *MaskPattern;
-} BitmapGCData;
+typedef enum {
+    SPRITE_MATI2,
+    SPRITE_JARE2,
+    SPRITE_KAKI1,
+    SPRITE_KAKI2,
+    SPRITE_MATI3,
+    SPRITE_SLEEP1,
+    SPRITE_SLEEP2,
+    SPRITE_AWAKE,
+
+    SPRITE_UP1,
+    SPRITE_UP2,
+    SPRITE_DOWN1,
+    SPRITE_DOWN2,
+    SPRITE_LEFT1,
+    SPRITE_LEFT2,
+    SPRITE_RIGHT1,
+    SPRITE_RIGHT2,
+
+    SPRITE_UPLEFT1,
+    SPRITE_UPLEFT2,
+    SPRITE_UPRIGHT1,
+    SPRITE_UPRIGHT2,
+    SPRITE_DOWNLEFT1,
+    SPRITE_DOWNLEFT2,
+    SPRITE_DOWNRIGHT1,
+    SPRITE_DOWNRIGHT2,
+
+    SPRITE_UPTOGI1,
+    SPRITE_UPTOGI2,
+    SPRITE_DOWNTOGI1,
+    SPRITE_DOWNTOGI2,
+    SPRITE_LEFTTOGI1,
+    SPRITE_LEFTTOGI2,
+    SPRITE_RIGHTTOGI1,
+    SPRITE_RIGHTTOGI2,
+
+    SPRITE_COUNT
+} SpriteID;
 
 typedef struct {
-    GC *TickGCPtr;
-    Pixmap *TickMaskPtr;
+    GC gc;
+    Pixmap pixmap;
+    Pixmap mask;
+    const unsigned char *bits;
+    const unsigned char *mask_bits;
+} Sprite;
+
+extern Sprite Sprites[SPRITE_COUNT];
+
+typedef struct {
+    Sprite *sprite;
 } Animation;
+
+typedef struct {
+    int x;
+    int y;
+    int target_x;
+    int target_y;
+
+    int move_dx;
+    int move_dy;
+
+    int last_x;
+    int last_y;
+    GC last_gc;
+
+    int tick_count;
+    int state_count;
+    int state;
+
+    int waiting;
+    time_t next_move_time;
+
+    int zoomies;
+    time_t zoomies_end_time;
+
+    int raise_window_delay;
+} NekoData;
+
+typedef struct {
+    int x;
+    int y;
+
+    int going_to_bed;
+    Bool enabled;
+
+    int dragging;
+    int drag_offset_x;
+    int drag_offset_y;
+
+    GC gc;
+    Pixmap pixmap;
+    Pixmap mask;
+} BedData;
+
+typedef struct {
+    char *foreground;
+    char *background;
+
+    long interval_time;
+    double speed;
+
+    int no_shape;
+    int reverse_video;
+
+    int min_wait;
+    int max_wait;
+
+    int restrict_monitor;
+} ConfigData;
+
+extern NekoData Neko;
+extern BedData Bed;
+extern ConfigData Config;
+
+#define NekoX             Neko.x
+#define NekoY             Neko.y
+#define TargetX           Neko.target_x
+#define TargetY           Neko.target_y
+#define NekoMoveDx        Neko.move_dx
+#define NekoMoveDy        Neko.move_dy
+#define NekoLastX         Neko.last_x
+#define NekoLastY         Neko.last_y
+#define NekoLastGC        Neko.last_gc
+#define NekoTickCount     Neko.tick_count
+#define NekoStateCount    Neko.state_count
+#define NekoState         Neko.state
+#define Waiting           Neko.waiting
+#define NextMoveTime      Neko.next_move_time
+#define Zoomies           Neko.zoomies
+#define ZoomiesEndTime    Neko.zoomies_end_time
+#define RaiseWindowDelay  Neko.raise_window_delay
+
+#define BedX              Bed.x
+#define BedY              Bed.y
+#define GoingToBed        Bed.going_to_bed
+#define UseBed            Bed.enabled
+#define DraggingBed       Bed.dragging
+#define DragOffsetX       Bed.drag_offset_x
+#define DragOffsetY       Bed.drag_offset_y
+#define BedGC              Bed.gc
+#define BedPixmap         Bed.pixmap
+#define BedMask            Bed.mask
+
+#define Foreground        Config.foreground
+#define Background        Config.background
+#define IntervalTime      Config.interval_time
+#define NekoSpeed         Config.speed
+#define NoShape            Config.no_shape
+#define ReverseVideo      Config.reverse_video
+#define MinWait           Config.min_wait
+#define MaxWait            Config.max_wait
+#define RestrictMonitor   Config.restrict_monitor
 
 extern char *ClassName;
 extern char *ProgramName;
@@ -87,32 +229,7 @@ extern Window theRoot;
 extern Window theWindow;
 extern Window BedWindow;
 
-extern GC BedGC;
-extern Pixmap BedPixmap;
-extern Pixmap BedMask;
-
-extern Pixmap Mati2Xbm, Jare2Xbm, Kaki1Xbm, Kaki2Xbm, Mati3Xbm, Sleep1Xbm, Sleep2Xbm;
-extern Pixmap Mati2Msk, Jare2Msk, Kaki1Msk, Kaki2Msk, Mati3Msk, Sleep1Msk, Sleep2Msk;
-extern Pixmap AwakeXbm, AwakeMsk;
-extern Pixmap Up1Xbm, Up2Xbm, Down1Xbm, Down2Xbm, Left1Xbm, Left2Xbm;
-extern Pixmap Up1Msk, Up2Msk, Down1Msk, Down2Msk, Left1Msk, Left2Msk;
-extern Pixmap Right1Xbm, Right2Xbm, UpLeft1Xbm, UpLeft2Xbm, UpRight1Xbm;
-extern Pixmap Right1Msk, Right2Msk, UpLeft1Msk, UpLeft2Msk, UpRight1Msk;
-extern Pixmap UpRight2Xbm, DownLeft1Xbm, DownLeft2Xbm, DownRight1Xbm, DownRight2Xbm;
-extern Pixmap UpRight2Msk, DownLeft1Msk, DownLeft2Msk, DownRight1Msk, DownRight2Msk;
-extern Pixmap UpTogi1Xbm, UpTogi2Xbm, DownTogi1Xbm, DownTogi2Xbm, LeftTogi1Xbm;
-extern Pixmap UpTogi1Msk, UpTogi2Msk, DownTogi1Msk, DownTogi2Msk, LeftTogi1Msk;
-extern Pixmap LeftTogi2Xbm, RightTogi1Xbm, RightTogi2Xbm;
-extern Pixmap LeftTogi2Msk, RightTogi1Msk, RightTogi2Msk;
-
-extern GC Mati2GC;
-extern GC Jare2GC, Kaki1GC, Kaki2GC, Mati3GC, Sleep1GC, Sleep2GC;
-extern GC AwakeGC;
-extern GC Up1GC, Up2GC, Down1GC, Down2GC, Left1GC, Left2GC, Right1GC, Right2GC;
-extern GC UpLeft1GC, UpLeft2GC, UpRight1GC, UpRight2GC, DownLeft1GC, DownLeft2GC;
-extern GC DownRight1GC, DownRight2GC;
-extern GC UpTogi1GC, UpTogi2GC, DownTogi1GC, DownTogi2GC, LeftTogi1GC;
-extern GC LeftTogi2GC, RightTogi1GC, RightTogi2GC;
+extern Animation AnimationPattern[][2];
 
 extern unsigned int WindowWidth;
 extern unsigned int WindowHeight;
@@ -123,36 +240,14 @@ extern XColor theBackgroundColor;
 extern int Synchronous;
 extern volatile sig_atomic_t TerminationRequested;
 
-extern char *Foreground;
-extern char *Background;
-extern long IntervalTime;
-extern double NekoSpeed;
-extern int NoShape;
-extern int ReverseVideo;
-
 extern Bool DontMapped;
-extern int NekoTickCount;
-extern int NekoStateCount;
-extern int NekoState;
 
 extern XRRMonitorInfo *Monitors;
 extern int MonitorCount;
 
-extern int RestrictMonitor;
-extern int TargetX;
-extern int TargetY;
 extern int ForceTargetFlag;
 extern int ForceTargetX;
 extern int ForceTargetY;
-
-extern int BedX;
-extern int BedY;
-extern int GoingToBed;
-extern Bool UseBed;
-
-extern int DraggingBed;
-extern int DragOffsetX;
-extern int DragOffsetY;
 
 #ifdef ENABLE_DEBUG
 extern int DebugMode;
@@ -160,24 +255,6 @@ extern int DebugMode;
 #define DebugMode 0
 #endif
 
-extern int Waiting;
-extern time_t NextMoveTime;
-
-extern int Zoomies;
-extern time_t ZoomiesEndTime;
-
-extern int MinWait;
-extern int MaxWait;
-
-extern int NekoX;
-extern int NekoY;
-extern int NekoMoveDx;
-extern int NekoMoveDy;
-extern int NekoLastX;
-extern int NekoLastY;
-extern GC NekoLastGC;
-
-extern int RaiseWindowDelay;
 extern double SinPiPer8Times3;
 extern double SinPiPer8;
 
