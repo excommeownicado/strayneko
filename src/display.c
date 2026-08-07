@@ -84,18 +84,15 @@ InitBitmapAndGCs(void)
     theGCValues.ts_y_origin = 0;
 
     for (int i = 0; i < SPRITE_COUNT; i++) {
-        Sprites[i].bits = SpriteDataTable[i].bits;
-        Sprites[i].mask_bits = SpriteDataTable[i].mask_bits;
-
         Sprites[i].pixmap = XCreatePixmapFromBitmapData(
             theDisplay,
             theRoot,
-            (char *)Sprites[i].bits,
+            (char *)SpriteDataTable[i].bits,
             BITMAP_WIDTH,
             BITMAP_HEIGHT,
             theForegroundColor.pixel,
             theBackgroundColor.pixel,
-            DefaultDepth(theDisplay, theScreen)
+            theDepth
         );
 
         theGCValues.tile = Sprites[i].pixmap;
@@ -103,7 +100,7 @@ InitBitmapAndGCs(void)
         Sprites[i].mask = XCreateBitmapFromData(
             theDisplay,
             theRoot,
-            (char *)Sprites[i].mask_bits,
+            (char *)SpriteDataTable[i].mask_bits,
             BITMAP_WIDTH,
             BITMAP_HEIGHT
         );
@@ -120,6 +117,14 @@ InitBitmapAndGCs(void)
             GCFillStyle,
             &theGCValues
         );
+
+        if (Sprites[i].pixmap == None ||
+            Sprites[i].mask == None ||
+            Sprites[i].gc == NULL) {
+            fprintf(stderr, "%s: failed to create sprite %d\n",
+                    ProgramName, i);
+            exit(1);
+        }
     }
 }
 

@@ -108,8 +108,6 @@ typedef struct {
     GC gc;
     Pixmap pixmap;
     Pixmap mask;
-    const unsigned char *bits;
-    const unsigned char *mask_bits;
 } Sprite;
 
 extern Sprite Sprites[SPRITE_COUNT];
@@ -118,10 +116,6 @@ typedef struct {
     const unsigned char *bits;
     const unsigned char *mask_bits;
 } SpriteData;
-
-typedef struct {
-    Sprite *sprite;
-} Animation;
 
 typedef struct {
     int x;
@@ -194,8 +188,6 @@ extern unsigned int theDepth;
 extern Window theRoot;
 extern Window theWindow;
 extern Window BedWindow;
-
-extern SpriteID AnimationPattern[][2];
 
 extern unsigned int WindowWidth;
 extern unsigned int WindowHeight;

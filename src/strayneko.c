@@ -79,7 +79,7 @@ double SinPiPer8;
 
 Sprite Sprites[SPRITE_COUNT] = {0};
 
-SpriteID AnimationPattern[][2] = {
+static const SpriteID AnimationPattern[][2] = {
     {     SPRITE_MATI2,       SPRITE_MATI2        },
     {     SPRITE_JARE2,       SPRITE_MATI2        },
     {     SPRITE_KAKI1,       SPRITE_KAKI2        },
@@ -148,7 +148,7 @@ GetTargetEdgeTogiState(void)
     if (Neko.target_x == min_x) {
         return NEKO_L_TOGI;
     }
-    if (Neko.target_y == max_x) {
+    if (Neko.target_x == max_x) {
         return NEKO_R_TOGI;
     }
     return -1;
