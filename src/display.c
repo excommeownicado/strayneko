@@ -1,104 +1,39 @@
 #include "strayneko.h"
 
-static void
-InitSpriteData(void)
-{
-    Sprites[SPRITE_MATI2].bits = mati2_bits;
-    Sprites[SPRITE_MATI2].mask_bits = mati2_mask_bits;
-
-    Sprites[SPRITE_JARE2].bits = jare2_bits;
-    Sprites[SPRITE_JARE2].mask_bits = jare2_mask_bits;
-
-    Sprites[SPRITE_KAKI1].bits = kaki1_bits;
-    Sprites[SPRITE_KAKI1].mask_bits = kaki1_mask_bits;
-
-    Sprites[SPRITE_KAKI2].bits = kaki2_bits;
-    Sprites[SPRITE_KAKI2].mask_bits = kaki2_mask_bits;
-
-    Sprites[SPRITE_MATI3].bits = mati3_bits;
-    Sprites[SPRITE_MATI3].mask_bits = mati3_mask_bits;
-
-    Sprites[SPRITE_SLEEP1].bits = sleep1_bits;
-    Sprites[SPRITE_SLEEP1].mask_bits = sleep1_mask_bits;
-
-    Sprites[SPRITE_SLEEP2].bits = sleep2_bits;
-    Sprites[SPRITE_SLEEP2].mask_bits = sleep2_mask_bits;
-
-    Sprites[SPRITE_AWAKE].bits = awake_bits;
-    Sprites[SPRITE_AWAKE].mask_bits = awake_mask_bits;
-
-    Sprites[SPRITE_UP1].bits = up1_bits;
-    Sprites[SPRITE_UP1].mask_bits = up1_mask_bits;
-
-    Sprites[SPRITE_UP2].bits = up2_bits;
-    Sprites[SPRITE_UP2].mask_bits = up2_mask_bits;
-
-    Sprites[SPRITE_DOWN1].bits = down1_bits;
-    Sprites[SPRITE_DOWN1].mask_bits = down1_mask_bits;
-
-    Sprites[SPRITE_DOWN2].bits = down2_bits;
-    Sprites[SPRITE_DOWN2].mask_bits = down2_mask_bits;
-
-    Sprites[SPRITE_LEFT1].bits = left1_bits;
-    Sprites[SPRITE_LEFT1].mask_bits = left1_mask_bits;
-
-    Sprites[SPRITE_LEFT2].bits = left2_bits;
-    Sprites[SPRITE_LEFT2].mask_bits = left2_mask_bits;
-
-    Sprites[SPRITE_RIGHT1].bits = right1_bits;
-    Sprites[SPRITE_RIGHT1].mask_bits = right1_mask_bits;
-
-    Sprites[SPRITE_RIGHT2].bits = right2_bits;
-    Sprites[SPRITE_RIGHT2].mask_bits = right2_mask_bits;
-
-    Sprites[SPRITE_UPLEFT1].bits = upleft1_bits;
-    Sprites[SPRITE_UPLEFT1].mask_bits = upleft1_mask_bits;
-
-    Sprites[SPRITE_UPLEFT2].bits = upleft2_bits;
-    Sprites[SPRITE_UPLEFT2].mask_bits = upleft2_mask_bits;
-
-    Sprites[SPRITE_UPRIGHT1].bits = upright1_bits;
-    Sprites[SPRITE_UPRIGHT1].mask_bits = upright1_mask_bits;
-
-    Sprites[SPRITE_UPRIGHT2].bits = upright2_bits;
-    Sprites[SPRITE_UPRIGHT2].mask_bits = upright2_mask_bits;
-
-    Sprites[SPRITE_DOWNLEFT1].bits = dwleft1_bits;
-    Sprites[SPRITE_DOWNLEFT1].mask_bits = dwleft1_mask_bits;
-
-    Sprites[SPRITE_DOWNLEFT2].bits = dwleft2_bits;
-    Sprites[SPRITE_DOWNLEFT2].mask_bits = dwleft2_mask_bits;
-
-    Sprites[SPRITE_DOWNRIGHT1].bits = dwright1_bits;
-    Sprites[SPRITE_DOWNRIGHT1].mask_bits = dwright1_mask_bits;
-
-    Sprites[SPRITE_DOWNRIGHT2].bits = dwright2_bits;
-    Sprites[SPRITE_DOWNRIGHT2].mask_bits = dwright2_mask_bits;
-
-    Sprites[SPRITE_UPTOGI1].bits = utogi1_bits;
-    Sprites[SPRITE_UPTOGI1].mask_bits = utogi1_mask_bits;
-
-    Sprites[SPRITE_UPTOGI2].bits = utogi2_bits;
-    Sprites[SPRITE_UPTOGI2].mask_bits = utogi2_mask_bits;
-
-    Sprites[SPRITE_DOWNTOGI1].bits = dtogi1_bits;
-    Sprites[SPRITE_DOWNTOGI1].mask_bits = dtogi1_mask_bits;
-
-    Sprites[SPRITE_DOWNTOGI2].bits = dtogi2_bits;
-    Sprites[SPRITE_DOWNTOGI2].mask_bits = dtogi2_mask_bits;
-
-    Sprites[SPRITE_LEFTTOGI1].bits = ltogi1_bits;
-    Sprites[SPRITE_LEFTTOGI1].mask_bits = ltogi1_mask_bits;
-
-    Sprites[SPRITE_LEFTTOGI2].bits = ltogi2_bits;
-    Sprites[SPRITE_LEFTTOGI2].mask_bits = ltogi2_mask_bits;
-
-    Sprites[SPRITE_RIGHTTOGI1].bits = rtogi1_bits;
-    Sprites[SPRITE_RIGHTTOGI1].mask_bits = rtogi1_mask_bits;
-
-    Sprites[SPRITE_RIGHTTOGI2].bits = rtogi2_bits;
-    Sprites[SPRITE_RIGHTTOGI2].mask_bits = rtogi2_mask_bits;
-}
+static const SpriteData SpriteDataTable[SPRITE_COUNT] = {
+    [SPRITE_MATI2] = { mati2_bits, mati2_mask_bits },
+    [SPRITE_JARE2] = { jare2_bits, jare2_mask_bits },
+    [SPRITE_KAKI1] = { kaki1_bits, kaki1_mask_bits },
+    [SPRITE_KAKI2] = { kaki2_bits, kaki2_mask_bits },
+    [SPRITE_MATI3] = { mati3_bits, mati3_mask_bits },
+    [SPRITE_SLEEP1] = { sleep1_bits, sleep1_mask_bits },
+    [SPRITE_SLEEP2] = { sleep2_bits, sleep2_mask_bits },
+    [SPRITE_AWAKE] = { awake_bits, awake_mask_bits },
+    [SPRITE_UP1] = { up1_bits, up1_mask_bits },
+    [SPRITE_UP2] = { up2_bits, up2_mask_bits },
+    [SPRITE_DOWN1] = { down1_bits, down1_mask_bits },
+    [SPRITE_DOWN2] = { down2_bits, down2_mask_bits },
+    [SPRITE_LEFT1] = { left1_bits, left1_mask_bits },
+    [SPRITE_LEFT2] = { left2_bits, left2_mask_bits },
+    [SPRITE_RIGHT1] = { right1_bits, right1_mask_bits },
+    [SPRITE_RIGHT2] = { right2_bits, right2_mask_bits },
+    [SPRITE_UPLEFT1] = { upleft1_bits, upleft1_mask_bits },
+    [SPRITE_UPLEFT2] = { upleft2_bits, upleft2_mask_bits },
+    [SPRITE_UPRIGHT1] = { upright1_bits, upright1_mask_bits },
+    [SPRITE_UPRIGHT2] = { upright2_bits, upright2_mask_bits },
+    [SPRITE_DOWNLEFT1] = { dwleft1_bits, dwleft1_mask_bits },
+    [SPRITE_DOWNLEFT2] = { dwleft2_bits, dwleft2_mask_bits },
+    [SPRITE_DOWNRIGHT1] = { dwright1_bits, dwright1_mask_bits },
+    [SPRITE_DOWNRIGHT2] = { dwright2_bits, dwright2_mask_bits },
+    [SPRITE_UPTOGI1] = { utogi1_bits, utogi1_mask_bits },
+    [SPRITE_UPTOGI2] = { utogi2_bits, utogi2_mask_bits },
+    [SPRITE_DOWNTOGI1] = { dtogi1_bits, dtogi1_mask_bits },
+    [SPRITE_DOWNTOGI2] = { dtogi2_bits, dtogi2_mask_bits },
+    [SPRITE_LEFTTOGI1] = { ltogi1_bits, ltogi1_mask_bits },
+    [SPRITE_LEFTTOGI2] = { ltogi2_bits, ltogi2_mask_bits },
+    [SPRITE_RIGHTTOGI1] = { rtogi1_bits, rtogi1_mask_bits },
+    [SPRITE_RIGHTTOGI2] = { rtogi2_bits, rtogi2_mask_bits }
+};
 
 static void
 CreateBedWindow(void)
@@ -111,29 +46,29 @@ CreateBedWindow(void)
 
     theWindowMask = CWBackPixel | CWOverrideRedirect;
 
-    BedWindow = XCreateWindow(theDisplay, theRoot, BedX, BedY,
+    BedWindow = XCreateWindow(theDisplay, theRoot, Bed.x, Bed.y,
             bed_width, bed_height,
             0, theDepth, InputOutput, CopyFromParent,
             theWindowMask, &theWindowAttributes);
-    BedPixmap = XCreateBitmapFromData(theDisplay, theRoot, bed_bits,
+    Bed.pixmap = XCreateBitmapFromData(theDisplay, theRoot, bed_bits,
             bed_width, bed_height);
-    BedMask = XCreateBitmapFromData(theDisplay, theRoot, bed_mask_bits,
+    Bed.mask = XCreateBitmapFromData(theDisplay, theRoot, bed_mask_bits,
             bed_mask_width, bed_mask_height);
 #ifdef SHAPE
-    if (!NoShape) {
+    if (!Config.no_shape) {
         XShapeCombineMask(theDisplay, BedWindow, ShapeBounding, 0, 0,
-                BedMask, ShapeSet);
+                Bed.mask, ShapeSet);
     }
 #endif
-    BedGC = XCreateGC(theDisplay, theRoot, 0, NULL);
-    XSetForeground(theDisplay, BedGC, theForegroundColor.pixel);
-    XSetBackground(theDisplay, BedGC, theBackgroundColor.pixel);
-    XSetStipple(theDisplay, BedGC, BedPixmap);
-    XSetFillStyle(theDisplay, BedGC, FillOpaqueStippled);
+    Bed.gc = XCreateGC(theDisplay, theRoot, 0, NULL);
+    XSetForeground(theDisplay, Bed.gc, theForegroundColor.pixel);
+    XSetBackground(theDisplay, Bed.gc, theBackgroundColor.pixel);
+    XSetStipple(theDisplay, Bed.gc, Bed.pixmap);
+    XSetFillStyle(theDisplay, Bed.gc, FillOpaqueStippled);
     XSelectInput(theDisplay, BedWindow,
             ExposureMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
     XMapWindow(theDisplay, BedWindow);
-    XFillRectangle(theDisplay, BedWindow, BedGC, 0, 0, bed_width, bed_height);
+    XFillRectangle(theDisplay, BedWindow, Bed.gc, 0, 0, bed_width, bed_height);
 }
 
 void
@@ -149,33 +84,42 @@ InitBitmapAndGCs(void)
     theGCValues.ts_y_origin = 0;
 
     for (int i = 0; i < SPRITE_COUNT; i++) {
-        Sprite *sprite = &Sprites[i];
+        Sprites[i].bits = SpriteDataTable[i].bits;
+        Sprites[i].mask_bits = SpriteDataTable[i].mask_bits;
 
-        sprite->pixmap = XCreatePixmapFromBitmapData(
+        Sprites[i].pixmap = XCreatePixmapFromBitmapData(
             theDisplay,
             theRoot,
-            (char *)sprite->bits,
+            (char *)Sprites[i].bits,
             BITMAP_WIDTH,
             BITMAP_HEIGHT,
             theForegroundColor.pixel,
             theBackgroundColor.pixel,
-            DefaultDepth(theDisplay, theScreen));
+            DefaultDepth(theDisplay, theScreen)
+        );
 
-        theGCValues.tile = sprite->pixmap;
+        theGCValues.tile = Sprites[i].pixmap;
 
-        sprite->mask = XCreateBitmapFromData(
+        Sprites[i].mask = XCreateBitmapFromData(
             theDisplay,
             theRoot,
-            (char *)sprite->mask_bits,
+            (char *)Sprites[i].mask_bits,
             BITMAP_WIDTH,
-            BITMAP_HEIGHT);
+            BITMAP_HEIGHT
+        );
 
-        sprite->gc = XCreateGC(
+        Sprites[i].gc = XCreateGC(
             theDisplay,
             theWindow,
-            GCFunction | GCForeground | GCBackground | GCTile |
-            GCTileStipXOrigin | GCTileStipYOrigin | GCFillStyle,
-            &theGCValues);
+            GCFunction |
+            GCForeground |
+            GCBackground |
+            GCTile |
+            GCTileStipXOrigin |
+            GCTileStipYOrigin |
+            GCFillStyle,
+            &theGCValues
+        );
     }
 }
 
@@ -202,9 +146,9 @@ InitScreen(char *DisplayName)
 
     InitMonitors();
 
-    if (RestrictMonitor >= MonitorCount) {
+    if (Config.restrict_monitor >= MonitorCount) {
         fprintf(stderr, "%s: monitor %d is unavailable.\n",
-                ProgramName, RestrictMonitor);
+                ProgramName, Config.restrict_monitor);
         exit(1);
     }
 
@@ -216,10 +160,10 @@ InitScreen(char *DisplayName)
     }
 
 #ifdef SHAPE
-    if (!NoShape && XShapeQueryExtension(theDisplay,
+    if (!Config.no_shape && XShapeQueryExtension(theDisplay,
                                          &event_base, &error_base) == False) {
         fprintf(stderr, "Display does not support shape extension.\n");
-        NoShape = True;
+        Config.no_shape = True;
     }
 #endif
 
@@ -233,8 +177,8 @@ InitScreen(char *DisplayName)
                  &WindowWidth, &WindowHeight,
                  &BorderWidth, &theDepth);
 
-    if (UseBed) {
-        if (!LoadBedPosition() || !RectOnMonitor(BedX, BedY, bed_width, bed_height)) {
+    if (Bed.enabled) {
+        if (!LoadBedPosition() || !RectOnMonitor(Bed.x, Bed.y, bed_width, bed_height)) {
             PlaceBedOnMonitor();
         }
     }
@@ -250,13 +194,12 @@ InitScreen(char *DisplayName)
                               BITMAP_WIDTH, BITMAP_HEIGHT,
                               0, theDepth, InputOutput, CopyFromParent,
                               theWindowMask, &theWindowAttributes);
-    InitSpriteData();
     InitBitmapAndGCs();
 
     XSelectInput(theDisplay, theWindow,
                  ExposureMask | VisibilityChangeMask | KeyPressMask);
 
-    if (UseBed) {
+    if (Bed.enabled) {
         CreateBedWindow();
     }
 
@@ -278,10 +221,10 @@ RestoreCursor(void)
         XFreeGC(theDisplay, Sprites[i].gc);
     }
 
-    if (UseBed) {
-        XFreePixmap(theDisplay, BedPixmap);
-        XFreePixmap(theDisplay, BedMask);
-        XFreeGC(theDisplay, BedGC);
+    if (Bed.enabled) {
+        XFreePixmap(theDisplay, Bed.pixmap);
+        XFreePixmap(theDisplay, Bed.mask);
+        XFreeGC(theDisplay, Bed.gc);
     }
 
     if (Monitors) {
@@ -342,8 +285,8 @@ ProcessEvent(void)
         switch (theEvent.type) {
         case Expose:
             if (theEvent.xexpose.count == 0) {
-                if (UseBed && theEvent.xexpose.window == BedWindow) {
-                    XFillRectangle(theDisplay, BedWindow, BedGC, 0, 0,
+                if (Bed.enabled && theEvent.xexpose.window == BedWindow) {
+                    XFillRectangle(theDisplay, BedWindow, Bed.gc, 0, 0,
                             bed_width, bed_height);
                 } else if (theEvent.xexpose.window == theWindow) {
                     RedrawNeko();
@@ -357,39 +300,39 @@ ProcessEvent(void)
             }
             break;
         case VisibilityNotify:
-            if (RaiseWindowDelay == 0) {
+            if (Neko.raise_window_delay == 0) {
                 XRaiseWindow(theDisplay, theWindow);
-                RaiseWindowDelay = DEFAULT_RAISE_WAIT;
+                Neko.raise_window_delay = DEFAULT_RAISE_WAIT;
             }
             break;
         case ButtonPress:
-            if (UseBed && theEvent.xbutton.window == BedWindow &&
+            if (Bed.enabled && theEvent.xbutton.window == BedWindow &&
                 theEvent.xbutton.button == Button1) {
                 if (XGrabPointer(theDisplay, BedWindow, False,
                         ButtonReleaseMask | PointerMotionMask,
                         GrabModeAsync, GrabModeAsync, None, None,
                         theEvent.xbutton.time) == GrabSuccess) {
-                    DraggingBed = 1;
-                    DragOffsetX = theEvent.xbutton.x;
-                    DragOffsetY = theEvent.xbutton.y;
+                    Bed.dragging = 1;
+                    Bed.drag_offset_x = theEvent.xbutton.x;
+                    Bed.drag_offset_y = theEvent.xbutton.y;
                 }
             }
             break;
         case MotionNotify:
-            if (UseBed && DraggingBed) {
-                int NewX = theEvent.xmotion.x_root - DragOffsetX;
-                int NewY = theEvent.xmotion.y_root - DragOffsetY;
+            if (Bed.enabled && Bed.dragging) {
+                int NewX = theEvent.xmotion.x_root - Bed.drag_offset_x;
+                int NewY = theEvent.xmotion.y_root - Bed.drag_offset_y;
 
                 if (RectOnMonitor(NewX, NewY, bed_width, bed_height)) {
-                    BedX = NewX;
-                    BedY = NewY;
-                    XMoveWindow(theDisplay, BedWindow, BedX, BedY);
+                    Bed.x = NewX;
+                    Bed.y = NewY;
+                    XMoveWindow(theDisplay, BedWindow, Bed.x, Bed.y);
                 }
             }
             break;
         case ButtonRelease:
-            if (UseBed && DraggingBed && theEvent.xbutton.button == Button1) {
-                DraggingBed = 0;
+            if (Bed.enabled && Bed.dragging && theEvent.xbutton.button == Button1) {
+                Bed.dragging = 0;
                 XUngrabPointer(theDisplay, theEvent.xbutton.time);
                 SaveBedPosition();
             }
@@ -405,7 +348,7 @@ ProcessEvent(void)
 void
 RedrawNeko(void)
 {
-    XFillRectangle(theDisplay, theWindow, NekoLastGC,
+    XFillRectangle(theDisplay, theWindow, Neko.last_gc,
                    0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
     XFlush(theDisplay);
 }

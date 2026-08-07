@@ -79,25 +79,25 @@ double SinPiPer8;
 
 Sprite Sprites[SPRITE_COUNT] = {0};
 
-Animation AnimationPattern[][2] = {
-    { { &Sprites[SPRITE_MATI2] }, { &Sprites[SPRITE_MATI2] } },
-    { { &Sprites[SPRITE_JARE2] }, { &Sprites[SPRITE_MATI2] } },
-    { { &Sprites[SPRITE_KAKI1] }, { &Sprites[SPRITE_KAKI2] } },
-    { { &Sprites[SPRITE_MATI3] }, { &Sprites[SPRITE_MATI3] } },
-    { { &Sprites[SPRITE_SLEEP1] }, { &Sprites[SPRITE_SLEEP2] } },
-    { { &Sprites[SPRITE_AWAKE] }, { &Sprites[SPRITE_AWAKE] } },
-    { { &Sprites[SPRITE_UP1] }, { &Sprites[SPRITE_UP2] } },
-    { { &Sprites[SPRITE_DOWN1] }, { &Sprites[SPRITE_DOWN2] } },
-    { { &Sprites[SPRITE_LEFT1] }, { &Sprites[SPRITE_LEFT2] } },
-    { { &Sprites[SPRITE_RIGHT1] }, { &Sprites[SPRITE_RIGHT2] } },
-    { { &Sprites[SPRITE_UPLEFT1] }, { &Sprites[SPRITE_UPLEFT2] } },
-    { { &Sprites[SPRITE_UPRIGHT1] }, { &Sprites[SPRITE_UPRIGHT2] } },
-    { { &Sprites[SPRITE_DOWNLEFT1] }, { &Sprites[SPRITE_DOWNLEFT2] } },
-    { { &Sprites[SPRITE_DOWNRIGHT1] }, { &Sprites[SPRITE_DOWNRIGHT2] } },
-    { { &Sprites[SPRITE_UPTOGI1] }, { &Sprites[SPRITE_UPTOGI2] } },
-    { { &Sprites[SPRITE_DOWNTOGI1] }, { &Sprites[SPRITE_DOWNTOGI2] } },
-    { { &Sprites[SPRITE_LEFTTOGI1] }, { &Sprites[SPRITE_LEFTTOGI2] } },
-    { { &Sprites[SPRITE_RIGHTTOGI1] }, { &Sprites[SPRITE_RIGHTTOGI2] } },
+SpriteID AnimationPattern[][2] = {
+    {     SPRITE_MATI2,       SPRITE_MATI2        },
+    {     SPRITE_JARE2,       SPRITE_MATI2        },
+    {     SPRITE_KAKI1,       SPRITE_KAKI2        },
+    {     SPRITE_MATI3,       SPRITE_MATI3        },
+    {     SPRITE_SLEEP1,      SPRITE_SLEEP2       },
+    {     SPRITE_AWAKE,       SPRITE_AWAKE        },
+    {     SPRITE_UP1,         SPRITE_UP2          },
+    {     SPRITE_DOWN1,       SPRITE_DOWN2        },
+    {     SPRITE_LEFT1,       SPRITE_LEFT2        },
+    {     SPRITE_RIGHT1,      SPRITE_RIGHT2       },
+    {     SPRITE_UPLEFT1,     SPRITE_UPLEFT2      },
+    {     SPRITE_UPRIGHT1,    SPRITE_UPRIGHT2     },
+    {     SPRITE_DOWNLEFT1,   SPRITE_DOWNLEFT2    },
+    {     SPRITE_DOWNRIGHT1,  SPRITE_DOWNRIGHT2   },
+    {     SPRITE_UPTOGI1,     SPRITE_UPTOGI2      },
+    {     SPRITE_DOWNTOGI1,   SPRITE_DOWNTOGI2    },
+    {     SPRITE_LEFTTOGI1,   SPRITE_LEFTTOGI2    },
+    {     SPRITE_RIGHTTOGI1,  SPRITE_RIGHTTOGI2   },
 };
 
 static int
@@ -125,9 +125,9 @@ GetTargetEdgeTogiState(void)
         max_x = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 0;
         max_y = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 0;
     } else {
-        monitor = FindMonitorFor(TargetX, TargetY);
+        monitor = FindMonitorFor(Neko.target_x, Neko.target_y);
         if (monitor < 0) {
-            monitor = FindMonitorFor(NekoX + BITMAP_WIDTH / 2, NekoY + BITMAP_HEIGHT / 2);
+            monitor = FindMonitorFor(Neko.x + BITMAP_WIDTH / 2, Neko.y + BITMAP_HEIGHT / 2);
         }
         if (monitor < 0) {
             monitor = 0;
@@ -139,16 +139,16 @@ GetTargetEdgeTogiState(void)
         max_y = Monitors[monitor].height > BITMAP_HEIGHT ? Monitors[monitor].y + Monitors[monitor].height - BITMAP_HEIGHT : Monitors[monitor].y;
     }
 
-    if (TargetY == min_y) {
+    if (Neko.target_y == min_y) {
         return NEKO_U_TOGI;
     }
-    if (TargetY == max_y) {
+    if (Neko.target_y == max_y) {
         return NEKO_D_TOGI;
     }
-    if (TargetX == min_x) {
+    if (Neko.target_x == min_x) {
         return NEKO_L_TOGI;
     }
-    if (TargetX == max_x) {
+    if (Neko.target_y == max_x) {
         return NEKO_R_TOGI;
     }
     return -1;
@@ -158,34 +158,34 @@ static void
 ClampTarget(void)
 {
     if (MonitorCount <= 0) {
-        if (TargetX < 0) {
-            DebugLog("ClampTarget: TargetX %d -> 0 (root)\n", TargetX);
-            TargetX = 0;
+        if (Neko.target_x < 0) {
+            DebugLog("ClampTarget: Neko.target_x %d -> 0 (root)\n", Neko.target_x);
+            Neko.target_x = 0;
         }
         int max_x = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 0;
-        if (TargetX > max_x) {
-            DebugLog("ClampTarget: TargetX %d -> %d (root)\n", TargetX, max_x);
-            TargetX = max_x;
+        if (Neko.target_x > max_x) {
+            DebugLog("ClampTarget: Neko.target_x %d -> %d (root)\n", Neko.target_x, max_x);
+            Neko.target_x = max_x;
         }
-        if (TargetY < 0) {
-            DebugLog("ClampTarget: TargetY %d -> 0 (root)\n", TargetY);
-            TargetY = 0;
+        if (Neko.target_y < 0) {
+            DebugLog("ClampTarget: Neko.target_y %d -> 0 (root)\n", Neko.target_y);
+            Neko.target_y = 0;
         }
         int max_y = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 0;
-        if (TargetY > max_y) {
-            DebugLog("ClampTarget: TargetY %d -> %d (root)\n", TargetY, max_y);
-            TargetY = max_y;
+        if (Neko.target_y > max_y) {
+            DebugLog("ClampTarget: Neko.target_y %d -> %d (root)\n", Neko.target_y, max_y);
+            Neko.target_y = max_y;
         }
         return;
     }
 
     int monitor = -1;
-    if (RestrictMonitor >= 0 && RestrictMonitor < MonitorCount) {
-        monitor = RestrictMonitor;
+    if (Config.restrict_monitor >= 0 && Config.restrict_monitor < MonitorCount) {
+        monitor = Config.restrict_monitor;
     } else {
-        monitor = FindMonitorFor(TargetX, TargetY);
+        monitor = FindMonitorFor(Neko.target_x, Neko.target_y);
         if (monitor < 0) {
-            monitor = FindMonitorFor(NekoX + BITMAP_WIDTH / 2, NekoY + BITMAP_HEIGHT);
+            monitor = FindMonitorFor(Neko.x + BITMAP_WIDTH / 2, Neko.y + BITMAP_HEIGHT);
         }
         if (monitor < 0) {
             monitor = 0;
@@ -197,27 +197,27 @@ ClampTarget(void)
     int max_x = Monitors[monitor].width > BITMAP_WIDTH ? Monitors[monitor].x + Monitors[monitor].width - BITMAP_WIDTH : Monitors[monitor].x;
     int max_y = Monitors[monitor].height > BITMAP_HEIGHT ? Monitors[monitor].y + Monitors[monitor].height - BITMAP_HEIGHT : Monitors[monitor].y;
 
-    if (TargetX < min_x) {
-        DebugLog("ClampTarget: TargetX %d -> %d (monitor %d)\n", TargetX, min_x, monitor);
-        TargetX = min_x;
-    } else if (TargetX > max_x) {
-        DebugLog("ClampTarget: TargetX %d -> %d (monitor %d)\n", TargetX, max_x, monitor);
-        TargetX = max_x;
+    if (Neko.target_x < min_x) {
+        DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n", Neko.target_x, min_x, monitor);
+        Neko.target_x = min_x;
+    } else if (Neko.target_x > max_x) {
+        DebugLog("ClampTarget: Neko.target_x %d -> %d (monitor %d)\n", Neko.target_x, max_x, monitor);
+        Neko.target_x = max_x;
     }
 
-    if (TargetY < min_y) {
-        DebugLog("ClampTarget: TargetY %d -> %d (monitor %d)\n", TargetY, min_y, monitor);
-        TargetY = min_y;
-    } else if (TargetY > max_y) {
-        DebugLog("ClampTarget: TargetY %d -> %d (monitor %d)\n", TargetY, max_y, monitor);
-        TargetY = max_y;
+    if (Neko.target_y < min_y) {
+        DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n", Neko.target_y, min_y, monitor);
+        Neko.target_y = min_y;
+    } else if (Neko.target_y > max_y) {
+        DebugLog("ClampTarget: Neko.target_y %d -> %d (monitor %d)\n", Neko.target_y, max_y, monitor);
+        Neko.target_y = max_y;
     }
 
-    if (!RectOnMonitor(TargetX, TargetY, BITMAP_WIDTH, BITMAP_HEIGHT)) {
+    if (!RectOnMonitor(Neko.target_x, Neko.target_y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
         DebugLog("ClampTarget: Target (%d,%d) still invalid for monitor %d, resetting to (%d,%d)\n",
-                 TargetX, TargetY, monitor, min_x, min_y);
-        TargetX = min_x;
-        TargetY = min_y;
+                 Neko.target_x, Neko.target_y, monitor, min_x, min_y);
+        Neko.target_x = min_x;
+        Neko.target_y = min_y;
     }
 }
 
@@ -225,21 +225,21 @@ void
 Interval(void)
 {
     pause();
-    if (RaiseWindowDelay > 0) {
-        RaiseWindowDelay--;
+    if (Neko.raise_window_delay > 0) {
+        Neko.raise_window_delay--;
     }
 }
 
 void
 TickCount(void)
 {
-    if (++NekoTickCount >= MAX_TICK) {
-        NekoTickCount = 0;
+    if (++Neko.tick_count >= MAX_TICK) {
+        Neko.tick_count = 0;
     }
 
-    if (NekoTickCount % 2 == 0) {
-        if (NekoStateCount < MAX_TICK) {
-            NekoStateCount++;
+    if (Neko.tick_count % 2 == 0) {
+        if (Neko.state_count < MAX_TICK) {
+            Neko.state_count++;
         }
     }
 }
@@ -247,25 +247,26 @@ TickCount(void)
 void
 SetNekoState(int SetValue)
 {
-    NekoTickCount = 0;
-    NekoStateCount = 0;
-    NekoState = SetValue;
+    Neko.tick_count = 0;
+    Neko.state_count = 0;
+    Neko.state = SetValue;
 }
 
 void
-DrawNeko(int x, int y, Animation DrawAnime)
+DrawNeko(int x, int y, int tick)
 {
-    register GC DrawGC = DrawAnime.sprite->gc;
-    register Pixmap DrawMask = DrawAnime.sprite->mask;
+    Sprite *sprite = &Sprites[AnimationPattern[Neko.state][tick]];
+    GC DrawGC = sprite->gc;
+    Pixmap DrawMask = sprite->mask;
 
-    if ((x != NekoLastX) || (y != NekoLastY) || (DrawGC != NekoLastGC)) {
+    if ((x != Neko.last_x) || (y != Neko.last_y) || (DrawGC != Neko.last_gc)) {
         XWindowChanges theChanges;
 
         theChanges.x = x;
         theChanges.y = y;
         XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
 #ifdef SHAPE
-        if (NoShape == False) {
+        if (Config.no_shape == False) {
             XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
                               0, 0, DrawMask, ShapeSet);
         }
@@ -279,9 +280,9 @@ DrawNeko(int x, int y, Animation DrawAnime)
     }
 
     XFlush(theDisplay);
-    NekoLastX = x;
-    NekoLastY = y;
-    NekoLastGC = DrawGC;
+    Neko.last_x = x;
+    Neko.last_y = y;
+    Neko.last_gc = DrawGC;
 }
 
 void
@@ -292,15 +293,15 @@ NekoDirection(void)
     double Length;
     double SinTheta;
 
-    if (NekoMoveDx == 0 && NekoMoveDy == 0) {
+    if (Neko.move_dx == 0 && Neko.move_dy == 0) {
         NewState = NEKO_STOP;
     } else {
-        LargeX = (double)NekoMoveDx;
-        LargeY = (double)(-NekoMoveDy);
+        LargeX = (double)Neko.move_dx;
+        LargeY = (double)(-Neko.move_dy);
         Length = sqrt(LargeX * LargeX + LargeY * LargeY);
         SinTheta = LargeY / Length;
 
-        if (NekoMoveDx > 0) {
+        if (Neko.move_dx > 0) {
             if (SinTheta > SinPiPer8Times3) {
                 NewState = NEKO_U_MOVE;
             } else if ((SinTheta <= SinPiPer8Times3) && (SinTheta > SinPiPer8)) {
@@ -327,7 +328,7 @@ NekoDirection(void)
         }
     }
 
-    if (NekoState != NewState) {
+    if (Neko.state != NewState) {
         SetNekoState(NewState);
     }
 }
@@ -337,18 +338,18 @@ IsWindowOver(void)
 {
     Bool ReturnValue = False;
 
-    if (NekoY <= 0) {
-        NekoY = 0;
+    if (Neko.y <= 0) {
+        Neko.y = 0;
         ReturnValue = True;
-    } else if (NekoY >= WindowHeight - BITMAP_HEIGHT) {
-        NekoY = WindowHeight - BITMAP_HEIGHT;
+    } else if (Neko.y >= WindowHeight - BITMAP_HEIGHT) {
+        Neko.y = WindowHeight - BITMAP_HEIGHT;
         ReturnValue = True;
     }
-    if (NekoX <= 0) {
-        NekoX = 0;
+    if (Neko.x <= 0) {
+        Neko.x = 0;
         ReturnValue = True;
-    } else if (NekoX >= WindowWidth - BITMAP_WIDTH) {
-        NekoX = WindowWidth - BITMAP_WIDTH;
+    } else if (Neko.x >= WindowWidth - BITMAP_WIDTH) {
+        Neko.x = WindowWidth - BITMAP_WIDTH;
         ReturnValue = True;
     }
 
@@ -358,13 +359,13 @@ IsWindowOver(void)
 Bool
 IsNekoDontMove(void)
 {
-    return NekoX == NekoLastX && NekoY == NekoLastY;
+    return Neko.x == Neko.last_x && Neko.y == Neko.last_y;
 }
 
 Bool
 IsNekoMoveStart(void)
 {
-    return NekoMoveDx != 0 || NekoMoveDy != 0;
+    return Neko.move_dx != 0 || Neko.move_dy != 0;
 }
 
 void
@@ -376,15 +377,15 @@ PickRandomTarget(void)
         int width = WindowWidth > BITMAP_WIDTH ? WindowWidth - BITMAP_WIDTH : 0;
         int height = WindowHeight > BITMAP_HEIGHT ? WindowHeight - BITMAP_HEIGHT : 0;
 
-        TargetX = rand() % (width + 1);
-        TargetY = rand() % (height + 1);
+        Neko.target_x = rand() % (width + 1);
+        Neko.target_y = rand() % (height + 1);
         DebugLog("PickRandomTarget: root target=(%d,%d) width=%d height=%d\n",
-                 TargetX, TargetY, width, height);
+                 Neko.target_x, Neko.target_y, width, height);
         return;
     }
 
-    if (RestrictMonitor >= 0 && RestrictMonitor < MonitorCount) {
-        m = RestrictMonitor;
+    if (Config.restrict_monitor >= 0 && Config.restrict_monitor < MonitorCount) {
+        m = Config.restrict_monitor;
     } else {
         m = rand() % MonitorCount;
     }
@@ -392,10 +393,10 @@ PickRandomTarget(void)
     int width = Monitors[m].width > BITMAP_WIDTH ? Monitors[m].width - BITMAP_WIDTH : 0;
     int height = Monitors[m].height > BITMAP_HEIGHT ? Monitors[m].height - BITMAP_HEIGHT : 0;
 
-    TargetX = Monitors[m].x + rand() % (width + 1);
-    TargetY = Monitors[m].y + rand() % (height + 1);
+    Neko.target_x = Monitors[m].x + rand() % (width + 1);
+    Neko.target_y = Monitors[m].y + rand() % (height + 1);
     DebugLog("PickRandomTarget: monitor=%d target=(%d,%d) width=%d height=%d\n",
-             m, TargetX, TargetY, width, height);
+             m, Neko.target_x, Neko.target_y, width, height);
 }
 
 int
@@ -407,8 +408,8 @@ RectOnMonitor(int x, int y, int w, int h)
         return x >= 0 && y >= 0 && x + w <= (int)WindowWidth && y + h <= (int)WindowHeight;
     }
 
-    if (RestrictMonitor >= 0 && RestrictMonitor < MonitorCount) {
-        i = RestrictMonitor;
+    if (Config.restrict_monitor >= 0 && Config.restrict_monitor < MonitorCount) {
+        i = Config.restrict_monitor;
         return x >= Monitors[i].x && y >= Monitors[i].y &&
             x + w <= Monitors[i].x + Monitors[i].width &&
             y + h <= Monitors[i].y + Monitors[i].height;
@@ -431,19 +432,19 @@ PickNearbyTarget(int radius)
     int x, y;
 
     for (int tries = 0; tries < 100; tries++) {
-        x = NekoX + (rand() % (radius * 2 + 1) - radius);
-        y = NekoY + (rand() % (radius * 2 + 1) - radius);
+        x = Neko.x + (rand() % (radius * 2 + 1) - radius);
+        y = Neko.y + (rand() % (radius * 2 + 1) - radius);
 
         if (RectOnMonitor(x, y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
-            TargetX = x;
-            TargetY = y;
-            DebugLog("PickNearbyTarget: target=(%d,%d) tries=%d\n", TargetX, TargetY, tries + 1);
+            Neko.target_x = x;
+            Neko.target_y = y;
+            DebugLog("PickNearbyTarget: target=(%d,%d) tries=%d\n", Neko.target_x, Neko.target_y, tries + 1);
             return;
         }
     }
 
     PickRandomTarget();
-    DebugLog("PickNearbyTarget: fallback target=(%d,%d)\n", TargetX, TargetY);
+    DebugLog("PickNearbyTarget: fallback target=(%d,%d)\n", Neko.target_x, Neko.target_y);
 }
 
 void
@@ -453,51 +454,51 @@ CalcDxDy(void)
     double DoubleLength, Length;
 
     if (DebugMode) {
-        DebugLog("CalcDxDy: start Target=(%d,%d) Neko=(%d,%d) Waiting=%d Zoomies=%d\n",
-                 TargetX, TargetY, NekoX, NekoY, Waiting, Zoomies);
+        DebugLog("CalcDxDy: start Target=(%d,%d) Neko=(%d,%d) Neko.waiting=%d Neko.zoomies=%d\n",
+                 Neko.target_x, Neko.target_y, Neko.x, Neko.y, Neko.waiting, Neko.zoomies);
     }
 
-    if (Zoomies && time(NULL) > ZoomiesEndTime) {
-        Zoomies = 0;
+    if (Neko.zoomies && time(NULL) > Neko.zoomies_end_time) {
+        Neko.zoomies = 0;
     }
 
-    if (Waiting) {
-            if (time(NULL) < NextMoveTime) {
-                NekoMoveDx = 0;
-                NekoMoveDy = 0;
+    if (Neko.waiting) {
+            if (time(NULL) < Neko.next_move_time) {
+                Neko.move_dx = 0;
+                Neko.move_dy = 0;
                 return;
             }
 
-            Waiting = 0;
-            GoingToBed = 0;
+            Neko.waiting = 0;
+            Bed.going_to_bed = 0;
 
-            if (Zoomies) {
+            if (Neko.zoomies) {
                 PickRandomTarget();
             } else {
                 int r = rand() % 100;
 
-            if (UseBed && r < 15) {
-                /* BedX/BedY are stored as top-left; target should be top-left too. */
-                TargetX = BedX;
-                TargetY = BedY;
-                GoingToBed = 1;
-            } else if (r < (UseBed ? 55 : 40)) {
+            if (Bed.enabled && r < 15) {
+                /* Bed.x/Bed.y are stored as top-left; target should be top-left too. */
+                Neko.target_x = Bed.x;
+                Neko.target_y = Bed.y;
+                Bed.going_to_bed = 1;
+            } else if (r < (Bed.enabled ? 55 : 40)) {
                 PickNearbyTarget(300);
-            } else if (r < (UseBed ? 85 : 70)) {
+            } else if (r < (Bed.enabled ? 85 : 70)) {
                 PickRandomTarget();
             } else {
-                TargetX = NekoX;
-                TargetY = NekoY;
+                Neko.target_x = Neko.x;
+                Neko.target_y = Neko.y;
             }
         }
 
-            if (!Zoomies && rand() % 100 < 5) {
-            Zoomies = 1;
-            ZoomiesEndTime = time(NULL) + 50;
+            if (!Neko.zoomies && rand() % 100 < 5) {
+            Neko.zoomies = 1;
+            Neko.zoomies_end_time = time(NULL) + 50;
         }
 
-            DebugLog("CalcDxDy: selected target=(%d,%d) goingToBed=%d Zoomies=%d Neko=(%d,%d)\n",
-                     TargetX, TargetY, GoingToBed, Zoomies, NekoX, NekoY);
+            DebugLog("CalcDxDy: selected target=(%d,%d) Bed.going_to_bed=%d Neko.zoomies=%d Neko=(%d,%d)\n",
+                     Neko.target_x, Neko.target_y, Bed.going_to_bed, Neko.zoomies, Neko.x, Neko.y);
         ClampTarget();
     }
 
@@ -505,76 +506,76 @@ CalcDxDy(void)
 
     /* Consider Neko reached the target when its top-left aligns (within tolerance).
        This handles edge cases where IsWindowOver clamps Neko positions at screen edges. */
-    if (!Waiting &&
-        abs(TargetX - NekoX) <= ReachDistance &&
-        abs(TargetY - NekoY) <= ReachDistance) {
+    if (!Neko.waiting &&
+        abs(Neko.target_x - Neko.x) <= ReachDistance &&
+        abs(Neko.target_y - Neko.y) <= ReachDistance) {
         int delay;
 
-        Waiting = 1;
-        delay = (int)(MinWait + rand() % (MaxWait - MinWait + 1));
+        Neko.waiting = 1;
+        delay = (int)(Config.min_wait + rand() % (Config.max_wait - Config.min_wait + 1));
 
-        if (GoingToBed) {
+        if (Bed.going_to_bed) {
             delay *= 2;
         }
-        if (Zoomies) {
+        if (Neko.zoomies) {
             delay = 1 + rand() % 3;
         }
 
-        NextMoveTime = time(NULL) + delay;
-        NekoMoveDx = 0;
-        NekoMoveDy = 0;
-        if (NekoState != NEKO_STOP) {
+        Neko.next_move_time = time(NULL) + delay;
+        Neko.move_dx = 0;
+        Neko.move_dy = 0;
+        if (Neko.state != NEKO_STOP) {
             SetNekoState(NEKO_STOP);
         }
         return;
     }
 
     /* Use top-left coordinates for both Target and Neko so edges align correctly. */
-    LargeX = (double)(TargetX - NekoX);
-    LargeY = (double)(TargetY - NekoY);
+    LargeX = (double)(Neko.target_x - Neko.x);
+    LargeY = (double)(Neko.target_y - Neko.y);
 
     DoubleLength = LargeX * LargeX + LargeY * LargeY;
     if (DoubleLength != 0.0) {
         Length = sqrt(DoubleLength);
-        if (Length <= NekoSpeed) {
-            NekoMoveDx = (int)LargeX;
-            NekoMoveDy = (int)LargeY;
+        if (Length <= Config.speed) {
+            Neko.move_dx = (int)LargeX;
+            Neko.move_dy = (int)LargeY;
         } else {
-            NekoMoveDx = (int)((NekoSpeed * LargeX) / Length);
-            NekoMoveDy = (int)((NekoSpeed * LargeY) / Length);
+            Neko.move_dx = (int)((Config.speed * LargeX) / Length);
+            Neko.move_dy = (int)((Config.speed * LargeY) / Length);
         }
 
-        if (NekoMoveDx == 0 && NekoMoveDy == 0) {
-            NekoMoveDx = LargeX > 0 ? 1 : (LargeX < 0 ? -1 : 0);
-            NekoMoveDy = LargeY > 0 ? 1 : (LargeY < 0 ? -1 : 0);
-            if (NekoMoveDx == 0 && NekoMoveDy == 0) {
-                NekoMoveDx = 1;
+        if (Neko.move_dx == 0 && Neko.move_dy == 0) {
+            Neko.move_dx = LargeX > 0 ? 1 : (LargeX < 0 ? -1 : 0);
+            Neko.move_dy = LargeY > 0 ? 1 : (LargeY < 0 ? -1 : 0);
+            if (Neko.move_dx == 0 && Neko.move_dy == 0) {
+                Neko.move_dx = 1;
             }
             DebugLog("CalcDxDy: forced minimal move=(%d,%d) for vector=(%.2f,%.2f)\n",
-                     NekoMoveDx, NekoMoveDy, LargeX, LargeY);
+                     Neko.move_dx, Neko.move_dy, LargeX, LargeY);
         }
     } else {
-        NekoMoveDx = 0;
-        NekoMoveDy = 0;
+        Neko.move_dx = 0;
+        Neko.move_dy = 0;
     }
 
     /* If movement vector is exactly zero (e.g., due to centering offsets),
        treat as having reached the target so Neko doesn't get stuck. */
-    if (!Waiting && NekoMoveDx == 0 && NekoMoveDy == 0) {
+    if (!Neko.waiting && Neko.move_dx == 0 && Neko.move_dy == 0) {
         int delay;
 
-        Waiting = 1;
-        delay = (int)(MinWait + rand() % (MaxWait - MinWait + 1));
+        Neko.waiting = 1;
+        delay = (int)(Config.min_wait + rand() % (Config.max_wait - Config.min_wait + 1));
 
-        if (GoingToBed) {
+        if (Bed.going_to_bed) {
             delay *= 2;
         }
-        if (Zoomies) {
+        if (Neko.zoomies) {
             delay = 1 + rand() % 3;
         }
 
-        NextMoveTime = time(NULL) + delay;
-        if (NekoState != NEKO_STOP) {
+        Neko.next_move_time = time(NULL) + delay;
+        if (Neko.state != NEKO_STOP) {
             SetNekoState(NEKO_STOP);
         }
         return;
@@ -582,7 +583,7 @@ CalcDxDy(void)
 
     if (DebugMode) {
         DebugLog("CalcDxDy: vector=(%.2f,%.2f) speed=%.2f move=(%d,%d)\n",
-                 LargeX, LargeY, NekoSpeed, NekoMoveDx, NekoMoveDy);
+                 LargeX, LargeY, Config.speed, Neko.move_dx, Neko.move_dy);
     }
 }
 
@@ -591,23 +592,21 @@ NekoThinkDraw(void)
 {
     CalcDxDy();
 
-    if (NekoState != NEKO_SLEEP) {
-        DrawNeko(NekoX, NekoY,
-                AnimationPattern[NekoState][NekoTickCount & 0x1]);
+    if (Neko.state != NEKO_SLEEP) {
+        DrawNeko(Neko.x, Neko.y, Neko.tick_count & 0x1);
     } else {
-        DrawNeko(NekoX, NekoY,
-                AnimationPattern[NekoState][(NekoTickCount >> 2) & 0x1]);
+        DrawNeko(Neko.x, Neko.y, (Neko.tick_count >> 2) & 0x1);
     }
 
     TickCount();
 
-    switch (NekoState) {
+    switch (Neko.state) {
     case NEKO_STOP:
         if (IsNekoMoveStart()) {
             SetNekoState(NEKO_AWAKE);
             break;
         }
-        if (NekoStateCount < NEKO_STOP_TIME) {
+        if (Neko.state_count < NEKO_STOP_TIME) {
             break;
         }
         {
@@ -618,13 +617,13 @@ NekoThinkDraw(void)
                 break;
             }
         }
-        if (NekoMoveDx < 0 && NekoX <= 0) {
+        if (Neko.move_dx < 0 && Neko.x <= 0) {
             SetNekoState(NEKO_L_TOGI);
-        } else if (NekoMoveDx > 0 && NekoX >= WindowWidth - BITMAP_WIDTH) {
+        } else if (Neko.move_dx > 0 && Neko.x >= WindowWidth - BITMAP_WIDTH) {
             SetNekoState(NEKO_R_TOGI);
-        } else if (NekoMoveDy < 0 && NekoY <= 0) {
+        } else if (Neko.move_dy < 0 && Neko.y <= 0) {
             SetNekoState(NEKO_U_TOGI);
-        } else if (NekoMoveDy > 0 && NekoY >= WindowHeight - BITMAP_HEIGHT) {
+        } else if (Neko.move_dy > 0 && Neko.y >= WindowHeight - BITMAP_HEIGHT) {
             SetNekoState(NEKO_D_TOGI);
         } else {
             SetNekoState(NEKO_JARE);
@@ -635,7 +634,7 @@ NekoThinkDraw(void)
             SetNekoState(NEKO_AWAKE);
             break;
         }
-        if (NekoStateCount < NEKO_JARE_TIME) {
+        if (Neko.state_count < NEKO_JARE_TIME) {
             break;
         }
         SetNekoState(NEKO_KAKI);
@@ -645,7 +644,7 @@ NekoThinkDraw(void)
             SetNekoState(NEKO_AWAKE);
             break;
         }
-        if (NekoStateCount < NEKO_KAKI_TIME) {
+        if (Neko.state_count < NEKO_KAKI_TIME) {
             break;
         }
         SetNekoState(NEKO_AKUBI);
@@ -655,7 +654,7 @@ NekoThinkDraw(void)
             SetNekoState(NEKO_AWAKE);
             break;
         }
-        if (NekoStateCount < NEKO_AKUBI_TIME) {
+        if (Neko.state_count < NEKO_AKUBI_TIME) {
             break;
         }
         SetNekoState(NEKO_SLEEP);
@@ -667,7 +666,7 @@ NekoThinkDraw(void)
         }
         break;
     case NEKO_AWAKE:
-        if (NekoStateCount < NEKO_AWAKE_TIME) {
+        if (Neko.state_count < NEKO_AWAKE_TIME) {
             break;
         }
         NekoDirection();
@@ -680,8 +679,8 @@ NekoThinkDraw(void)
     case NEKO_UR_MOVE:
     case NEKO_DL_MOVE:
     case NEKO_DR_MOVE:
-        NekoX += NekoMoveDx;
-        NekoY += NekoMoveDy;
+        Neko.x += Neko.move_dx;
+        Neko.y += Neko.move_dy;
         NekoDirection();
         if (IsWindowOver()) {
             if (IsNekoDontMove()) {
@@ -697,7 +696,7 @@ NekoThinkDraw(void)
             SetNekoState(NEKO_AWAKE);
             break;
         }
-        if (NekoStateCount < NEKO_TOGI_TIME) {
+        if (Neko.state_count < NEKO_TOGI_TIME) {
             break;
         }
         SetNekoState(NEKO_KAKI);
@@ -719,31 +718,31 @@ ProcessNeko(void)
 
     if (ForceTargetFlag) {
         /* place Neko near center and force a target at the edge for testing */
-        NekoX = (int)WindowWidth / 2;
-        NekoY = (int)WindowHeight / 2;
-        TargetX = ForceTargetX;
-        TargetY = ForceTargetY;
+        Neko.x = (int)WindowWidth / 2;
+        Neko.y = (int)WindowHeight / 2;
+        Neko.target_x = ForceTargetX;
+        Neko.target_y = ForceTargetY;
         /* ensure forced target is clamped to a valid location */
         ClampTarget();
-        NekoLastX = NekoX;
-        NekoLastY = NekoY;
-        Waiting = 0; /* start moving immediately toward forced target */
-        DebugLog("ProcessNeko: Forced target=(%d,%d) start=(%d,%d)\n", TargetX, TargetY, NekoX, NekoY);
+        Neko.last_x = Neko.x;
+        Neko.last_y = Neko.y;
+        Neko.waiting = 0; /* start moving immediately toward forced target */
+        DebugLog("ProcessNeko: Forced target=(%d,%d) start=(%d,%d)\n", Neko.target_x, Neko.target_y, Neko.x, Neko.y);
     } else {
-        NekoX = TargetX;
-        NekoY = TargetY;
-        NekoLastX = NekoX;
-        NekoLastY = NekoY;
-        Waiting = 1;
-        NextMoveTime = time(NULL);
+        Neko.x = Neko.target_x;
+        Neko.y = Neko.target_y;
+        Neko.last_x = Neko.x;
+        Neko.last_y = Neko.y;
+        Neko.waiting = 1;
+        Neko.next_move_time = time(NULL);
         SetNekoState(NEKO_STOP);
     }
 
     timerclear(&Value.it_interval);
     timerclear(&Value.it_value);
 
-    Value.it_interval.tv_sec = IntervalTime / 1000000L;
-    Value.it_interval.tv_usec = IntervalTime % 1000000L;
+    Value.it_interval.tv_sec = Config.interval_time / 1000000L;
+    Value.it_interval.tv_usec = Config.interval_time % 1000000L;
     Value.it_value.tv_sec = Value.it_interval.tv_sec;
     Value.it_value.tv_usec = Value.it_interval.tv_usec;
 

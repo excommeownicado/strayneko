@@ -78,11 +78,11 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 fprintf(stderr, "%s: --monitor value is too large.\n", ProgramName);
                 exit(1);
             }
-            RestrictMonitor = (int)value;
+            Config.restrict_monitor = (int)value;
         } else if (strcmp(argv[ArgCounter], "--speed") == 0) {
             ArgCounter++;
             if (ArgCounter < argc) {
-                if (!ParseDoubleOption("--speed", argv[ArgCounter], 0.0, &NekoSpeed)) {
+                if (!ParseDoubleOption("--speed", argv[ArgCounter], 0.0, &Config.speed)) {
                     exit(1);
                 }
             } else {
@@ -92,7 +92,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
         } else if (strcmp(argv[ArgCounter], "--time") == 0) {
             ArgCounter++;
             if (ArgCounter < argc) {
-                if (!ParseLongOption("--time", argv[ArgCounter], 1, &IntervalTime)) {
+                if (!ParseLongOption("--time", argv[ArgCounter], 1, &Config.interval_time)) {
                     exit(1);
                 }
             } else {
@@ -106,7 +106,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 fprintf(stderr, "%s: --fg option error.\n", ProgramName);
                 exit(1);
             }
-            Foreground = argv[ArgCounter];
+            Config.foreground = argv[ArgCounter];
         } else if (strcmp(argv[ArgCounter], "--bg") == 0 ||
                    strcmp(argv[ArgCounter], "--background") == 0) {
             ArgCounter++;
@@ -114,11 +114,11 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 fprintf(stderr, "%s: --bg option error.\n", ProgramName);
                 exit(1);
             }
-            Background = argv[ArgCounter];
+            Config.background = argv[ArgCounter];
         } else if (strcmp(argv[ArgCounter], "--noshape") == 0) {
-            NoShape = True;
+            Config.no_shape = True;
         } else if (strcmp(argv[ArgCounter], "--bed") == 0) {
-            UseBed = True;
+            Bed.enabled = True;
 #ifdef ENABLE_DEBUG
         } else if (strcmp(argv[ArgCounter], "--debug") == 0) {
             DebugMode = 1;
@@ -147,7 +147,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                     fprintf(stderr, "%s: --min-wait value is invalid.\n", ProgramName);
                     exit(1);
                 }
-                MinWait = (int)value;
+                Config.min_wait = (int)value;
             } else {
                 fprintf(stderr, "%s: --min-wait option error.\n", ProgramName);
                 exit(1);
@@ -159,7 +159,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                     fprintf(stderr, "%s: --max-wait value is invalid.\n", ProgramName);
                     exit(1);
                 }
-                MaxWait = (int)value;
+                Config.max_wait = (int)value;
             } else {
                 fprintf(stderr, "%s: --max-wait option error.\n", ProgramName);
                 exit(1);
@@ -171,7 +171,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
         }
     }
 
-    if (MaxWait < MinWait) {
+    if (Config.max_wait < Config.min_wait) {
         fprintf(stderr, "%s: max-wait must be >= min-wait.\n", ProgramName);
         exit(1);
     }

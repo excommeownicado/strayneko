@@ -93,8 +93,8 @@ LoadBedPosition(void)
 
     fclose(file);
 
-    BedX = x;
-    BedY = y;
+    Bed.x = x;
+    Bed.y = y;
     return True;
 }
 
@@ -118,7 +118,7 @@ SaveBedPosition(void)
         return;
     }
 
-    fprintf(file, "%d %d\n", BedX, BedY);
+    fprintf(file, "%d %d\n", Bed.x, Bed.y);
     fclose(file);
 }
 
@@ -181,59 +181,59 @@ GetResources(void)
 {
     char *resource;
 
-    if (Foreground == NULL) {
+    if (Config.foreground == NULL) {
         if ((resource = NekoGetDefault("foreground")) != NULL) {
-            Foreground = resource;
+            Config.foreground = resource;
         }
     }
 
-    if (Background == NULL) {
+    if (Config.background == NULL) {
         if ((resource = NekoGetDefault("background")) != NULL) {
-            Background = resource;
+            Config.background = resource;
         }
     }
 
-    if (IntervalTime == 0) {
+    if (Config.interval_time == 0) {
         if ((resource = NekoGetDefault("time")) != NULL) {
-            ParseLongOption("time resource", resource, 1, &IntervalTime);
+            ParseLongOption("time resource", resource, 1, &Config.interval_time);
         }
     }
 
-    if (NekoSpeed == 0.0) {
+    if (Config.speed == 0.0) {
         if ((resource = NekoGetDefault("speed")) != NULL) {
-            ParseDoubleOption("speed resource", resource, 0.0, &NekoSpeed);
+            ParseDoubleOption("speed resource", resource, 0.0, &Config.speed);
         }
     }
 
-    if (NoShape == NOTDEFINED) {
+    if (Config.no_shape == NOTDEFINED) {
         if ((resource = NekoGetDefault("noshape")) != NULL) {
-            NoShape = IsTrue(resource);
+            Config.no_shape = IsTrue(resource);
         }
     }
 
-    if (ReverseVideo == NOTDEFINED) {
+    if (Config.reverse_video == NOTDEFINED) {
         if ((resource = NekoGetDefault("reverse")) != NULL) {
-            ReverseVideo = IsTrue(resource);
+            Config.reverse_video = IsTrue(resource);
         }
     }
 
-    if (Foreground == NULL) {
-        Foreground = DEFAULT_FOREGROUND;
+    if (Config.foreground == NULL) {
+        Config.foreground = DEFAULT_FOREGROUND;
     }
-    if (Background == NULL) {
-        Background = DEFAULT_BACKGROUND;
+    if (Config.background == NULL) {
+        Config.background = DEFAULT_BACKGROUND;
     }
-    if (IntervalTime == 0) {
-        IntervalTime = 125000L;
+    if (Config.interval_time == 0) {
+        Config.interval_time = 125000L;
     }
-    if (NekoSpeed == 0.0) {
-        NekoSpeed = 13.0;
+    if (Config.speed == 0.0) {
+        Config.speed = 13.0;
     }
-    if (NoShape == NOTDEFINED) {
-        NoShape = False;
+    if (Config.no_shape == NOTDEFINED) {
+        Config.no_shape = False;
     }
-    if (ReverseVideo == NOTDEFINED) {
-        ReverseVideo = False;
+    if (Config.reverse_video == NOTDEFINED) {
+        Config.reverse_video = False;
     }
 }
 
@@ -246,28 +246,28 @@ SetupColors(void)
     theColormap = DefaultColormap(theDisplay, theScreen);
 
     if (theDepth == 1) {
-        Foreground = "black";
-        Background = "white";
+        Config.foreground = "black";
+        Config.background = "white";
     }
 
-    if (ReverseVideo == True) {
+    if (Config.reverse_video == True) {
         char *tmp;
-        tmp = Foreground;
-        Foreground = Background;
-        Background = tmp;
+        tmp = Config.foreground;
+        Config.foreground = Config.background;
+        Config.background = tmp;
     }
 
     if (!XAllocNamedColor(theDisplay, theColormap,
-                          Foreground, &theForegroundColor, &theExactColor)) {
+                          Config.foreground, &theForegroundColor, &theExactColor)) {
         fprintf(stderr, "%s: Can't XAllocNamedColor(\"%s\").\n",
-                ProgramName, Foreground);
+                ProgramName, Config.foreground);
         exit(1);
     }
 
     if (!XAllocNamedColor(theDisplay, theColormap,
-                          Background, &theBackgroundColor, &theExactColor)) {
+                          Config.background, &theBackgroundColor, &theExactColor)) {
         fprintf(stderr, "%s: Can't XAllocNamedColor(\"%s\").\n",
-                ProgramName, Background);
+                ProgramName, Config.background);
         exit(1);
     }
 }

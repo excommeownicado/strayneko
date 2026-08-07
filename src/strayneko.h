@@ -115,6 +115,11 @@ typedef struct {
 extern Sprite Sprites[SPRITE_COUNT];
 
 typedef struct {
+    const unsigned char *bits;
+    const unsigned char *mask_bits;
+} SpriteData;
+
+typedef struct {
     Sprite *sprite;
 } Animation;
 
@@ -180,45 +185,6 @@ extern NekoData Neko;
 extern BedData Bed;
 extern ConfigData Config;
 
-#define NekoX             Neko.x
-#define NekoY             Neko.y
-#define TargetX           Neko.target_x
-#define TargetY           Neko.target_y
-#define NekoMoveDx        Neko.move_dx
-#define NekoMoveDy        Neko.move_dy
-#define NekoLastX         Neko.last_x
-#define NekoLastY         Neko.last_y
-#define NekoLastGC        Neko.last_gc
-#define NekoTickCount     Neko.tick_count
-#define NekoStateCount    Neko.state_count
-#define NekoState         Neko.state
-#define Waiting           Neko.waiting
-#define NextMoveTime      Neko.next_move_time
-#define Zoomies           Neko.zoomies
-#define ZoomiesEndTime    Neko.zoomies_end_time
-#define RaiseWindowDelay  Neko.raise_window_delay
-
-#define BedX              Bed.x
-#define BedY              Bed.y
-#define GoingToBed        Bed.going_to_bed
-#define UseBed            Bed.enabled
-#define DraggingBed       Bed.dragging
-#define DragOffsetX       Bed.drag_offset_x
-#define DragOffsetY       Bed.drag_offset_y
-#define BedGC              Bed.gc
-#define BedPixmap         Bed.pixmap
-#define BedMask            Bed.mask
-
-#define Foreground        Config.foreground
-#define Background        Config.background
-#define IntervalTime      Config.interval_time
-#define NekoSpeed         Config.speed
-#define NoShape            Config.no_shape
-#define ReverseVideo      Config.reverse_video
-#define MinWait           Config.min_wait
-#define MaxWait            Config.max_wait
-#define RestrictMonitor   Config.restrict_monitor
-
 extern char *ClassName;
 extern char *ProgramName;
 
@@ -229,7 +195,7 @@ extern Window theRoot;
 extern Window theWindow;
 extern Window BedWindow;
 
-extern Animation AnimationPattern[][2];
+extern SpriteID AnimationPattern[][2];
 
 extern unsigned int WindowWidth;
 extern unsigned int WindowHeight;
@@ -271,7 +237,7 @@ Bool LoadBedPosition(void);
 void SaveBedPosition(void);
 void TickCount(void);
 void SetNekoState(int SetValue);
-void DrawNeko(int x, int y, Animation DrawAnime);
+void DrawNeko(int x, int y, int tick);
 void RedrawNeko(void);
 void NekoDirection(void);
 Bool IsWindowOver(void);
