@@ -85,10 +85,6 @@ if command -v gtk-update-icon-cache >/dev/null 2>&1; then
   gtk-update-icon-cache -q "$DESTDIR${PREFIX}/share/icons/hicolor" >/dev/null 2>&1 || true
 fi
 
-if command -v mandb >/dev/null 2>&1; then
-  mandb >/dev/null 2>&1 || true
-fi
-
 remove_file "$DESTDIR${PREFIX}/bin/strayneko-uninstall"
 
 if [[ "$removed_any" = false ]]; then

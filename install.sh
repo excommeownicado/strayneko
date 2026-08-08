@@ -89,8 +89,6 @@ install_bin() {
       exit 1
     }
 
-  chmod +x "$src"
-
   local dst="$DESTDIR${PREFIX}/bin/$BINARY_NAME"
 
   install -Dm755 "$src" "$dst"
