@@ -93,13 +93,18 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
         } else if (strcmp(argv[ArgCounter], "--time") == 0) {
             ArgCounter++;
             if (ArgCounter < argc) {
-                if (!ParseLongOption("--time", argv[ArgCounter], 1, &Config.interval_time)) {
+                if (!ParseLongOption("--time", argv[ArgCounter], 1, &value)) {
+                    exit(1);
+                }
+                if (value > INT_MAX) {
+                    fprintf(stderr, "%s: --time value is too large.\n", ProgramName);
                     exit(1);
                 }
             } else {
                 fprintf(stderr, "%s: --time option error.\n", ProgramName);
                 exit(1);
             }
+            Config.interval_time = (int)value;
         } else if (strcmp(argv[ArgCounter], "--fg") == 0 ||
                    strcmp(argv[ArgCounter], "--foreground") == 0) {
             ArgCounter++;
