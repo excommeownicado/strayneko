@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented here.
 
+## Unreleased
+
+### Fixed
+
+* Fixed possible integer overflow in configuration option values.
+
+### Improved
+
+* Improved error handling.
+* Improved code robustness.
+
 ## [1.0.2]
 
 ### Fixed
@@ -14,18 +25,23 @@ All notable changes to this project are documented here.
 
 ### Improved
 
-* Improved code readability.
 * Improved monitor geometry handling.
 * Improved configuration validation.
 * Improved target and movement handling.
 
 ## [1.0.1]
 
-### Improved
+### Added
 
 * Added an uninstaller.
+
+### Changed
+
 * Removed `README.md` and `CREDITS.md` from release archives.
-* Updated the manual.
+
+### Improved
+
+* Improved and updated the man page.
 
 ## [1.0.0]
 
