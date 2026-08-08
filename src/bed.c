@@ -7,8 +7,8 @@ PlaceBedOnMonitor(void)
     int monitor;
 
     if (!Monitors || MonitorCount <= 0) {
-        Bed.x = ((int)WindowWidth - bed_width) / 2;
-        Bed.y = ((int)WindowHeight - bed_height) / 2;
+        Bed.x = ((int)WindowWidth - BITMAP_WIDTH) / 2;
+        Bed.y = ((int)WindowHeight - BITMAP_HEIGHT) / 2;
         return;
     }
 

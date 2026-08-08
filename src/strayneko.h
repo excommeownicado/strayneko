@@ -17,11 +17,6 @@
 #include <time.h>
 #include <X11/extensions/Xrandr.h>
 
-#include "bitmaps/neko/neko.include"
-#include "bitmaps/bed/bed.include"
-#include "bitmasks/neko/neko.mask.include"
-#include "bitmasks/bed/bed.mask.include"
-
 #define BITMAP_WIDTH 32
 #define BITMAP_HEIGHT 32
 

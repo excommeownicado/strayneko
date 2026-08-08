@@ -607,13 +607,22 @@ NekoThinkDraw(void)
                 break;
             }
         }
+        
+        int max_x = WindowWidth > BITMAP_WIDTH
+            ? (int)WindowWidth - BITMAP_WIDTH
+            : 0;
+
+        int max_y = WindowHeight > BITMAP_HEIGHT
+            ? (int)WindowHeight - BITMAP_HEIGHT
+            : 0;
+
         if (Neko.move_dx < 0 && Neko.x <= 0) {
             SetNekoState(NEKO_L_TOGI);
-        } else if (Neko.move_dx > 0 && Neko.x >= WindowWidth - BITMAP_WIDTH) {
+        } else if (Neko.move_dx > 0 && Neko.x >= max_x) {
             SetNekoState(NEKO_R_TOGI);
         } else if (Neko.move_dy < 0 && Neko.y <= 0) {
             SetNekoState(NEKO_U_TOGI);
-        } else if (Neko.move_dy > 0 && Neko.y >= WindowHeight - BITMAP_HEIGHT) {
+        } else if (Neko.move_dy > 0 && Neko.y >= max_y) {
             SetNekoState(NEKO_D_TOGI);
         } else {
             SetNekoState(NEKO_JARE);

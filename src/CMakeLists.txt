@@ -21,6 +21,12 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR ENABLE_DEBUG)
     target_compile_definitions(strayneko PRIVATE ENABLE_DEBUG)
 endif()
 
+target_compile_options(strayneko PRIVATE
+    -Wall
+    -Wextra
+    -Wpedantic
+)
+
 target_link_libraries(strayneko PRIVATE
     ${X11_LIBRARIES}
     ${XRANDR_LIBRARY}

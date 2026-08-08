@@ -1,5 +1,10 @@
 #include "strayneko.h"
 
+#include "bitmaps/neko/neko.include"
+#include "bitmaps/bed/bed.include"
+#include "bitmasks/neko/neko.mask.include"
+#include "bitmasks/bed/bed.mask.include"
+
 static const SpriteData SpriteDataTable[SPRITE_COUNT] = {
     [SPRITE_MATI2]      = { mati2_bits, mati2_mask_bits },
     [SPRITE_JARE2]      = { jare2_bits, jare2_mask_bits },
@@ -175,19 +180,32 @@ CreateBedWindow(void)
     theWindowMask = CWBackPixel | CWOverrideRedirect;
 
     BedWindow = XCreateWindow(theDisplay, theRoot, Bed.x, Bed.y,
-            bed_width, bed_height,
+            BITMAP_WIDTH, BITMAP_HEIGHT,
             0, theDepth, InputOutput, CopyFromParent,
             theWindowMask, &theWindowAttributes);
-    Bed.pixmap = XCreateBitmapFromData(theDisplay, theRoot, bed_bits,
-            bed_width, bed_height);
-    Bed.mask = XCreateBitmapFromData(theDisplay, theRoot, bed_mask_bits,
-            bed_mask_width, bed_mask_height);
+    Bed.pixmap = XCreateBitmapFromData(
+        theDisplay,
+        theRoot,
+        (const char *)bed_bits,
+        BITMAP_WIDTH,
+        BITMAP_HEIGHT
+    );
+
+    Bed.mask = XCreateBitmapFromData(
+        theDisplay,
+        theRoot,
+        (const char *)bed_mask_bits,
+        BITMAP_WIDTH,
+        BITMAP_HEIGHT
+    );
+
 #ifdef SHAPE
     if (!Config.no_shape) {
         XShapeCombineMask(theDisplay, BedWindow, ShapeBounding, 0, 0,
                 Bed.mask, ShapeSet);
     }
 #endif
+
     Bed.gc = XCreateGC(theDisplay, theRoot, 0, NULL);
 
     if (BedWindow == None ||
@@ -206,7 +224,7 @@ CreateBedWindow(void)
     XSelectInput(theDisplay, BedWindow,
             ExposureMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
     XMapWindow(theDisplay, BedWindow);
-    XFillRectangle(theDisplay, BedWindow, Bed.gc, 0, 0, bed_width, bed_height);
+    XFillRectangle(theDisplay, BedWindow, Bed.gc, 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
 }
 
 void
@@ -376,7 +394,7 @@ InitScreen(char *DisplayName)
                  &BorderWidth, &theDepth);
 
     if (Bed.enabled) {
-        if (!LoadBedPosition() || !RectOnMonitor(Bed.x, Bed.y, bed_width, bed_height)) {
+        if (!LoadBedPosition() || !RectOnMonitor(Bed.x, Bed.y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
             PlaceBedOnMonitor();
         }
     }
@@ -508,7 +526,7 @@ ProcessEvent(void)
             if (theEvent.xexpose.count == 0) {
                 if (Bed.enabled && theEvent.xexpose.window == BedWindow) {
                     XFillRectangle(theDisplay, BedWindow, Bed.gc, 0, 0,
-                            bed_width, bed_height);
+                            BITMAP_WIDTH, BITMAP_HEIGHT);
                 } else if (theEvent.xexpose.window == theWindow) {
                     RedrawNeko();
                 }
@@ -544,7 +562,7 @@ ProcessEvent(void)
                 int NewX = theEvent.xmotion.x_root - Bed.drag_offset_x;
                 int NewY = theEvent.xmotion.y_root - Bed.drag_offset_y;
 
-                if (RectOnMonitor(NewX, NewY, bed_width, bed_height)) {
+                if (RectOnMonitor(NewX, NewY, BITMAP_WIDTH, BITMAP_HEIGHT)) {
                     Bed.x = NewX;
                     Bed.y = NewY;
                     XMoveWindow(theDisplay, BedWindow, Bed.x, Bed.y);
