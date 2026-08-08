@@ -411,7 +411,7 @@ PickNearbyTarget(int radius)
 {
     int x, y;
 
-    if (radius < 0) {
+    if (radius < 0 || radius > (INT_MAX - 1) / 2) {
         return;
     }
 
@@ -499,8 +499,14 @@ CalcDxDy(void)
         delay = (int)(Config.min_wait + rand() % (Config.max_wait - Config.min_wait + 1));
 
         if (Bed.going_to_bed) {
-            delay *= 2;
+            if (delay > INT_MAX / 2) {
+                delay = INT_MAX;
+            }
+            else {
+                delay *= 2;
+            }
         }
+        
         if (Neko.zoomies) {
             delay = 1 + rand() % 3;
         }

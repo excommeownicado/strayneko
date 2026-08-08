@@ -36,11 +36,19 @@ find_existing() {
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --prefix)
+      if [[ $# -lt 2 ]]; then
+          echo "Error: --prefix requires a value." >&2
+          exit 1
+      fi
       PREFIX="$2"
       PREFIX_SET=true
       shift 2
       ;;
     --destdir)
+      if [[ $# -lt 2 ]]; then
+          echo "Error: --destdir requires a value." >&2
+          exit 1
+      fi
       DESTDIR="$2"
       shift 2
       ;;
@@ -122,7 +130,10 @@ install_man() {
   local src
   src=$(find_existing \
     "$SCRIPT_DIR/docs/strayneko.6" \
-    "$SCRIPT_DIR/strayneko.6") || return
+    "$SCRIPT_DIR/strayneko.6") || {
+    echo "Error: Man page not found." >&2
+    exit 1
+  }
 
   local dst="$DESTDIR${PREFIX}/${MAN_DIR}/strayneko.6"
 
@@ -133,7 +144,10 @@ install_uninstaller() {
   local src
   src=$(find_existing \
     "$SCRIPT_DIR/uninstall.sh" \
-    "$SCRIPT_DIR/scripts/uninstall.sh") || return
+    "$SCRIPT_DIR/scripts/uninstall.sh") || {
+    echo "Error: Uninstaller not found." >&2
+    exit 1
+  }
 
   local dst="$DESTDIR${PREFIX}/bin/strayneko-uninstall"
 

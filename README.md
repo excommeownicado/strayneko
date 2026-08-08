@@ -137,5 +137,5 @@ applicable, original authors' public-domain notices are preserved in the
 source and credits.
 
 > [!NOTE]
-> This project is an idependent fork and is not affiliated with the original authors.
+> This project is an independent fork and is not affiliated with the original authors.
 

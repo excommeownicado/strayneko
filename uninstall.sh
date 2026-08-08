@@ -26,11 +26,19 @@ EOF
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --prefix)
+      if [[ $# -lt 2 ]]; then
+          echo "Error: --prefix requires a value." >&2
+          exit 1
+      fi
       PREFIX="$2"
       PREFIX_SET=true
       shift 2
       ;;
     --destdir)
+      if [[ $# -lt 2 ]]; then
+          echo "Error: --destdir requires a value." >&2
+          exit 1
+      fi
       DESTDIR="$2"
       shift 2
       ;;
