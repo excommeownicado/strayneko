@@ -144,8 +144,11 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
         } else if (strcmp(argv[ArgCounter], "--min-wait") == 0) {
             ArgCounter++;
             if (ArgCounter < argc) {
-                if (!ParseLongOption("--min-wait", argv[ArgCounter], 0, &value) || value > INT_MAX) {
-                    fprintf(stderr, "%s: --min-wait value is invalid.\n", ProgramName);
+                if (!ParseLongOption("--min-wait", argv[ArgCounter], 0, &value)) {
+                    exit(1);
+                }
+                if (value > INT_MAX / 2) {
+                    fprintf(stderr, "%s: --min-wait value is too large.\n", ProgramName);
                     exit(1);
                 }
                 Config.min_wait = (int)value;
@@ -156,8 +159,11 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
         } else if (strcmp(argv[ArgCounter], "--max-wait") == 0) {
             ArgCounter++;
             if (ArgCounter < argc) {
-                if (!ParseLongOption("--max-wait", argv[ArgCounter], 0, &value) || value > INT_MAX) {
-                    fprintf(stderr, "%s: --max-wait value is invalid.\n", ProgramName);
+                if (!ParseLongOption("--max-wait", argv[ArgCounter], 0, &value)) {
+                    exit(1);
+                }
+                if (value > INT_MAX / 2) {
+                    fprintf(stderr, "%s: --max-wait value is too large.\n", ProgramName);
                     exit(1);
                 }
                 Config.max_wait = (int)value;
