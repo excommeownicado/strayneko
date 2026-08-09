@@ -4,6 +4,7 @@ add_executable(strayneko
     display.c
     bed.c
     strayneko.c
+    parser.c
 )
 
 target_include_directories(strayneko PRIVATE

@@ -349,34 +349,31 @@ IsWindowOver(void)
         return ReturnValue;
     }
 
-    if (!RectOnMonitor(
-            Neko.x,
-            Neko.y,
-            BITMAP_WIDTH,
-            BITMAP_HEIGHT)) {
+    if (Config.restrict_monitor >= 0 &&
+        Config.restrict_monitor < MonitorCount) {
 
-        int monitor = FindMonitorFor(
-            Neko.x + BITMAP_WIDTH / 2,
-            Neko.y + BITMAP_HEIGHT / 2
-        );
+        MonitorBounds bounds =
+            GetMonitorBounds(Config.restrict_monitor);
 
-        if (monitor >= 0) {
-            MonitorBounds bounds = GetMonitorBounds(monitor);
+        Bool ReturnValue = False;
 
-            if (Neko.x < bounds.min_x)
-                Neko.x = bounds.min_x;
-
-            if (Neko.x > bounds.max_x)
-                Neko.x = bounds.max_x;
-
-            if (Neko.y < bounds.min_y)
-                Neko.y = bounds.min_y;
-
-            if (Neko.y > bounds.max_y)
-                Neko.y = bounds.max_y;
+        if (Neko.x < bounds.min_x) {
+            Neko.x = bounds.min_x;
+            ReturnValue = True;
+        } else if (Neko.x > bounds.max_x) {
+            Neko.x = bounds.max_x;
+            ReturnValue = True;
         }
 
-        return True;
+        if (Neko.y < bounds.min_y) {
+            Neko.y = bounds.min_y;
+            ReturnValue = True;
+        } else if (Neko.y > bounds.max_y) {
+            Neko.y = bounds.max_y;
+            ReturnValue = True;
+        }
+
+        return ReturnValue;
     }
 
     return False;

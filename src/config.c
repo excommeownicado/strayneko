@@ -1,4 +1,5 @@
 #include "strayneko.h"
+#include "parser.h"
 #include <sys/stat.h>
 
 static char *
@@ -126,65 +127,6 @@ SaveBedPosition(void)
     fclose(file);
 }
 
-int
-ParseLongOption(const char *option, const char *value, long minimum,
-                long *result)
-{
-    char *end;
-    long parsed;
-
-    if (value == NULL) {
-        fprintf(stderr, "%s: missing value for %s.\n",
-                ProgramName, option);
-        return False;
-    }
-
-    errno = 0;
-    parsed = strtol(value, &end, 10);
-
-    if (errno == ERANGE ||
-        *value == '\0' ||
-        *end != '\0' ||
-        parsed < minimum) {
-        fprintf(stderr, "%s: %s must be an integer >= %ld.\n",
-                ProgramName, option, minimum);
-        return False;
-    }
-
-    *result = parsed;
-    return True;
-}
-
-int
-ParseDoubleOption(const char *option, const char *value, double minimum,
-                  double *result)
-{
-    char *end;
-    double parsed;
-
-    if (value == NULL) {
-        fprintf(stderr, "%s: missing value for %s.\n",
-                ProgramName, option);
-        return False;
-    }
-
-    errno = 0;
-    parsed = strtod(value, &end);
-
-    if (errno == ERANGE ||
-        *value == '\0' ||
-        *end != '\0' ||
-        !isfinite(parsed) ||
-        parsed <= minimum) {
-        fprintf(stderr, "%s: %s must be greater than %g.\n",
-                ProgramName, option, minimum);
-        return False;
-    }
-
-    *result = parsed;
-    return True;
-}
-
 static char *
 NekoGetDefault(char *resource)
 {
@@ -218,8 +160,7 @@ GetResources(void)
 
     if (Config.interval_time == 0) {
         if ((resource = NekoGetDefault("time")) != NULL) {
-            if (!ParseLongOption("time resource", resource,
-                             1, &Config.interval_time)) {
+            if (!ParseLongOption(resource, 1, &Config.interval_time)) {
                 exit(1);
             }
         }
@@ -227,8 +168,7 @@ GetResources(void)
 
     if (Config.speed == 0.0) {
         if ((resource = NekoGetDefault("speed")) != NULL) {
-            if (!ParseDoubleOption("speed resource", resource,
-                               0.0, &Config.speed)) {
+            if (!ParseDoubleOption(resource, 0.0, &Config.speed)) {
                 exit(1);
             }
         }

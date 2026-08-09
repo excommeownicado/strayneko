@@ -1,4 +1,5 @@
 #include "strayneko.h"
+#include "parser.h"
 #include <signal.h>
 #include <time.h>
 
@@ -70,13 +71,15 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
             strcmp(argv[ArgCounter], "-h") == 0) {
             Usage();
             exit(0);
+
         } else if (strcmp(argv[ArgCounter], "--monitor") == 0) {
             ArgCounter++;
             if (ArgCounter >= argc) {
                 fprintf(stderr, "%s: --monitor option error.\n", ProgramName);
                 exit(1);
             }
-            if (!ParseLongOption("--monitor", argv[ArgCounter], 0, &value)) {
+            if (!ParseLongOption(argv[ArgCounter], 0, &value)) {
+                fprintf(stderr, "%s: --monitor option error.\n", ProgramName);
                 exit(1);
             }
             if (value > INT_MAX) {
@@ -84,31 +87,35 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 exit(1);
             }
             Config.restrict_monitor = (int)value;
+
         } else if (strcmp(argv[ArgCounter], "--speed") == 0) {
             ArgCounter++;
-            if (ArgCounter < argc) {
-                if (!ParseDoubleOption("--speed", argv[ArgCounter], 0.0, &Config.speed)) {
-                    exit(1);
-                }
-            } else {
+            if (ArgCounter >= argc) {
                 fprintf(stderr, "%s: --speed option error.\n", ProgramName);
                 exit(1);
             }
+            if (!ParseDoubleOption(
+                argv[ArgCounter], 0.0, &Config.speed)) {
+                fprintf(stderr, "%s: --speed option error.\n", ProgramName);
+                exit(1);
+            }
+
         } else if (strcmp(argv[ArgCounter], "--time") == 0) {
             ArgCounter++;
-            if (ArgCounter < argc) {
-                if (!ParseLongOption("--time", argv[ArgCounter], 1, &value)) {
-                    exit(1);
-                }
-                if (value > INT_MAX) {
-                    fprintf(stderr, "%s: --time value is too large.\n", ProgramName);
-                    exit(1);
-                }
-            } else {
+            if (ArgCounter >= argc) {
                 fprintf(stderr, "%s: --time option error.\n", ProgramName);
                 exit(1);
             }
+            if (!ParseLongOption(argv[ArgCounter], 1, &value)) {
+                fprintf(stderr, "%s: --time option error.\n", ProgramName);
+                exit(1);
+            }
+            if (value > INT_MAX) {
+                fprintf(stderr, "%s: --time value is too large.\n", ProgramName);
+                exit(1);
+            }
             Config.interval_time = (int)value;
+
         } else if (strcmp(argv[ArgCounter], "--fg") == 0 ||
                    strcmp(argv[ArgCounter], "--foreground") == 0) {
             ArgCounter++;
@@ -117,6 +124,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 exit(1);
             }
             Config.foreground = argv[ArgCounter];
+
         } else if (strcmp(argv[ArgCounter], "--bg") == 0 ||
                    strcmp(argv[ArgCounter], "--background") == 0) {
             ArgCounter++;
@@ -125,10 +133,13 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 exit(1);
             }
             Config.background = argv[ArgCounter];
+
         } else if (strcmp(argv[ArgCounter], "--noshape") == 0) {
             Config.no_shape = True;
+
         } else if (strcmp(argv[ArgCounter], "--bed") == 0) {
             Bed.enabled = True;
+
 #ifdef ENABLE_DEBUG
         } else if (strcmp(argv[ArgCounter], "--debug") == 0) {
             DebugMode = 1;
@@ -152,34 +163,36 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
 #endif
         } else if (strcmp(argv[ArgCounter], "--min-wait") == 0) {
             ArgCounter++;
-            if (ArgCounter < argc) {
-                if (!ParseLongOption("--min-wait", argv[ArgCounter], 0, &value)) {
-                    exit(1);
-                }
-                if (value > INT_MAX / 2) {
-                    fprintf(stderr, "%s: --min-wait value is too large.\n", ProgramName);
-                    exit(1);
-                }
-                Config.min_wait = (int)value;
-            } else {
+            if (ArgCounter >= argc) {
                 fprintf(stderr, "%s: --min-wait option error.\n", ProgramName);
                 exit(1);
             }
+            if (!ParseLongOption(argv[ArgCounter], 0, &value)) {
+                fprintf(stderr, "%s: --min-wait option error.\n", ProgramName);
+                exit(1);
+            }
+            if (value > INT_MAX / 2) {
+                fprintf(stderr, "%s: --min-wait value is too large.\n", ProgramName);
+                exit(1);
+            }
+            Config.min_wait = (int)value;
+
         } else if (strcmp(argv[ArgCounter], "--max-wait") == 0) {
             ArgCounter++;
-            if (ArgCounter < argc) {
-                if (!ParseLongOption("--max-wait", argv[ArgCounter], 0, &value)) {
-                    exit(1);
-                }
-                if (value > INT_MAX / 2) {
-                    fprintf(stderr, "%s: --max-wait value is too large.\n", ProgramName);
-                    exit(1);
-                }
-                Config.max_wait = (int)value;
-            } else {
+            if (ArgCounter >= argc) {
                 fprintf(stderr, "%s: --max-wait option error.\n", ProgramName);
                 exit(1);
             }
+            if (!ParseLongOption(argv[ArgCounter], 0, &value)) {
+                fprintf(stderr, "%s: --max-wait option error.\n", ProgramName);
+                exit(1);
+            }
+            if (value > INT_MAX / 2) {
+                fprintf(stderr, "%s: --max-wait value is too large.\n", ProgramName);
+                exit(1);
+            }
+            Config.max_wait = (int)value;
+
         } else {
             fprintf(stderr, "%s: Unknown option \"%s\".\n", ProgramName, argv[ArgCounter]);
             Usage();

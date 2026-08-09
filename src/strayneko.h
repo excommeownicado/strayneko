@@ -260,7 +260,5 @@ Bool ProcessEvent(void);
 void ProcessNeko(void);
 void Usage(void);
 void GetArguments(int argc, char *argv[], char *theDisplayName);
-int ParseLongOption(const char *option, const char *value, long minimum, long *result);
-int ParseDoubleOption(const char *option, const char *value, double minimum, double *result);
 
 #endif /* STRAYNEKO_H */
