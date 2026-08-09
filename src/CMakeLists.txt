@@ -25,6 +25,8 @@ target_compile_options(strayneko PRIVATE
     -Wall
     -Wextra
     -Wpedantic
+    -Wshadow
+    -Wformat=2
 )
 
 target_link_libraries(strayneko PRIVATE
