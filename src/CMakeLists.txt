@@ -2,6 +2,7 @@ add_executable(strayneko
     main.c
     config.c
     geometry.c
+    monitor.c
     display.c
     bed.c
     strayneko.c
