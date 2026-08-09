@@ -1,4 +1,3 @@
-
 add_executable(test_parser
     test_parser.c
     ../src/parser.c
@@ -12,4 +11,3 @@ add_test(
     NAME parser
     COMMAND test_parser
 )
-endif()

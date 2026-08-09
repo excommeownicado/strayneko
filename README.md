@@ -104,7 +104,7 @@ Available command-line options:
 If debug mode is enabled (only available through building from source):
   
 * `--debug` – enables debug log output
-* `--force-target` – forces neko to go to the specified coordinates
+* `--force-target` – forces neko to move toward the specified coordinates
 
 </details>
 
