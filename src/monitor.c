@@ -1,6 +1,19 @@
 #include "strayneko.h"
 #include "monitor.h"
 
+void
+InitMonitors(void)
+{
+    Window root;
+
+    root = RootWindow(theDisplay, DefaultScreen(theDisplay));
+    Monitors = XRRGetMonitors(theDisplay, root, True, &MonitorCount);
+
+    if (!Monitors) {
+        MonitorCount = 0;
+    }
+}
+
 MonitorRect
 GetMonitorRect(int monitor)
 {
