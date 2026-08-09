@@ -31,6 +31,17 @@ target_compile_options(strayneko PRIVATE
     -Wformat=2
 )
 
+if(ENABLE_SANITIZERS)
+    target_compile_options(strayneko PRIVATE
+        -fsanitize=address,undefined
+        -fno-omit-frame-pointer
+    )
+
+    target_link_options(strayneko PRIVATE
+        -fsanitize=address,undefined
+    )
+endif()
+
 target_link_libraries(strayneko PRIVATE
     ${X11_LIBRARIES}
     ${XRANDR_LIBRARY}
