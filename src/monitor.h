@@ -17,6 +17,8 @@ typedef struct {
     int max_y;
 } MonitorBounds;
 
+void InitMonitors(void);
+
 int RectOnMonitor(
     int x,
     int y,
