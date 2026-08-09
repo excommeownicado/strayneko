@@ -11,13 +11,7 @@ endif()
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS Debug Release RelWithDebInfo MinSizeRel)
 
 option(ENABLE_DEBUG "Enable debug logging support" OFF)
-
-if(NOT CMAKE_C_FLAGS_DEBUG)
-    set(CMAKE_C_FLAGS_DEBUG "-g")
-endif()
-if(NOT CMAKE_C_FLAGS_RELEASE)
-    set(CMAKE_C_FLAGS_RELEASE "-O3")
-endif()
+option(ENABLE_SANITIZERS "Enable AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
 
 include(GNUInstallDirs)
 
