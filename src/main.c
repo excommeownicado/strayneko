@@ -99,6 +99,7 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 fprintf(stderr, "%s: --speed option error.\n", ProgramName);
                 exit(1);
             }
+            Config.speed_set = true;
 
         } else if (strcmp(argv[ArgCounter], "--time") == 0) {
             ArgCounter++;
@@ -114,7 +115,8 @@ GetArguments(int argc, char *argv[], char *theDisplayName)
                 fprintf(stderr, "%s: --time value is too large.\n", ProgramName);
                 exit(1);
             }
-            Config.interval_time = (int)value;
+            Config.interval_time = value;
+            Config.interval_time_set = true;
 
         } else if (strcmp(argv[ArgCounter], "--fg") == 0 ||
                    strcmp(argv[ArgCounter], "--foreground") == 0) {
