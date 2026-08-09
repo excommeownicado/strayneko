@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <math.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <string.h>
 
 #include "parser.h"
 
@@ -52,4 +52,24 @@ ParseDoubleOption(
     *result = parsed;
 
     return 1;
+}
+
+bool
+ParseBoolOption(const char *value, bool *result)
+{
+    if (value == NULL || result == NULL) {
+        return false;
+    }
+
+    if (strcmp(value, "true") == 0) {
+        *result = true;
+        return true;
+    }
+
+    if (strcmp(value, "false") == 0) {
+        *result = false;
+        return true;
+    }
+
+    return false;
 }
