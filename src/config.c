@@ -158,19 +158,21 @@ GetResources(void)
         }
     }
 
-    if (Config.interval_time == 0) {
+    if (!Config.interval_time_set) {
         if ((resource = NekoGetDefault("time")) != NULL) {
             if (!ParseLongOption(resource, 1, &Config.interval_time)) {
                 exit(1);
             }
+            Config.interval_time_set = true;
         }
     }
 
-    if (Config.speed == 0.0) {
+    if (!Config.speed_set) {
         if ((resource = NekoGetDefault("speed")) != NULL) {
             if (!ParseDoubleOption(resource, 0.0, &Config.speed)) {
                 exit(1);
             }
+            Config.speed_set = true;
         }
     }
 
@@ -186,11 +188,13 @@ GetResources(void)
     if (Config.background == NULL) {
         Config.background = DEFAULT_BACKGROUND;
     }
-    if (Config.interval_time == 0) {
+    if (!Config.interval_time_set) {
         Config.interval_time = 125000L;
+        Config.interval_time_set = true;
     }
-    if (Config.speed == 0.0) {
+    if (!Config.speed_set) {
         Config.speed = 13.0;
+        Config.speed_set = true;
     }
     if (Config.no_shape == NOTDEFINED) {
         Config.no_shape = False;
