@@ -10,6 +10,7 @@ add_executable(strayneko
     strayneko.c
     parser.c
     platform_posix.c
+    x11_window.c
 )
 
 target_include_directories(strayneko PRIVATE
