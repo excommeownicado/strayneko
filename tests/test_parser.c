@@ -1,5 +1,4 @@
 #include <assert.h>
-#include <limits.h>
 #include <stdio.h>
 
 #include "parser.h"
@@ -9,6 +8,7 @@ main(void)
 {
     long value;
     double number;
+    bool boolean;
 
     assert(ParseLongOption("123", 0, &value));
     assert(value == 123);
@@ -25,6 +25,15 @@ main(void)
 
     assert(!ParseDoubleOption("-1.5", 0.0, &number));
     assert(!ParseDoubleOption("abc", 0.0, &number));
+
+    assert(ParseBoolOption("true", &boolean));
+    assert(boolean);
+
+    assert(ParseBoolOption("false", &boolean));
+    assert(!boolean);
+
+    assert(!ParseBoolOption("True", &boolean));
+    assert(!ParseBoolOption("1", &boolean));
 
     printf("parser tests passed\n");
 
