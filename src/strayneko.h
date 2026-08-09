@@ -204,9 +204,6 @@ extern double SinPiPer8Times3;
 extern double SinPiPer8;
 
 void InitBitmapAndGCs(void);
-void GetResources(void);
-void SetupColors(void);
-void InitMonitors(void);
 void PlaceBedOnMonitor(void);
 void InitScreen(char *DisplayName);
 void Cleanup(void);
