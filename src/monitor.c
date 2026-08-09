@@ -1,4 +1,5 @@
 #include "strayneko.h"
+#include "monitor.h"
 
 MonitorRect
 GetMonitorRect(int monitor)
