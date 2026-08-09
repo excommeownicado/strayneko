@@ -1,6 +1,8 @@
 add_executable(strayneko
     main.c
     config.c
+    resources.c
+    colors.c
     geometry.c
     monitor.c
     display.c
