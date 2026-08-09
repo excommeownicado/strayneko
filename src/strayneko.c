@@ -320,8 +320,6 @@ Bool
 IsWindowOver(void)
 {
     if (MonitorCount <= 0) {
-        Bool ReturnValue = False;
-
         int max_x = WindowWidth > BITMAP_WIDTH
             ? WindowWidth - BITMAP_WIDTH
             : 0;
@@ -329,6 +327,8 @@ IsWindowOver(void)
         int max_y = WindowHeight > BITMAP_HEIGHT
             ? WindowHeight - BITMAP_HEIGHT
             : 0;
+
+        Bool ReturnValue = False;
 
         if (Neko.x < 0) {
             Neko.x = 0;
@@ -347,6 +347,36 @@ IsWindowOver(void)
         }
 
         return ReturnValue;
+    }
+
+    if (!RectOnMonitor(
+            Neko.x,
+            Neko.y,
+            BITMAP_WIDTH,
+            BITMAP_HEIGHT)) {
+
+        int monitor = FindMonitorFor(
+            Neko.x + BITMAP_WIDTH / 2,
+            Neko.y + BITMAP_HEIGHT / 2
+        );
+
+        if (monitor >= 0) {
+            MonitorBounds bounds = GetMonitorBounds(monitor);
+
+            if (Neko.x < bounds.min_x)
+                Neko.x = bounds.min_x;
+
+            if (Neko.x > bounds.max_x)
+                Neko.x = bounds.max_x;
+
+            if (Neko.y < bounds.min_y)
+                Neko.y = bounds.min_y;
+
+            if (Neko.y > bounds.max_y)
+                Neko.y = bounds.max_y;
+        }
+
+        return True;
     }
 
     return False;

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include <errno.h>
 #include <limits.h>
 #include <unistd.h>
@@ -233,8 +234,8 @@ void SetupColors(void);
 void InitMonitors(void);
 void PlaceBedOnMonitor(void);
 void InitScreen(char *DisplayName);
-void RestoreCursor(void);
-void RestoreCursorHandler(int signum);
+void Cleanup(void);
+void CleanupHandler(int signum);
 void Interval(void);
 Bool LoadBedPosition(void);
 void SaveBedPosition(void);

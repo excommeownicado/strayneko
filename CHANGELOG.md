@@ -7,11 +7,14 @@ All notable changes to this project are documented here.
 ### Fixed
 
 * Fixed possible integer overflow in configuration option values.
+* Fixed an issue where X11 error handler did not correctly request shutdown.
+* Fixed neko clamping on multi-monitor setups. 
 
 ### Improved
 
 * Improved error handling.
 * Improved code robustness.
+* Improved monitor geometry arithmetic.
 
 ## [1.0.2]
 

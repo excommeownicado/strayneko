@@ -16,10 +16,14 @@ static int
 NekoErrorHandler(Display *dpy, XErrorEvent *err)
 {
     char msg[80];
+
     XGetErrorText(dpy, err->error_code, msg, sizeof(msg));
-    fprintf(stderr, "%s: Error and exit.\n%s\n", ProgramName, msg);
-    RestoreCursor();
-    exit(1);
+
+    fprintf(stderr, "%s: X11 error: %s\n", ProgramName, msg);
+
+    TerminationRequested = 1;
+
+    return 0;
 }
 
 static char *message[] = {
@@ -211,15 +215,15 @@ main(int argc, char *argv[])
     InitScreen(theDisplayName);
 
     signal(SIGALRM, NullFunction);
-    signal(SIGINT, RestoreCursorHandler);
-    signal(SIGTERM, RestoreCursorHandler);
-    signal(SIGQUIT, RestoreCursorHandler);
+    signal(SIGINT, CleanupHandler);
+    signal(SIGTERM, CleanupHandler);
+    signal(SIGQUIT, CleanupHandler);
 
     SinPiPer8Times3 = sin(PI_PER8 * 3.0);
     SinPiPer8 = sin(PI_PER8);
 
     ProcessNeko();
-    RestoreCursor();
+    Cleanup();
 
     return 0;
 }
