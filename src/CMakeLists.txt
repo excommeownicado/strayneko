@@ -9,6 +9,7 @@ add_executable(strayneko
     bed.c
     strayneko.c
     parser.c
+    platform_posix.c
 )
 
 target_include_directories(strayneko PRIVATE
