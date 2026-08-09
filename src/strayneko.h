@@ -3,6 +3,7 @@
 
 #include "geometry.h"
 #include "monitor.h"
+#include "config.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -158,21 +159,6 @@ typedef struct {
     Pixmap pixmap;
     Pixmap mask;
 } BedData;
-
-typedef struct {
-    char *foreground;
-    char *background;
-
-    long interval_time;
-    double speed;
-
-    int no_shape;
-
-    int min_wait;
-    int max_wait;
-
-    int restrict_monitor;
-} ConfigData;
 
 extern NekoData Neko;
 extern BedData Bed;
