@@ -1,5 +1,5 @@
 #include "strayneko.h"
-#include "parser.h"
+
 #include <sys/stat.h>
 
 static char *
@@ -47,7 +47,9 @@ MakeDirectoryPath(const char *path)
         if (*p != '/') {
             continue;
         }
+
         *p = '\0';
+
         if (stat(dir, &st) != 0) {
             if (mkdir(dir, 0700) != 0 && errno != EEXIST) {
                 return 0;
@@ -55,6 +57,7 @@ MakeDirectoryPath(const char *path)
         } else if (!S_ISDIR(st.st_mode)) {
             return 0;
         }
+
         *p = '/';
     }
 
@@ -106,11 +109,7 @@ SaveBedPosition(void)
     FILE *file;
 
     path = GetBedConfigPath();
-    if (path == NULL) {
-        return;
-    }
-
-    if (!MakeDirectoryPath(path)) {
+    if (path == NULL || !MakeDirectoryPath(path)) {
         return;
     }
 
@@ -125,109 +124,4 @@ SaveBedPosition(void)
     }
 
     fclose(file);
-}
-
-static char *
-NekoGetDefault(char *resource)
-{
-    char *value;
-
-    if ((value = XGetDefault(theDisplay, ProgramName, resource)) != NULL) {
-        return value;
-    }
-    if ((value = XGetDefault(theDisplay, ClassName, resource)) != NULL) {
-        return value;
-    }
-    return NULL;
-}
-
-void
-GetResources(void)
-{
-    char *resource;
-
-    if (Config.foreground == NULL) {
-        if ((resource = NekoGetDefault("foreground")) != NULL) {
-            Config.foreground = resource;
-        }
-    }
-
-    if (Config.background == NULL) {
-        if ((resource = NekoGetDefault("background")) != NULL) {
-            Config.background = resource;
-        }
-    }
-
-    if (!Config.interval_time_set) {
-        if ((resource = NekoGetDefault("time")) != NULL) {
-            if (!ParseLongOption(resource, 1, &Config.interval_time)) {
-                exit(1);
-            }
-            Config.interval_time_set = true;
-        }
-    }
-
-    if (!Config.speed_set) {
-        if ((resource = NekoGetDefault("speed")) != NULL) {
-            if (!ParseDoubleOption(resource, 0.0, &Config.speed)) {
-                exit(1);
-            }
-            Config.speed_set = true;
-        }
-    }
-
-    if (Config.no_shape == NOTDEFINED) {
-        if ((resource = NekoGetDefault("noshape")) != NULL) {
-            Config.no_shape = IsTrue(resource);
-        }
-    }
-
-    if (Config.foreground == NULL) {
-        Config.foreground = DEFAULT_FOREGROUND;
-    }
-    if (Config.background == NULL) {
-        Config.background = DEFAULT_BACKGROUND;
-    }
-    if (!Config.interval_time_set) {
-        Config.interval_time = 125000L;
-        Config.interval_time_set = true;
-    }
-    if (!Config.speed_set) {
-        Config.speed = 13.0;
-        Config.speed_set = true;
-    }
-    if (Config.no_shape == NOTDEFINED) {
-        Config.no_shape = False;
-    }
-}
-
-void
-SetupColors(void)
-{
-    XColor theExactColor;
-    Colormap theColormap;
-
-    theColormap = DefaultColormap(theDisplay, theScreen);
-
-    if (theDepth == 1) {
-        Config.foreground = "black";
-        Config.background = "white";
-    }
-
-    char *foreground = Config.foreground;
-    char *background = Config.background;
-
-    if (!XAllocNamedColor(theDisplay, theColormap,
-                        foreground, &theForegroundColor, &theExactColor)) {
-        fprintf(stderr, "%s: Can't XAllocNamedColor(\"%s\").\n",
-                ProgramName, foreground);
-        exit(1);
-    }
-
-    if (!XAllocNamedColor(theDisplay, theColormap,
-                        background, &theBackgroundColor, &theExactColor)) {
-        fprintf(stderr, "%s: Can't XAllocNamedColor(\"%s\").\n",
-                ProgramName, background);
-        exit(1);
-    }
 }
