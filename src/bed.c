@@ -1,4 +1,5 @@
 #include "strayneko.h"
+
 #include <stdlib.h>
 
 void

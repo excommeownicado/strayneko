@@ -1,7 +1,8 @@
 #include "strayneko.h"
+
 #include <stdarg.h>
 
-char *ClassName = "Strayneko";
+const char *ClassName = "Strayneko";
 char *ProgramName;
 
 NekoData Neko = {

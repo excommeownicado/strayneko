@@ -1,6 +1,8 @@
 #ifndef STRAYNEKO_H
 #define STRAYNEKO_H
 
+#include "geometry.h"
+
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
@@ -171,25 +173,11 @@ typedef struct {
     int restrict_monitor;
 } ConfigData;
 
-typedef struct {
-    int x;
-    int y;
-    int width;
-    int height;
-} MonitorRect;
-
-typedef struct {
-    int min_x;
-    int min_y;
-    int max_x;
-    int max_y;
-} MonitorBounds;
-
 extern NekoData Neko;
 extern BedData Bed;
 extern ConfigData Config;
 
-extern char *ClassName;
+extern const char *ClassName;
 extern char *ProgramName;
 
 extern Display *theDisplay;
@@ -248,10 +236,6 @@ Bool IsWindowOver(void);
 Bool IsNekoDontMove(void);
 Bool IsNekoMoveStart(void);
 void PickRandomTarget(void);
-MonitorRect GetMonitorRect(int monitor);
-MonitorBounds GetMonitorBounds(int monitor);
-int RectOnMonitor(int x, int y, int w, int h);
-int FindMonitorFor(int x, int y);
 void PickNearbyTarget(int radius);
 void CalcDxDy(void);
 void NekoThinkDraw(void);

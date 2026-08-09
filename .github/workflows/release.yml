@@ -21,27 +21,73 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             build-essential cmake libx11-dev libxrandr-dev libxext-dev
 
-      - name: Configure CMake
-        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
-
-      - name: Build strayneko
-        run: cmake --build build
-
-      - name: Package release artifact
+      - name: Configure
         run: |
-          mkdir -p release
-          cp "$(find build -type f -name strayneko | head -n1)" release/
-          cp LICENSE docs/strayneko.6 release/
-          cp install.sh uninstall.sh release/
-          cp -r resources/desktop release/
-          tar -czf strayneko-${GITHUB_REF_NAME}-linux.tar.gz -C release .
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: |
+          cmake --build build --parallel
+
+      - name: Install package
+        run: |
+          cmake --install build \
+            --prefix "$PWD/release"
+
+      - name: Copy license and installer
+        run: |
+          cp LICENSE release/
+          cp install.sh release/
+          cp uninstall.sh release/
+
+      - name: Create archive
+        run: |
+          tar -czf \
+            strayneko-${GITHUB_REF_NAME}-linux.tar.gz \
+            -C release .
+
+      - name: Validate archive
+        run: |
+          tar -tzf strayneko-${GITHUB_REF_NAME}.tar.gz
+
+      - name: Validate scripts
+        run: |
+          bash -n install.sh
+          bash -n uninstall.sh
+
+      - name: Extract version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: Extract changelog
+        run: |
+          awk -v version="$VERSION" '
+            $0 ~ "^## " version "$" {
+              found=1
+              next
+            }
+            found && $0 ~ "^## " {
+              exit
+            }
+            found {
+              print
+            }
+          ' CHANGELOG.md > release-notes.md
+
+      - name: Create archive
+        run: |
+          tar -czf \
+            "strayneko-${VERSION}-linux.tar.gz" \
+            -C release .
 
       - name: Create GitHub Release and upload artifact
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          name: ${{ github.ref_name }}
-          body: Release build for ${{ github.ref_name }}
-          files: strayneko-${{ github.ref_name }}-linux.tar.gz
+          name: strayneko ${{ env.VERSION }}
+          body_path: release-notes.md
+          files: strayneko-${{ env.VERSION }}-linux.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

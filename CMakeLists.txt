@@ -43,3 +43,7 @@ if(ENABLE_TESTS)
 endif()
 
 install(FILES docs/strayneko.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
+
+install(FILES resources/desktop/strayneko.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+
+install(FILES resources/desktop/strayneko.svg DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)

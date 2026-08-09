@@ -99,3 +99,35 @@ jobs:
         run: |
           shellcheck install.sh
           shellcheck uninstall.sh
+
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            libx11-dev \
+            libxext-dev \
+            libxrandr-dev \
+            shellcheck
+
+      - name: Configure tests
+        run: |
+          cmake -B build-tests \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DENABLE_TESTS=ON
+
+      - name: Build tests
+        run: |
+          cmake --build build-tests --parallel
+
+      - name: Run tests
+        run: |
+          ctest --test-dir build-tests --output-on-failure
