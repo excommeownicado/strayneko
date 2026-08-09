@@ -1,4 +1,7 @@
 #include "strayneko.h"
+#include "resources.h"
+#include "colors.h"
+#include "monitor.h"
 
 #include "bitmaps/neko/neko.include"
 #include "bitmaps/bed/bed.include"
@@ -444,8 +447,8 @@ ProcessEvent(void)
                 theEvent.xbutton.button == Button1) {
                 if (XGrabPointer(theDisplay, BedWindow, False,
                         ButtonReleaseMask | PointerMotionMask,
-                        GrabModeAsync, GrabModeAsync, None, None,
-                        theEvent.xbutton.time) == GrabSuccess) {
+                        GrabModeAsync, GrabModeAsync,
+                        None, None, CurrentTime) == GrabSuccess) {
                     Bed.dragging = 1;
                     Bed.drag_offset_x = theEvent.xbutton.x;
                     Bed.drag_offset_y = theEvent.xbutton.y;
@@ -454,20 +457,34 @@ ProcessEvent(void)
             break;
         case MotionNotify:
             if (Bed.enabled && Bed.dragging) {
-                int NewX = theEvent.xmotion.x_root - Bed.drag_offset_x;
-                int NewY = theEvent.xmotion.y_root - Bed.drag_offset_y;
+                int root_x;
+                int root_y;
 
-                if (RectOnMonitor(NewX, NewY, BITMAP_WIDTH, BITMAP_HEIGHT)) {
-                    Bed.x = NewX;
-                    Bed.y = NewY;
-                    XMoveWindow(theDisplay, BedWindow, Bed.x, Bed.y);
+                Window child;
+
+                if (XQueryPointer(theDisplay, theRoot,
+                        &theRoot, &child,
+                        &root_x, &root_y,
+                        &theEvent.xmotion.x,
+                        &theEvent.xmotion.y,
+                        &theEvent.xmotion.state)) {
+                    XWindowChanges changes;
+
+                    Bed.x = root_x - Bed.drag_offset_x;
+                    Bed.y = root_y - Bed.drag_offset_y;
+
+                    changes.x = Bed.x;
+                    changes.y = Bed.y;
+                    XConfigureWindow(theDisplay, BedWindow,
+                            CWX | CWY, &changes);
                 }
             }
             break;
         case ButtonRelease:
-            if (Bed.enabled && Bed.dragging && theEvent.xbutton.button == Button1) {
+            if (Bed.enabled && Bed.dragging &&
+                theEvent.xbutton.button == Button1) {
                 Bed.dragging = 0;
-                XUngrabPointer(theDisplay, theEvent.xbutton.time);
+                XUngrabPointer(theDisplay, CurrentTime);
                 SaveBedPosition();
             }
             break;
@@ -482,7 +499,35 @@ ProcessEvent(void)
 void
 RedrawNeko(void)
 {
-    XFillRectangle(theDisplay, theWindow, Neko.last_gc,
-                   0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
-    XFlush(theDisplay);
+    DontMapped = True;
+    DrawNeko(Neko.x, Neko.y, Neko.tick_count);
+}
+
+void
+ProcessNeko(void)
+{
+    struct timeval theTimeValue;
+
+    theTimeValue.tv_sec = Config.interval_time / 1000000;
+    theTimeValue.tv_usec = Config.interval_time % 1000000;
+
+    while (!TerminationRequested) {
+        if (!ProcessEvent()) {
+            break;
+        }
+
+        NekoThinkDraw();
+        DrawNeko(Neko.x, Neko.y, Neko.tick_count);
+
+        if (select(0, NULL, NULL, NULL, &theTimeValue) < 0) {
+            if (errno == EINTR) {
+                continue;
+            }
+
+            break;
+        }
+
+        theTimeValue.tv_sec = Config.interval_time / 1000000;
+        theTimeValue.tv_usec = Config.interval_time % 1000000;
+    }
 }
