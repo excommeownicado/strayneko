@@ -33,6 +33,13 @@ if(NOT XEXT_LIBRARY)
     message(FATAL_ERROR "Could not find Xext library")
 endif()
 
+include(CTest)
+
+if(BUILD_TESTING)
+    enable_testing()
+endif()
+
 add_subdirectory(src)
+add_subdirectory(tests)
 
 install(FILES docs/strayneko.6 DESTINATION ${CMAKE_INSTALL_MANDIR}/man6)
