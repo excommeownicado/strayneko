@@ -10,21 +10,21 @@ main(void)
     long value;
     double number;
 
-    assert(ParseLongOption("--test", "123", 0, &value));
+    assert(ParseLongOption("123", 0, &value));
     assert(value == 123);
 
-    assert(ParseLongOption("--test", "0", 0, &value));
+    assert(ParseLongOption("0", 0, &value));
     assert(value == 0);
 
-    assert(!ParseLongOption("--test", "-1", 0, &value));
-    assert(!ParseLongOption("--test", "abc", 0, &value));
-    assert(!ParseLongOption("--test", "", 0, &value));
+    assert(!ParseLongOption("-1", 0, &value));
+    assert(!ParseLongOption("abc", 0, &value));
+    assert(!ParseLongOption("", 0, &value));
 
-    assert(ParseDoubleOption("--test", "1.5", 0.0, &number));
+    assert(ParseDoubleOption("1.5", 0.0, &number));
     assert(number == 1.5);
 
-    assert(!ParseDoubleOption("--test", "-1.5", 0.0, &number));
-    assert(!ParseDoubleOption("--test", "abc", 0.0, &number));
+    assert(!ParseDoubleOption("-1.5", 0.0, &number));
+    assert(!ParseDoubleOption("abc", 0.0, &number));
 
     printf("parser tests passed\n");
 
