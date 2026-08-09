@@ -2,6 +2,7 @@
 #define STRAYNEKO_H
 
 #include "geometry.h"
+#include "monitor.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
