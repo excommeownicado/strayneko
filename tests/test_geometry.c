@@ -41,8 +41,6 @@ TestClampRectToRect(void)
 {
     Rect container = {100, 200, 300, 200};
 
-    assert((RectClampToRect, 1));
-
     Rect result = ClampRectToRect(
         (Rect){50, 150, 32, 32},
         container
