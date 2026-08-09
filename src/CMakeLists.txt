@@ -22,6 +22,13 @@ target_compile_definitions(strayneko PRIVATE
     SHAPE
 )
 
+# display.c still contains a legacy event-loop implementation that defines
+# ProcessNeko(). The actual game loop now lives in strayneko.c. Rename the
+# legacy symbol at compile time until that old implementation is removed.
+set_source_files_properties(display.c PROPERTIES
+    COMPILE_DEFINITIONS "ProcessNeko=DisplayProcessNeko"
+)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR ENABLE_DEBUG)
     target_compile_definitions(strayneko PRIVATE ENABLE_DEBUG)
 endif()
