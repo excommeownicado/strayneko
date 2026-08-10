@@ -1,4 +1,5 @@
 #include "strayneko.h"
+#include "bed.h"
 
 #include <stdlib.h>
 
@@ -64,6 +65,45 @@ ClampBedPosition(void)
     }
 
     ClampBedToBounds(GetMonitorBounds(monitor));
+}
+
+Bool
+BedValidateWindowPosition(Display *display, Window window,
+                          XWindowChanges *changes)
+{
+    Window root;
+    Window child;
+    int current_x;
+    int current_y;
+    unsigned int width;
+    unsigned int height;
+    unsigned int border_width;
+    unsigned int depth;
+
+    if (window != BedWindow ||
+        RectOnMonitor(Bed.x, Bed.y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
+        return True;
+    }
+
+    /* The drag code has already updated Bed.x/B​ed.y before it asks X11 to
+     * move the window. Restore the last position of the actual window when
+     * the requested rectangle is outside its allowed monitor. This matches
+     * the original drag behaviour: an invalid motion is simply rejected. */
+    if (XGetGeometry(display, window, &root,
+                     &current_x, &current_y,
+                     &width, &height,
+                     &border_width, &depth)) {
+        Bed.x = current_x;
+        Bed.y = current_y;
+
+        if (changes != NULL) {
+            changes->x = current_x;
+            changes->y = current_y;
+        }
+    }
+
+    (void)child;
+    return False;
 }
 
 void
