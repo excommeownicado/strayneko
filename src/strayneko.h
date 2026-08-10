@@ -134,6 +134,7 @@ extern double SinPiPer8Times3;
 extern double SinPiPer8;
 
 void InitBitmapAndGCs(void);
+void ClampBedPosition(void);
 void PlaceBedOnMonitor(void);
 void InitScreen(char *DisplayName);
 void Cleanup(void);
