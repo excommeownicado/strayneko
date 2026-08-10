@@ -13,6 +13,8 @@
 #define XUnmapWindow(display, window) X11WindowUnmap((display), (window))
 #define XRaiseWindow(display, window) X11WindowRaise((display), (window))
 #define XDestroyWindow(display, window) X11WindowDestroy((display), (window))
+#define XConfigureWindow(display, window, value_mask, changes) \
+    X11WindowConfigure((display), (window), (value_mask), (changes))
 #define XSync(display, discard) X11WindowSync((display))
 
 #endif
