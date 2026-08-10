@@ -2,7 +2,6 @@
 #define STRAYNEKO_CORE_STATE_H
 
 #include <time.h>
-#include <X11/Xlib.h>
 
 #define BITMAP_WIDTH 32
 #define BITMAP_HEIGHT 32
@@ -53,7 +52,7 @@ typedef struct {
     int x, y, target_x, target_y;
     int move_dx, move_dy;
     int last_x, last_y;
-    GC last_gc;
+    void *last_draw_resource;
     SpriteID last_sprite;
     int tick_count, state_count, state;
     int waiting;
