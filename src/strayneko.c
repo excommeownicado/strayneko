@@ -1,4 +1,5 @@
 #include "strayneko.h"
+#include "platform_time.h"
 
 #include <stdarg.h>
 
@@ -233,7 +234,8 @@ ClampTarget(void)
 void
 Interval(void)
 {
-    pause();
+    PlatformSleepUs((uint64_t)Config.interval_time);
+
     if (Neko.raise_window_delay > 0) {
         Neko.raise_window_delay--;
     }
