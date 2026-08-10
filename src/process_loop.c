@@ -2,15 +2,13 @@
 #include "platform.h"
 #include "platform_input.h"
 #include "target_bounds.h"
-#include "x11_platform_events.h"
 
 static void
 ProcessPendingPlatformEvents(void)
 {
     PlatformEvent event;
 
-    while (!TerminationRequested &&
-           X11PollPlatformEvent(theDisplay, theWindow, BedWindow, &event)) {
+    while (!TerminationRequested && PlatformPollEvent(&event)) {
         ProcessPlatformEvent(&event);
     }
 }
