@@ -1,7 +1,6 @@
 #include "platform_input.h"
 
 #include "bed.h"
-#include "display.h"
 #include "strayneko.h"
 #include "x11_window.h"
 
@@ -20,7 +19,7 @@ ProcessPlatformEvent(const PlatformEvent *event)
         break;
 
     case PLATFORM_EVENT_REDRAW:
-        DrawNeko(Neko.x, Neko.y, Neko.tick_count);
+        RedrawNeko();
         break;
 
     case PLATFORM_EVENT_WINDOW_RAISE:
@@ -35,9 +34,10 @@ ProcessPlatformEvent(const PlatformEvent *event)
 
     case PLATFORM_EVENT_BED_DRAG_MOVE:
         if (Bed.dragging) {
-            XWindowChanges changes;
-            changes.x = event->x - Bed.drag_offset_x;
-            changes.y = event->y - Bed.drag_offset_y;
+            XWindowChanges changes = {
+                .x = event->x - Bed.drag_offset_x,
+                .y = event->y - Bed.drag_offset_y
+            };
 
             if (BedValidateWindowPosition(theDisplay, BedWindow, &changes)) {
                 Bed.x = changes.x;
