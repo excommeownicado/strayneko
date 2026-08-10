@@ -27,9 +27,11 @@ ProcessPlatformEvent(const PlatformEvent *event)
         break;
 
     case PLATFORM_EVENT_BED_DRAG_START:
+        /* event->x/y are root coordinates. Store the pointer's position
+         * relative to the bed so MotionNotify can preserve the grab point. */
         Bed.dragging = 1;
-        Bed.drag_offset_x = event->x;
-        Bed.drag_offset_y = event->y;
+        Bed.drag_offset_x = event->x - Bed.x;
+        Bed.drag_offset_y = event->y - Bed.y;
         break;
 
     case PLATFORM_EVENT_BED_DRAG_MOVE:
