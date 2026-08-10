@@ -1,5 +1,4 @@
 #include "x11_window.h"
-#include "bed.h"
 
 Window
 X11WindowCreate(
@@ -43,8 +42,8 @@ void
 X11WindowConfigure(Display *display, Window window,
                    unsigned int value_mask, XWindowChanges *changes)
 {
-    if ((value_mask & (CWX | CWY)) != 0) {
-        BedValidateWindowPosition(display, window, changes);
+    if (!changes) {
+        return;
     }
 
     XConfigureWindow(display, window, value_mask, changes);
