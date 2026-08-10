@@ -30,7 +30,10 @@ ProcessPlatformEvent(const PlatformEvent *event)
         break;
 
     case PLATFORM_EVENT_WINDOW_RAISE:
-        X11WindowRaise(theDisplay, theWindow);
+        if (Neko.raise_window_delay == 0) {
+            X11WindowRaise(theDisplay, theWindow);
+            Neko.raise_window_delay = DEFAULT_RAISE_WAIT;
+        }
         break;
 
     case PLATFORM_EVENT_BED_DRAG_START:
