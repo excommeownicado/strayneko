@@ -8,6 +8,7 @@ add_executable(strayneko
     display.c
     bed.c
     strayneko.c
+    process_loop.c
     parser.c
     platform_posix.c
     platform_input.c
@@ -27,9 +28,14 @@ target_compile_definitions(strayneko PRIVATE
     SHAPE
 )
 
-# display.c still contains a legacy event-loop implementation that defines
-# ProcessNeko(). The actual game loop now lives in strayneko.c. Rename the
-# legacy symbol at compile time until that old implementation is removed.
+# The legacy ProcessNeko() in strayneko.c is kept temporarily while the
+# platform-independent process loop lives in process_loop.c.
+set_source_files_properties(strayneko.c PROPERTIES
+    COMPILE_DEFINITIONS "ProcessNeko=LegacyProcessNeko"
+)
+
+# display.c still contains the old event-loop implementation. Rename its
+# ProcessNeko() until the legacy display loop is removed completely.
 set_source_files_properties(display.c PROPERTIES
     COMPILE_DEFINITIONS "ProcessNeko=DisplayProcessNeko"
 )
