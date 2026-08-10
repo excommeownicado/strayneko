@@ -68,7 +68,7 @@ ProcessNeko(void)
             break;
         }
 
+        /* NekoThinkDraw() owns the frame interval via Interval(). */
         NekoThinkDraw();
-        Interval();
     }
 }
