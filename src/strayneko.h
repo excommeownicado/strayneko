@@ -4,8 +4,6 @@
 #include "geometry.h"
 #include "monitor.h"
 #include "config.h"
-#include "x11_window_compat.h"
-#include "x11_event_compat.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -155,9 +153,7 @@ void PickNearbyTarget(int radius);
 void CalcDxDy(void);
 void NekoThinkDraw(void);
 Bool ProcessKeyPress(XKeyEvent *theKeyEvent);
-Bool ProcessEvent(void);
 void ProcessNeko(void);
 void Usage(void);
-void GetArguments(int argc, char *argv[], char *theDisplayName);
 
-#endif /* STRAYNEKO_H */
+#endif
