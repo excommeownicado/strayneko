@@ -19,6 +19,8 @@ Window X11WindowCreate(
 );
 
 void X11WindowMove(Display *display, Window window, int x, int y);
+void X11WindowConfigure(Display *display, Window window,
+                        unsigned int value_mask, XWindowChanges *changes);
 void X11WindowRaise(Display *display, Window window);
 void X11WindowMap(Display *display, Window window);
 void X11WindowUnmap(Display *display, Window window);
