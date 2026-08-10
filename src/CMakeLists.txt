@@ -30,13 +30,16 @@ target_compile_definitions(strayneko PRIVATE
     SHAPE
 )
 
+# Keep the old core loop isolated while the new process loop is active.
 set_source_files_properties(strayneko.c PROPERTIES
-    COMPILE_DEFINITIONS "ProcessNeko=LegacyProcessNeko"
-    COMPILE_OPTIONS "-include;legacy_event_stub.h"
+    COMPILE_OPTIONS "-include;legacy_event_stub.h;-DProcessNeko=LegacyProcessNeko"
 )
 
+# The old X11 event loop in display.c is no longer the active implementation.
+# Rename both exported legacy symbols at compile time so they cannot collide
+# with process_loop.c or the platform event dispatcher.
 set_source_files_properties(display.c PROPERTIES
-    COMPILE_DEFINITIONS "ProcessNeko=DisplayProcessNeko;ProcessEvent=DisplayProcessEvent"
+    COMPILE_OPTIONS "-DProcessNeko=DisplayProcessNeko;-DProcessEvent=DisplayProcessEvent"
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR ENABLE_DEBUG)
