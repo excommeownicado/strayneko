@@ -11,6 +11,7 @@ add_executable(strayneko
     parser.c
     platform_posix.c
     x11_window.c
+    x11_event.c
 )
 
 target_include_directories(strayneko PRIVATE
