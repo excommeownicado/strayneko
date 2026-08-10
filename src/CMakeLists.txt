@@ -12,6 +12,7 @@ add_executable(strayneko
     parser.c
     platform_posix.c
     platform_input.c
+    target_bounds.c
     legacy_process_event_stub.c
     x11_window.c
     x11_event.c
@@ -54,6 +55,7 @@ if(ENABLE_SANITIZERS)
 
     target_link_options(strayneko PRIVATE
         -fsanitize=address,undefined
+        -fno-omit-frame-pointer
     )
 endif()
 
