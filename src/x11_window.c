@@ -1,4 +1,5 @@
 #include "x11_window.h"
+#include "bed.h"
 
 Window
 X11WindowCreate(
@@ -36,6 +37,17 @@ void
 X11WindowMove(Display *display, Window window, int x, int y)
 {
     XMoveWindow(display, window, x, y);
+}
+
+void
+X11WindowConfigure(Display *display, Window window,
+                   unsigned int value_mask, XWindowChanges *changes)
+{
+    if ((value_mask & (CWX | CWY)) != 0) {
+        BedValidateWindowPosition(display, window, changes);
+    }
+
+    XConfigureWindow(display, window, value_mask, changes);
 }
 
 void
