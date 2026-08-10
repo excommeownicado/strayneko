@@ -1,6 +1,7 @@
 #include "strayneko.h"
 #include "platform_input.h"
 #include "platform_time.h"
+#include "target_bounds.h"
 #include "x11_platform_events.h"
 
 static void
@@ -24,7 +25,7 @@ ProcessNeko(void)
         Neko.y = (int)WindowHeight / 2;
         Neko.target_x = ForceTargetX;
         Neko.target_y = ForceTargetY;
-        ClampTarget();
+        ClampTargetToMonitor();
         Neko.last_x = Neko.x;
         Neko.last_y = Neko.y;
         Neko.waiting = 0;
@@ -46,9 +47,5 @@ ProcessNeko(void)
         }
 
         NekoThinkDraw();
-
-        /* Interval() still owns the per-tick delay. This loop no longer uses
-           POSIX interval timers or signals, so event processing stays in the
-           same thread as the game state. */
     }
 }
