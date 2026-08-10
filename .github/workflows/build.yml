@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - agent/refactor-core-architecture
   pull_request:
 
 jobs:
