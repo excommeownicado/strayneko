@@ -68,7 +68,7 @@ TestClampRectToRect(void)
     CHECK(result.y == 368);
 
     result = ClampRectToRect(
-        (Rect){-2000, -1000, 32, 32},
+        (Rect){-2000, -1200, 32, 32},
         (Rect){-1920, -1080, 1920, 1080}
     );
 
