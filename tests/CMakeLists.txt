@@ -37,3 +37,20 @@ add_test(
     NAME geometry
     COMMAND test_geometry
 )
+
+add_executable(test_target_bounds
+    test_target_bounds.c
+    ../src/geometry.c
+    ../src/target_bounds.c
+)
+
+target_include_directories(test_target_bounds PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/../src
+)
+
+target_compile_options(test_target_bounds PRIVATE ${TEST_WARNING_FLAGS})
+
+add_test(
+    NAME target_bounds
+    COMMAND test_target_bounds
+)
