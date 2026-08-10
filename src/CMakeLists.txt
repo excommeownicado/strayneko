@@ -35,6 +35,10 @@ set_source_files_properties(strayneko.c PROPERTIES
     COMPILE_OPTIONS "-include;legacy_event_stub.h"
 )
 
+set_source_files_properties(display.c PROPERTIES
+    COMPILE_DEFINITIONS "ProcessNeko=DisplayProcessNeko;ProcessEvent=DisplayProcessEvent"
+)
+
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR ENABLE_DEBUG)
     target_compile_definitions(strayneko PRIVATE ENABLE_DEBUG)
 endif()
