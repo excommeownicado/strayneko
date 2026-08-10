@@ -65,8 +65,8 @@ ProcessPlatformEvent(const PlatformEvent *event)
             if (BedValidateWindowPosition(theDisplay, BedWindow, &changes)) {
                 Bed.x = changes.x;
                 Bed.y = changes.y;
-                XConfigureWindow(theDisplay, BedWindow,
-                                 CWX | CWY, &changes);
+                X11WindowConfigure(theDisplay, BedWindow,
+                                   CWX | CWY, &changes);
             }
         }
         break;
