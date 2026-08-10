@@ -22,11 +22,29 @@ ProcessPlatformEvent(const PlatformEvent *event)
         RedrawNeko();
         break;
 
+    case PLATFORM_EVENT_BED_REDRAW:
+        if (Bed.enabled && BedWindow != None && Bed.gc != NULL) {
+            XFillRectangle(theDisplay, BedWindow, Bed.gc,
+                           0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
+        }
+        break;
+
     case PLATFORM_EVENT_WINDOW_RAISE:
         X11WindowRaise(theDisplay, theWindow);
         break;
 
     case PLATFORM_EVENT_BED_DRAG_START:
+        if (!Bed.enabled || BedWindow == None) {
+            break;
+        }
+
+        if (XGrabPointer(theDisplay, BedWindow, False,
+                         ButtonReleaseMask | PointerMotionMask,
+                         GrabModeAsync, GrabModeAsync,
+                         None, None, CurrentTime) != GrabSuccess) {
+            break;
+        }
+
         /* event->x/y are root coordinates. Store the pointer's position
          * relative to the bed so MotionNotify can preserve the grab point. */
         Bed.dragging = 1;
@@ -51,7 +69,11 @@ ProcessPlatformEvent(const PlatformEvent *event)
         break;
 
     case PLATFORM_EVENT_BED_DRAG_END:
-        Bed.dragging = 0;
+        if (Bed.dragging) {
+            Bed.dragging = 0;
+            XUngrabPointer(theDisplay, CurrentTime);
+            SaveBedPosition();
+        }
         break;
 
     case PLATFORM_EVENT_NONE:
