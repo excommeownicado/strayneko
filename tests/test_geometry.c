@@ -56,6 +56,22 @@ TestClampRectToRect(void)
 
     assert(result.x == 368);
     assert(result.y == 368);
+
+    result = ClampRectToRect(
+        (Rect){-2000, -1000, 32, 32},
+        (Rect){-1920, -1080, 1920, 1080}
+    );
+
+    assert(result.x == -1920);
+    assert(result.y == -1080);
+
+    result = ClampRectToRect(
+        (Rect){500, 500, 500, 500},
+        (Rect){0, 0, 100, 100}
+    );
+
+    assert(result.x == 0);
+    assert(result.y == 0);
 }
 
 int
