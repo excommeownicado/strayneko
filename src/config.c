@@ -108,6 +108,8 @@ SaveBedPosition(void)
     char *path;
     FILE *file;
 
+    ClampBedPosition();
+
     path = GetBedConfigPath();
     if (path == NULL || !MakeDirectoryPath(path)) {
         return;
