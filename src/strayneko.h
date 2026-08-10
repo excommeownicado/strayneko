@@ -5,6 +5,7 @@
 #include "geometry.h"
 #include "monitor.h"
 #include "config.h"
+#include "bed.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -32,17 +33,6 @@
 
 typedef struct { GC gc; Pixmap pixmap; Pixmap mask; } Sprite;
 typedef struct { const unsigned char *bits; const unsigned char *mask_bits; } SpriteData;
-
-typedef struct {
-    int x, y;
-    int going_to_bed;
-    Bool enabled;
-    int dragging;
-    int drag_offset_x, drag_offset_y;
-    GC gc;
-    Pixmap pixmap;
-    Pixmap mask;
-} BedData;
 
 extern NekoData Neko;
 extern BedData Bed;
