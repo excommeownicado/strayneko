@@ -2,7 +2,7 @@
 #include "strayneko.h"
 
 static Rect
-MonitorRect(MonitorBounds bounds)
+MonitorBoundsToRect(MonitorBounds bounds)
 {
     return (Rect){
         .x = bounds.min_x,
@@ -65,7 +65,7 @@ ClampTargetToMonitor(void)
         .height = BITMAP_HEIGHT
     };
 
-    target = ClampRectToRect(target, MonitorRect(bounds));
+    target = ClampRectToRect(target, MonitorBoundsToRect(bounds));
 
     Neko.target_x = target.x;
     Neko.target_y = target.y;
