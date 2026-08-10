@@ -1,7 +1,15 @@
-#include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "parser.h"
+
+#define CHECK(condition) \
+    do { \
+        if (!(condition)) { \
+            fprintf(stderr, "parser test failed: %s\n", #condition); \
+            return EXIT_FAILURE; \
+        } \
+    } while (0)
 
 int
 main(void)
@@ -10,32 +18,31 @@ main(void)
     double number;
     bool boolean;
 
-    assert(ParseLongOption("123", 0, &value));
-    assert(value == 123);
+    CHECK(ParseLongOption("123", 0, &value));
+    CHECK(value == 123);
 
-    assert(ParseLongOption("0", 0, &value));
-    assert(value == 0);
+    CHECK(ParseLongOption("0", 0, &value));
+    CHECK(value == 0);
 
-    assert(!ParseLongOption("-1", 0, &value));
-    assert(!ParseLongOption("abc", 0, &value));
-    assert(!ParseLongOption("", 0, &value));
+    CHECK(!ParseLongOption("-1", 0, &value));
+    CHECK(!ParseLongOption("abc", 0, &value));
+    CHECK(!ParseLongOption("", 0, &value));
 
-    assert(ParseDoubleOption("1.5", 0.0, &number));
-    assert(number == 1.5);
+    CHECK(ParseDoubleOption("1.5", 0.0, &number));
+    CHECK(number == 1.5);
 
-    assert(!ParseDoubleOption("-1.5", 0.0, &number));
-    assert(!ParseDoubleOption("abc", 0.0, &number));
+    CHECK(!ParseDoubleOption("-1.5", 0.0, &number));
+    CHECK(!ParseDoubleOption("abc", 0.0, &number));
 
-    assert(ParseBoolOption("true", &boolean));
-    assert(boolean);
+    CHECK(ParseBoolOption("true", &boolean));
+    CHECK(boolean);
 
-    assert(ParseBoolOption("false", &boolean));
-    assert(!boolean);
+    CHECK(ParseBoolOption("false", &boolean));
+    CHECK(!boolean);
 
-    assert(!ParseBoolOption("True", &boolean));
-    assert(!ParseBoolOption("1", &boolean));
+    CHECK(!ParseBoolOption("True", &boolean));
+    CHECK(!ParseBoolOption("1", &boolean));
 
-    printf("parser tests passed\n");
-
-    return 0;
+    puts("parser tests passed");
+    return EXIT_SUCCESS;
 }
