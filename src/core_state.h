@@ -52,7 +52,7 @@ typedef struct {
     int x, y, target_x, target_y;
     int move_dx, move_dy;
     int last_x, last_y;
-    void *last_draw_resource;
+    void *last_gc;
     SpriteID last_sprite;
     int tick_count, state_count, state;
     int waiting;
