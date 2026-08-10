@@ -72,7 +72,6 @@ BedValidateWindowPosition(Display *display, Window window,
                           XWindowChanges *changes)
 {
     Window root;
-    Window child;
     int current_x;
     int current_y;
     unsigned int width;
@@ -85,7 +84,7 @@ BedValidateWindowPosition(Display *display, Window window,
         return True;
     }
 
-    /* The drag code has already updated Bed.x/B​ed.y before it asks X11 to
+    /* The drag code has already updated Bed.x/Bed.y before it asks X11 to
      * move the window. Restore the last position of the actual window when
      * the requested rectangle is outside its allowed monitor. This matches
      * the original drag behaviour: an invalid motion is simply rejected. */
@@ -102,7 +101,6 @@ BedValidateWindowPosition(Display *display, Window window,
         }
     }
 
-    (void)child;
     return False;
 }
 
