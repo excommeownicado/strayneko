@@ -151,7 +151,6 @@ Bool IsNekoMoveStart(void);
 void PickRandomTarget(void);
 void PickNearbyTarget(int radius);
 void CalcDxDy(void);
-void ClampTarget(void);
 void NekoThinkDraw(void);
 Bool ProcessKeyPress(XKeyEvent *theKeyEvent);
 void ProcessNeko(void);
