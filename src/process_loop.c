@@ -1,5 +1,6 @@
 #include "strayneko.h"
 #include "platform.h"
+#include "platform_input.h"
 #include "target_bounds.h"
 #include "x11_platform_events.h"
 
