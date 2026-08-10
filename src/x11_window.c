@@ -1,5 +1,37 @@
 #include "x11_window.h"
 
+Window
+X11WindowCreate(
+    Display *display,
+    Window parent,
+    int x,
+    int y,
+    unsigned int width,
+    unsigned int height,
+    unsigned int border_width,
+    int depth,
+    unsigned int class,
+    Visual *visual,
+    unsigned long valuemask,
+    XSetWindowAttributes *attributes
+)
+{
+    return XCreateWindow(
+        display,
+        parent,
+        x,
+        y,
+        width,
+        height,
+        border_width,
+        depth,
+        class,
+        visual,
+        valuemask,
+        attributes
+    );
+}
+
 void
 X11WindowMove(Display *display, Window window, int x, int y)
 {
