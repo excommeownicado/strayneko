@@ -1,6 +1,17 @@
 #include "target_bounds.h"
 #include "strayneko.h"
 
+static Rect
+MonitorRect(MonitorBounds bounds)
+{
+    return (Rect){
+        .x = bounds.min_x,
+        .y = bounds.min_y,
+        .width = bounds.max_x - bounds.min_x + BITMAP_WIDTH,
+        .height = bounds.max_y - bounds.min_y + BITMAP_HEIGHT
+    };
+}
+
 void
 ClampTargetToMonitor(void)
 {
@@ -8,25 +19,22 @@ ClampTargetToMonitor(void)
     int monitor;
 
     if (MonitorCount <= 0) {
-        int max_x = WindowWidth > BITMAP_WIDTH
-            ? (int)WindowWidth - BITMAP_WIDTH
-            : 0;
-        int max_y = WindowHeight > BITMAP_HEIGHT
-            ? (int)WindowHeight - BITMAP_HEIGHT
-            : 0;
+        Rect root = {
+            .x = 0,
+            .y = 0,
+            .width = (int)WindowWidth,
+            .height = (int)WindowHeight
+        };
+        Rect target = {
+            .x = Neko.target_x,
+            .y = Neko.target_y,
+            .width = BITMAP_WIDTH,
+            .height = BITMAP_HEIGHT
+        };
 
-        if (Neko.target_x < 0) {
-            Neko.target_x = 0;
-        } else if (Neko.target_x > max_x) {
-            Neko.target_x = max_x;
-        }
-
-        if (Neko.target_y < 0) {
-            Neko.target_y = 0;
-        } else if (Neko.target_y > max_y) {
-            Neko.target_y = max_y;
-        }
-
+        target = ClampRectToRect(target, root);
+        Neko.target_x = target.x;
+        Neko.target_y = target.y;
         return;
     }
 
@@ -50,24 +58,15 @@ ClampTargetToMonitor(void)
 
     bounds = GetMonitorBounds(monitor);
 
-    if (Neko.target_x < bounds.min_x) {
-        Neko.target_x = bounds.min_x;
-    } else if (Neko.target_x > bounds.max_x) {
-        Neko.target_x = bounds.max_x;
-    }
+    Rect target = {
+        .x = Neko.target_x,
+        .y = Neko.target_y,
+        .width = BITMAP_WIDTH,
+        .height = BITMAP_HEIGHT
+    };
 
-    if (Neko.target_y < bounds.min_y) {
-        Neko.target_y = bounds.min_y;
-    } else if (Neko.target_y > bounds.max_y) {
-        Neko.target_y = bounds.max_y;
-    }
+    target = ClampRectToRect(target, MonitorRect(bounds));
 
-    if (!RectOnMonitor(
-            Neko.target_x,
-            Neko.target_y,
-            BITMAP_WIDTH,
-            BITMAP_HEIGHT)) {
-        Neko.target_x = bounds.min_x;
-        Neko.target_y = bounds.min_y;
-    }
+    Neko.target_x = target.x;
+    Neko.target_y = target.y;
 }
