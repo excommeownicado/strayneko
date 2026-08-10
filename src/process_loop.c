@@ -1,8 +1,7 @@
 #include "strayneko.h"
 #include "platform_input.h"
+#include "platform_time.h"
 #include "x11_platform_events.h"
-
-#include <sys/time.h>
 
 static void
 ProcessPendingPlatformEvents(void)
@@ -18,8 +17,6 @@ ProcessPendingPlatformEvents(void)
 void
 ProcessNeko(void)
 {
-    struct itimerval timer;
-
     PickRandomTarget();
 
     if (ForceTargetFlag) {
@@ -37,20 +34,8 @@ ProcessNeko(void)
         Neko.last_x = Neko.x;
         Neko.last_y = Neko.y;
         Neko.waiting = 1;
-        Neko.next_move_time = time(NULL);
+        Neko.next_move_time = (time_t)(PlatformGetTimeMs() / 1000ULL);
         SetNekoState(NEKO_STOP);
-    }
-
-    timerclear(&timer.it_interval);
-    timerclear(&timer.it_value);
-
-    timer.it_interval.tv_sec = Config.interval_time / 1000000L;
-    timer.it_interval.tv_usec = Config.interval_time % 1000000L;
-    timer.it_value = timer.it_interval;
-
-    if (setitimer(ITIMER_REAL, &timer, 0) != 0) {
-        perror("setitimer");
-        return;
     }
 
     while (!TerminationRequested) {
@@ -61,5 +46,9 @@ ProcessNeko(void)
         }
 
         NekoThinkDraw();
+
+        /* Interval() still owns the per-tick delay. This loop no longer uses
+           POSIX interval timers or signals, so event processing stays in the
+           same thread as the game state. */
     }
 }
