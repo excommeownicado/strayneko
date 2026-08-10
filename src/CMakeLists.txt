@@ -29,11 +29,9 @@ target_compile_definitions(strayneko PRIVATE
     SHAPE
 )
 
-# Keep the old ProcessNeko() isolated while the new platform-independent
-# process loop owns the public ProcessNeko() entry point. The old function
-# will be removed after the timing migration is complete.
 set_source_files_properties(strayneko.c PROPERTIES
     COMPILE_DEFINITIONS "ProcessNeko=LegacyProcessNeko"
+    COMPILE_OPTIONS "-include;legacy_event_stub.h"
 )
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" OR ENABLE_DEBUG)
