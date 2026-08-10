@@ -41,21 +41,6 @@ jobs:
           cp install.sh release/
           cp uninstall.sh release/
 
-      - name: Create archive
-        run: |
-          tar -czf \
-            strayneko-${GITHUB_REF_NAME}-linux.tar.gz \
-            -C release .
-
-      - name: Validate archive
-        run: |
-          tar -tzf strayneko-${GITHUB_REF_NAME}.tar.gz
-
-      - name: Validate scripts
-        run: |
-          bash -n install.sh
-          bash -n uninstall.sh
-
       - name: Extract version
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
@@ -81,6 +66,15 @@ jobs:
           tar -czf \
             "strayneko-${VERSION}-linux.tar.gz" \
             -C release .
+
+      - name: Validate archive
+        run: |
+          tar -tzf "strayneko-${VERSION}-linux.tar.gz"
+
+      - name: Validate scripts
+        run: |
+          bash -n install.sh
+          bash -n uninstall.sh
 
       - name: Create GitHub Release and upload artifact
         uses: softprops/action-gh-release@v2
