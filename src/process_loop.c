@@ -55,7 +55,9 @@ ProcessNeko(void)
         Neko.last_x = Neko.x;
         Neko.last_y = Neko.y;
         Neko.waiting = 1;
-        Neko.next_move_time = (time_t)(PlatformGetTimeMs() / 1000ULL);
+        /* CalcDxDy() uses time(NULL), so keep the initial deadline on the
+         * same wall-clock scale instead of mixing it with monotonic ms. */
+        Neko.next_move_time = time(NULL);
         SetNekoState(NEKO_STOP);
     }
 
@@ -67,5 +69,6 @@ ProcessNeko(void)
         }
 
         NekoThinkDraw();
+        Interval();
     }
 }
