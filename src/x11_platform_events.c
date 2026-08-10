@@ -51,9 +51,12 @@ X11PollPlatformEvent(Display *display, Window neko_window,
     case ButtonPress:
         if (xevent.xbutton.window == bed_window &&
             xevent.xbutton.button == Button1) {
+            /* Keep drag coordinates in the same root coordinate system as
+             * MotionNotify. Using x/y here makes the initial offset relative
+             * to the bed, which causes the bed to jump/stick at an edge. */
             event->type = PLATFORM_EVENT_BED_DRAG_START;
-            event->x = xevent.xbutton.x;
-            event->y = xevent.xbutton.y;
+            event->x = xevent.xbutton.x_root;
+            event->y = xevent.xbutton.y_root;
             event->button = xevent.xbutton.button;
             return true;
         }
