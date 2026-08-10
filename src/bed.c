@@ -71,37 +71,18 @@ Bool
 BedValidateWindowPosition(Display *display, Window window,
                           XWindowChanges *changes)
 {
-    Window root;
-    int current_x;
-    int current_y;
-    unsigned int width;
-    unsigned int height;
-    unsigned int border_width;
-    unsigned int depth;
+    (void)display;
 
-    if (window != BedWindow ||
-        RectOnMonitor(Bed.x, Bed.y, BITMAP_WIDTH, BITMAP_HEIGHT)) {
+    if (window != BedWindow || changes == NULL) {
         return True;
     }
 
-    /* The drag code has already updated Bed.x/Bed.y before it asks X11 to
-     * move the window. Restore the last position of the actual window when
-     * the requested rectangle is outside its allowed monitor. This matches
-     * the original drag behaviour: an invalid motion is simply rejected. */
-    if (XGetGeometry(display, window, &root,
-                     &current_x, &current_y,
-                     &width, &height,
-                     &border_width, &depth)) {
-        Bed.x = current_x;
-        Bed.y = current_y;
-
-        if (changes != NULL) {
-            changes->x = current_x;
-            changes->y = current_y;
-        }
-    }
-
-    return False;
+    /* Validate the position we are actually about to apply, not Bed.x/y from
+     * the previous frame. The old implementation checked the current Bed
+     * position, which made an invalid edge position get accepted/rejected at
+     * the wrong time during drag. */
+    return RectOnMonitor(changes->x, changes->y,
+                         BITMAP_WIDTH, BITMAP_HEIGHT);
 }
 
 void
