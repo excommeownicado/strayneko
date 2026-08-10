@@ -19,8 +19,8 @@ unsigned int WindowWidth;
 unsigned int WindowHeight;
 
 static MonitorBounds TestMonitors[] = {
-    { .min_x = 0, .min_y = 0, .max_x = 1599, .max_y = 899 },
-    { .min_x = 1600, .min_y = 0, .max_x = 3519, .max_y = 1079 }
+    { .min_x = 0, .min_y = 0, .max_x = 1567, .max_y = 867 },
+    { .min_x = 1600, .min_y = 0, .max_x = 3487, .max_y = 1047 }
 };
 
 int
@@ -81,8 +81,8 @@ TestRestrictedMonitor(void)
     Neko.target_x = 3400;
     Neko.target_y = 1050;
     ClampTargetToMonitor();
-    CHECK(Neko.target_x == 3519);
-    CHECK(Neko.target_y == 1079);
+    CHECK(Neko.target_x == 3487);
+    CHECK(Neko.target_y == 1047);
     return 0;
 }
 
