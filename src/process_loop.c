@@ -31,8 +31,6 @@ ProcessNeko(void)
         Neko.last_x = Neko.x;
         Neko.last_y = Neko.y;
         Neko.waiting = 0;
-        DebugLog("ProcessNeko: Forced target=(%d,%d) start=(%d,%d)\n",
-                 Neko.target_x, Neko.target_y, Neko.x, Neko.y);
     } else {
         Neko.x = Neko.target_x;
         Neko.y = Neko.target_y;
