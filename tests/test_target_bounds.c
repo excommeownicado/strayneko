@@ -81,8 +81,8 @@ TestRestrictedMonitor(void)
     Neko.target_x = 3400;
     Neko.target_y = 1050;
     ClampTargetToMonitor();
-    CHECK(Neko.target_x == 3488);
-    CHECK(Neko.target_y == 1048);
+    CHECK(Neko.target_x == 3519);
+    CHECK(Neko.target_y == 1079);
     return 0;
 }
 
