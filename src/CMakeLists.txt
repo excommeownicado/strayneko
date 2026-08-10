@@ -13,7 +13,7 @@ add_executable(strayneko
     platform_posix.c
     platform_input.c
     target_bounds.c
-    legacy_process_event_stub.c
+    legacy_event_stub.c
     x11_window.c
     x11_event.c
     x11_platform_events.c
